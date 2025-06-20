@@ -4,6 +4,7 @@ import de.expenses.model.User;
 import de.expenses.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +22,21 @@ public class UserController {
 	}
 
 	@GetMapping
-	public List<User> getAllUsers() {
+	public ResponseEntity<List<User>> getAllUsers() {
 		logger.info("get all users");
-		return userRepo.findAll();
+		return ResponseEntity.ok(userRepo.findAll());
 	}
 
 	@PostMapping
-	public User createUser(@RequestBody User user) {
+	public ResponseEntity<User> createUser(@RequestBody User user) {
 		logger.info("create a new user");
-		return userRepo.save(user);
+		return ResponseEntity.ok(userRepo.save(user));
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+		logger.info("delete user with id {}", id);
+		userRepo.deleteById(id);
+		return ResponseEntity.noContent().build();
 	}
 }
