@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
 # 3. Die JAR-Datei ins Image kopieren (nach `mvn package`)
-COPY target/expenses-app-0.0.1-SNAPSHOT.jar app.jar
+COPY ../target/expenses-app-0.0.1-SNAPSHOT.jar app.jar
 
 # 4. Port (optional, dokumentarisch)
 EXPOSE 8080

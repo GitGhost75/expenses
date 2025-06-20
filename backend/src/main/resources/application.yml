@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3308/expensesdb
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    database-platform: org.hibernate.dialect.MariaDBDialect
+cors:
+  allowed-origins:
+    - https://our-expenses.duckdns.org
+servers:
+  allowed-servers:
+    - https://our-expenses.duckdns.org
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    display-request-duration: true
+    doc-expansion: none
+  api-docs:
+    path: /v3/api-docs
+  default-produces-media-type: application/json
+  default-consumes-media-type: application/json
+logging:
+  level:
+    root: INFO
+    de.expenses: INFO
+    org.hibernate.SQL: INFO
+    org.hibernate.type: INFO

@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+cors:
+  allowed-origins:
+    - http://localhost:3000
+servers:
+  allowed-servers:
+    - http://localhost:8080
+logging:
+  level:
+    root: DEBUG
