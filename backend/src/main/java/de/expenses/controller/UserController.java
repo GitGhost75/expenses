@@ -2,6 +2,7 @@ package de.expenses.controller;
 
 import de.expenses.model.User;
 import de.expenses.repository.UserRepository;
+import de.expenses.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,28 +16,28 @@ public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-	private final UserRepository userRepo;
+	private final UserService userService;
 
-	public UserController(UserRepository userRepo) {
-		this.userRepo = userRepo;
+	public UserController(UserService userService) {
+		this.userService = userService;
 	}
 
 	@GetMapping
 	public ResponseEntity<List<User>> getAllUsers() {
 		logger.info("get all users");
-		return ResponseEntity.ok(userRepo.findAll());
+		return ResponseEntity.ok(userService.getUsers());
 	}
 
 	@PostMapping
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		logger.info("create a new user");
-		return ResponseEntity.ok(userRepo.save(user));
+		return ResponseEntity.ok(userService.createUser(user));
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 		logger.info("delete user with id {}", id);
-		userRepo.deleteById(id);
+		userService.deleteUser(id);
 		return ResponseEntity.noContent().build();
 	}
 }
