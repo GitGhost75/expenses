@@ -20,6 +20,12 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+@media(max-width: 600px) {
+    .user-card {
+        flex-direction: column;
+    }
+}
+
 .delete-button {
   background: transparent;
   border: none;

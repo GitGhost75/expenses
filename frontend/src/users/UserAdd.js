@@ -20,6 +20,7 @@ export default function UserAdd({ onUserAdded }) {
 
   return (
   <div class="add-border">
+  <h2>User hinzufügen</h2>
     <div class="add-card">
             <input
               value={name}
@@ -31,7 +32,7 @@ export default function UserAdd({ onUserAdded }) {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="E-Mail"
             />
-            <button className="add-button" onClick={handleAdd}>➕</button>
+            <button className="add-button" onClick={handleAdd}>👈</button>
     </div>
    </div>
   );

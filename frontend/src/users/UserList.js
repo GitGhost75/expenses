@@ -25,20 +25,16 @@ export default function UserList({ refreshTrigger }) {
 
   return (
     <div className="user-list">
-      <h2>Benutzer</h2>
+      <h2>Liste der User</h2>
       {users.length === 0 ? (
-        <p>Keine Benutzer vorhanden.</p>
+        <p>Keine User vorhanden.</p>
       ) : (
         <div className="user-cards">
           {users.map((user) => (
             <div key={user.id} className="user-card">
-              <div>
-                <strong>{user.name}</strong>&nbsp;&nbsp;
+                <strong>{user.name}</strong>
                 <small>{user.email}</small>
-              </div>
-              <button className="delete-button" onClick={() => handleDelete(user.id)}>
-                ➖
-              </button>
+              <button className="delete-button" onClick={() => handleDelete(user.id)}>🚮</button>
             </div>
           ))}
         </div>
