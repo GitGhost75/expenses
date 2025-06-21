@@ -1,2 +1,0 @@
-# expenses
-dealing with expenses

@@ -5,18 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "group_members")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class GroupMember {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private String name;
+	@ManyToOne
+	@JoinColumn(name = "group_id")
+	private Group group;
 
-	@Column(unique = true)
-	private String email;
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 }

@@ -1,14 +1,12 @@
-# 1. Verwende ein schlankes JDK-Image
-FROM eclipse-temurin:17-jdk-alpine
-
-# 2. Arbeitsverzeichnis setzen
+# Build stage
+FROM maven:3.9.6-eclipse-temurin-21 as builder
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-# 3. Die JAR-Datei ins Image kopieren (nach `mvn package`)
-COPY ../target/expenses-app-0.0.1-SNAPSHOT.jar app.jar
-
-# 4. Port (optional, dokumentarisch)
+# Runtime stage
+FROM eclipse-temurin:21-jre
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
 EXPOSE 8080
-
-# 5. Startbefehl
 ENTRYPOINT ["java", "-jar", "app.jar"]

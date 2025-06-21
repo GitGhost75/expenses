@@ -1,9 +1,0 @@
-services:
-  mariadb:
-    image: mariadb:11
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: expensesdb
-    ports:
-      - "3308:3306"

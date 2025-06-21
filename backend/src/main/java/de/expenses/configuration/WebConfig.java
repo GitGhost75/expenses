@@ -21,7 +21,7 @@ public class WebConfig {
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
 				        .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
-				        .allowedMethods("GET", "POST", "PUT", "DELETE")
+				        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
 				        .allowedHeaders("*");
 			}
 		};
