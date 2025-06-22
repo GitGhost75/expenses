@@ -1,5 +1,6 @@
 package de.expenses.controller;
 
+import de.expenses.dto.UserDto;
 import de.expenses.model.User;
 import de.expenses.repository.UserRepository;
 import de.expenses.service.UserService;
@@ -23,15 +24,15 @@ public class UserController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<User>> getAllUsers() {
+	public ResponseEntity<List<UserDto>> getAllUsers() {
 		logger.info("get all users");
 		return ResponseEntity.ok(userService.getUsers());
 	}
 
 	@PostMapping
-	public ResponseEntity<User> createUser(@RequestBody User user) {
+	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
 		logger.info("create a new user");
-		return ResponseEntity.ok(userService.createUser(user));
+		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
 	@DeleteMapping("/{id}")
