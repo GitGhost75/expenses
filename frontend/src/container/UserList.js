@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { fetchUsers, deleteUser } from "./UserService";
 import "./UserList.css";
+import Button from 'react-bootstrap/Button';
 
 export default function UserList({ refreshTrigger }) {
   const [users, setUsers] = useState([]);
@@ -34,7 +35,7 @@ export default function UserList({ refreshTrigger }) {
             <div key={user.id} className="user-card">
                 <strong>{user.name}</strong>
                 <small>{user.email}</small>
-              <button className="delete-button" onClick={() => handleDelete(user.id)}>🚮</button>
+              <Button className="delete-button" variant="primary" onClick={() => handleDelete(user.id)}>🗑</Button>
             </div>
           ))}
         </div>

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers, addUser, deleteUser } from "./users/UserService";
+import { fetchUsers, addUser, deleteUser } from "./service/UserService";
 import logo from './logo.svg';
 import './App.css';
-import UserAdd from './users/UserAdd';
-import UserList from './users/UserList';
+import UserAdd from './container/UserAdd';
+import UserList from './container/UserList';
+import Header from './container/Header';
 function App() {
 
   const [refreshUsers, setRefreshUsers] = useState(false);
@@ -14,14 +15,10 @@ function App() {
 
   return (
       <div className="App">
-        <header className="App-header">
-          Expenses App
-        </header>
-
-        <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
-
-        <UserAdd onUserAdded={triggerUserRefresh} />
-        <UserList refreshTrigger={refreshUsers} />
+        <Header />
+        <div style={{ paddingTop: '70px' }}>
+            <UserAdd onUserAdded={triggerUserRefresh} />
+            <UserList refreshTrigger={refreshUsers} />
         </div>
     </div>
   );

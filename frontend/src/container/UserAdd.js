@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchUsers, addUser, deleteUser } from "./UserService";
 import "./UserAdd.css";
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
 
 export default function UserAdd({ onUserAdded }) {
   const [name, setName] = useState("");
@@ -22,17 +24,17 @@ export default function UserAdd({ onUserAdded }) {
   <div class="add-border">
   <h2>User hinzufügen</h2>
     <div class="add-card">
-            <input
+            <Form.Control type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Name"
             />
-            <input
+            <Form.Control type="email"
+              placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="E-Mail"
             />
-            <button className="add-button" onClick={handleAdd}>👈</button>
+            <Button variant="primary" onClick={handleAdd}>👈</Button>
     </div>
    </div>
   );
