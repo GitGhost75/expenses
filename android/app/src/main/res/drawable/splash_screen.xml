@@ -1,0 +1,11 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Hintergrundfarbe -->
+    <item android:drawable="@color/splash_background" />
+
+    <!-- Logo in der Mitte -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/expenses_logo" />
+    </item>
+</layer-list>
