@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers, addUser, deleteUser } from "./UserService";
+import { fetchUsers, addUser, deleteUser } from "../service/UserService";
 import "./UserAdd.css";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -7,17 +7,21 @@ import Button from 'react-bootstrap/Button';
 export default function UserAdd({ onUserAdded }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-
+  const [error, setError] = useState("");
+  const [validationErrors, setValidationErrors] = useState([]);
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    if (!name.trim()) return;
-    if (!email.trim()) return;
-    const newUser = await addUser({ name, email });
+    setError("");
 
-    setName("");
-    setEmail("");
-    onUserAdded(); // 👈 Nach erfolgreichem POST
+    try {
+      const newUser = await addUser({ name, email });
+      setName("");
+      setEmail("");
+      onUserAdded();
+    } catch (err) {
+          setError(err.message);
+    }
   };
 
   return (
@@ -34,6 +38,11 @@ export default function UserAdd({ onUserAdded }) {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+          {error && (
+            <div className="alert alert-danger mt-3" role="alert">
+              {error}
+            </div>
+          )}
             <Button variant="primary" onClick={handleAdd}>👈</Button>
     </div>
    </div>

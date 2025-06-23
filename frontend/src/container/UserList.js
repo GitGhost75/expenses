@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers, deleteUser } from "./UserService";
+import { fetchUsers, deleteUser } from "../service/UserService";
 import "./UserList.css";
 import Button from 'react-bootstrap/Button';
 
