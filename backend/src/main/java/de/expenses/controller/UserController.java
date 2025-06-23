@@ -4,12 +4,14 @@ import de.expenses.dto.UserDto;
 import de.expenses.model.User;
 import de.expenses.repository.UserRepository;
 import de.expenses.service.UserService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -30,13 +32,13 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
 		logger.info("create a new user");
 		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+	public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
 		logger.info("delete user with id {}", id);
 		userService.deleteUser(id);
 		return ResponseEntity.noContent().build();

@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "expenses")
@@ -16,8 +19,9 @@ import java.time.LocalDateTime;
 public class Expense {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	@GeneratedValue
+	@JdbcTypeCode(SqlTypes.UUID)
+	private UUID id;
 
 	@ManyToOne
 	@JoinColumn(name = "group_id")

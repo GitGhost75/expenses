@@ -44,6 +44,12 @@
             <version>${maria.db.version}</version>
         </dependency>
 
+        <!-- Validation -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
         <!-- Lombok (optional, für weniger Boilerplate) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
