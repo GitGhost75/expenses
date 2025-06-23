@@ -20,6 +20,7 @@ docker save -o ./target/backend.tar expenses-backend
 docker save -o ./target/frontend.tar expenses-frontend
 scp ./target/*.tar alex@ubuntuserver01:~/upload
 
+docker-compose down
 docker load -i backend.tar
 docker load -i frontend.tar
 docker-compose up -d
