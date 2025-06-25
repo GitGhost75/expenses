@@ -13,11 +13,10 @@ public class UserDto {
 
 	private UUID id;
 
-	@NotBlank(message = "Name darf nicht leer sein")
+	@NotBlank(message = "{user.name.notBlank}")
 	private String name;
 
-
-	@NotBlank(message = "E-Mail darf nicht leer sein")
-	@Email(message = "Ungültige E-Mail-Adresse")
+	@NotBlank(message = "{user.email.notBlank}")
+	@Email(message = "{user.email.invalid}")
 	private String email;
 }
