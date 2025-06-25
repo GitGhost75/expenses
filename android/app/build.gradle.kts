@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -7,6 +8,10 @@ plugins {
 android {
     namespace = "com.kiemle.expenses"
     compileSdk = 35
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     defaultConfig {
         applicationId = "com.kiemle.expenses"
@@ -26,7 +31,26 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            isMinifyEnabled = false
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
     }
+
+    flavorDimensions += "env"
+
+    productFlavors {
+        create("local") {
+            dimension = "env"
+            buildConfigField("String", "WEBVIEW_URL", "\"http://192.168.112.1:3000\"")
+        }
+        create("prod") {
+            dimension = "env"
+            buildConfigField("String", "WEBVIEW_URL", "\"https://our-expenses.duckdns.org\"")
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -37,6 +61,7 @@ android {
     buildFeatures {
         compose = true
     }
+
 }
 
 dependencies {
