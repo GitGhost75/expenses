@@ -1,5 +1,6 @@
 package de.expenses.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,17 @@ public class GlobalExceptionHandler {
 		                                            validationErrors(fieldErrors).build();
 
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(EntityNotFoundException.class)
+	public ResponseEntity<ApiErrorResponse> handleEntityNotFoundException(Exception ex, HttpServletRequest request) {
+		ApiErrorResponse response = ApiErrorResponse.builder().
+		                                            status(HttpStatus.NOT_FOUND.value()).
+		                                            error("Not found").
+		                                            message(ex.getMessage()).
+		                                            path(request.getRequestURI()).build();
+
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 
 	@ExceptionHandler(Exception.class)

@@ -1,6 +1,6 @@
 package de.expenses.service;
 
-import de.expenses.UserMapper;
+import de.expenses.mapper.UserMapper;
 import de.expenses.dto.UserDto;
 import de.expenses.model.User;
 import de.expenses.repository.UserRepository;
