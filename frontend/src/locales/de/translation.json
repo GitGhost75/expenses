@@ -1,0 +1,10 @@
+{
+  "add_user": "User hinzufügen",
+  "list_user": "Liste der User",
+  "delete": "Löschen",
+  "add": "Hinzufügen",
+  "placeholder_name": "Name",
+  "placeholder_email": "name@example.com",
+  "no_users_available": "Keine User gefunden",
+  "error": "Fehler"
+}

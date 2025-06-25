@@ -21,14 +21,15 @@ export async function addUser(name, email) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(name, email)
   });
-  if (!response.ok) {
-        const errorBody = await response.json();
-        if (errorBody.validationErrors) {
-           const x =  Object.values(errorBody.validationErrors).join(" • ");
-           throw new Error(x);
-        } else {
-           throw new Error(errorBody);
-        }
-  }
-  return await response.json()
+//  if (!response.ok) {
+//        const errorBody = await response.json();
+//        if (errorBody.validationErrors) {
+//           const x =  Object.values(errorBody.validationErrors).join(" • ");
+//           throw new Error(x);
+//        } else {
+//           throw new Error(errorBody);
+//        }
+//  }
+return response;
+//  return await response.json()
 }
