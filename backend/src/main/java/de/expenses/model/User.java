@@ -26,7 +26,7 @@ public class User {
 	@Column(unique = true)
 	private String email;
 
-	@ManyToOne
-	@JoinColumn(name = "group_id")
-	private Group group;
+//	@ManyToOne
+//	@JoinColumn(name = "group_id")
+//	private Group group;
 }

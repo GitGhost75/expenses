@@ -5,18 +5,24 @@ spring:
     password: password
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     show-sql: false
     database-platform: org.hibernate.dialect.MariaDBDialect
   messages:
     basename: i18n/messages
     encoding: UTF-8
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
 cors:
   allowed-origins:
     - https://our-expenses.duckdns.org
+
 servers:
   allowed-servers:
     - https://our-expenses.duckdns.org
+    -
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
@@ -27,6 +33,7 @@ springdoc:
     path: /v3/api-docs
   default-produces-media-type: application/json
   default-consumes-media-type: application/json
+
 logging:
   level:
     root: INFO

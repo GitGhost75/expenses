@@ -23,7 +23,7 @@ public class Group {
 
 	private String name;
 
-	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<User> members;
+//	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private List<User> members;
 
 }
