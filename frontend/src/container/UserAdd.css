@@ -5,11 +5,12 @@
  }
 
  .add-card {
+   display: flex;
    flex-direction: row;
    gap: 12px;
    display: flex;
    justify-content: space-between;
-   align-items: center;
+   align-items: flex-start;
    background: #f5f5f5;
    padding: 12px 16px;
    border-radius: 8px;

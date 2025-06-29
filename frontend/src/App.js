@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { fetchUsers, addUser, deleteUser } from "./service/UserService";
-import logo from './logo.svg';
 import './App.css';
 import UserAdd from './container/UserAdd';
 import UserList from './container/UserList';
-import Header from './container/Header';
+import MyNavbar from './container/MyNavbar';
 function App() {
 
   const [refreshUsers, setRefreshUsers] = useState(false);
@@ -14,13 +13,11 @@ function App() {
   };
 
   return (
-      <div className="App">
-        <Header />
-        <div style={{ paddingTop: '70px' }}>
-            <UserAdd onUserAdded={triggerUserRefresh} />
-            <UserList refreshTrigger={refreshUsers} />
-        </div>
-    </div>
+      <>
+        <MyNavbar />
+        <UserAdd onUserAdded={triggerUserRefresh} />
+        <UserList refreshTrigger={refreshUsers} />
+    </>
   );
 }
 

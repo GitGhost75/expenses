@@ -8,12 +8,15 @@ import { useTranslation } from 'react-i18next';
 export default function UserAdd({ onUserAdded }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState("");
+  const [validationErrors, setValidationErrors] = useState({});
+
   const { t } = useTranslation();
 
   const handleAdd = async (e) => {
     e.preventDefault();
-    setErrors({}); // Reset
+    setErrors("");
+    setValidationErrors({});
 
       const newUser = await addUser({ name, email });
 
@@ -26,10 +29,9 @@ export default function UserAdd({ onUserAdded }) {
 
           // Strukturierte Fehler auswerten
           if (errorBody.validationErrors) {
-            setErrors(errorBody.validationErrors);
+            setValidationErrors(errorBody.validationErrors);
           } else {
-
-            alert(`${t('error')}: ${errorBody.message}`);
+            setErrors(errorBody.message);
           }
       }
   };
@@ -38,19 +40,28 @@ export default function UserAdd({ onUserAdded }) {
   <div class="add-border">
   <h2>{t('add_user')}</h2>
     <div class="add-card">
+        <div>
             <Form.Control type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t('placeholder_name')}
             />
-            {errors.name && <span style={{ color: "red" }}>{errors.name}</span>}
+            {validationErrors.name && <span style={{ color: "red" }}>{validationErrors.name}</span>}
+        </div>
+        <div>
             <Form.Control type="email"
               placeholder={t('placeholder_email')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {errors.email && <span style={{ color: "red" }}>{errors.email}</span>}
+            {validationErrors.email && <span style={{ color: "red" }}>{validationErrors.email}</span>}
+        </div>
+        <div style={{valign:"top"}}>
             <Button variant="primary" onClick={handleAdd}>{t('add')}</Button>
+        </div>
+    </div>
+    <div>
+        {errors && <span style={{ color: "red" }}>{errors}</span>}
     </div>
    </div>
   );
