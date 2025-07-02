@@ -1,10 +1,7 @@
 package de.expenses.controller;
 
 import de.expenses.dto.UserDto;
-import de.expenses.model.User;
-import de.expenses.repository.UserRepository;
 import de.expenses.service.UserService;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/group/users")
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -29,12 +26,6 @@ public class UserController {
 	public ResponseEntity<List<UserDto>> getAllUsers() {
 		logger.info("get all users");
 		return ResponseEntity.ok(userService.getUsers());
-	}
-
-	@PostMapping
-	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
-		logger.info("create a new user");
-		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
 	@DeleteMapping("/{id}")

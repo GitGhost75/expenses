@@ -1,16 +1,32 @@
 package de.expenses.controller;
 
+import de.expenses.annotation.CurrentUser;
 import de.expenses.dto.GroupDto;
+import de.expenses.dto.UserDto;
 import de.expenses.service.GroupService;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
+@OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"),
+tags = {
+		@Tag(name = "create group", description = "Endpoints for creating a group"),
+		@Tag(name = "get groups", description = "Endpoints for getting groups in various ways"),
+		@Tag(name = "delete group", description = "Endpoints for deleting a group"),
+		@Tag(name = "create user", description = "Endpoints for creating a user"),
+		@Tag(name = "add member to group", description = "Endpoints for adding users to groups")
+})
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
@@ -23,28 +39,70 @@ public class GroupController {
 		this.groupService = groupService;
 	}
 
+	@Operation(
+			description = "Retrieve all groups of the current user.",
+			summary = "The summary",
+			tags = {"get groups"}
+	)
 	@GetMapping
-	public ResponseEntity<List<GroupDto>> getAllGroups() {
-		logger.info("get all groups");
-		return ResponseEntity.ok(groupService.getGroups());
+	public ResponseEntity<List<GroupDto>> getGroups(@CurrentUser @Parameter(hidden = true) String userId) {
+		logger.info("get all groups of user {}", userId);
+		return ResponseEntity.ok(groupService.getGroupsOfUser(userId));
 	}
 
+	@Operation(
+			description = "Retrieve the group with given id.",
+			summary = "The summary",
+			tags = {"get groups"}
+	)
 	@GetMapping("/{id}")
-	public ResponseEntity<GroupDto> getGroup(@PathVariable UUID id) {
+	public ResponseEntity<GroupDto> getGroup( @PathVariable UUID id) {
 		logger.info("get group with id {}", id);
 		return  ResponseEntity.ok(groupService.getGroup(id));
 	}
 
+	@Operation(
+			description = "Create a group",
+			summary = "The summary",
+			tags = {"create group"}
+	)
 	@PostMapping
 	public ResponseEntity<GroupDto> createGroup(@Valid @RequestBody GroupDto groupDto) {
 		logger.info("create a new group");
-		return ResponseEntity.ok(groupService.createGroup(groupDto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupDto));
 	}
 
+	@Operation(
+			description = "Delete a group",
+			summary = "The summary",
+			tags = {"delete group"}
+	)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
 		logger.info("delete group with id {}", id);
 		groupService.deleteGroup(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@Operation(
+			description = "Create a user and add to a group",
+			summary = "The summary",
+			tags = {"create user"}
+	)
+	@PostMapping("/{groupId}/members")
+	public ResponseEntity<GroupDto> createUser(@PathVariable UUID groupId, @Valid @RequestBody UserDto userDto) {
+		logger.info("create a new user");
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createMember(groupId, userDto));
+	}
+
+	@Operation(
+			description = "Add a user to a group",
+			summary = "The summary",
+			tags = {"add member to group"}
+	)
+	@PostMapping("/{groupId}/members/{userId}")
+	public ResponseEntity<GroupDto> addMember(@PathVariable UUID groupId, @PathVariable UUID userId) {
+		logger.info("add member to group");
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.addMember(groupId, userId));
 	}
 }

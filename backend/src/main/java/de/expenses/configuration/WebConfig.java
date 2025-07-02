@@ -22,6 +22,7 @@ public class WebConfig {
 				registry.addMapping("/**")
 				        .allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[0]))
 				        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+				        .allowCredentials(true)
 				        .allowedHeaders("*");
 			}
 		};

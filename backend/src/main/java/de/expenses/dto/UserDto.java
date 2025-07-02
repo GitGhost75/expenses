@@ -16,7 +16,4 @@ public class UserDto {
 	@NotBlank(message = "{user.name.notBlank}")
 	private String name;
 
-	@NotBlank(message = "{user.email.notBlank}")
-	@Email(message = "{user.email.invalid}")
-	private String email;
 }

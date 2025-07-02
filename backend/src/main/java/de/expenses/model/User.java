@@ -4,14 +4,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,12 +22,9 @@ public class User {
 	@JdbcTypeCode(SqlTypes.UUID)
 	private UUID id;
 
+	@Column(nullable = false)
 	private String name;
 
-	@Column(unique = true)
-	private String email;
-
-//	@ManyToOne
-//	@JoinColumn(name = "group_id")
-//	private Group group;
+	@ManyToMany(mappedBy = "members")
+	private List<Group> groups = new ArrayList<>();
 }
