@@ -1,23 +1,31 @@
-import React, { useEffect, useState } from "react";
-import { fetchUsers, addUser, deleteUser } from "./service/UserService";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import './App.css';
-import UserAdd from './container/UserAdd';
-import UserList from './container/UserList';
-import MyNavbar from './container/MyNavbar';
+import Home from './pages/Home';
+import CreateGroup from './pages/CreateGroup';
+import GroupPage from './pages/GroupPage';
+import Users from './pages/Users';
+import MyNavbar from './MyNavbar';
+import { RefreshContext } from './RefreshContext';
+
+
 function App() {
 
-  const [refreshUsers, setRefreshUsers] = useState(false);
-
-  const triggerUserRefresh = () => {
-    setRefreshUsers(prev => !prev); // Toggle zum Triggern
-  };
+  const [refreshTrigger, setRefreshTrigger] = React.useState(0);
 
   return (
-      <>
-        <MyNavbar />
-        <UserAdd onUserAdded={triggerUserRefresh} />
-        <UserList refreshTrigger={refreshUsers} />
-    </>
+      <Router>
+        <RefreshContext.Provider value={{refreshTrigger, setRefreshTrigger}}>
+            <MyNavbar />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/create-groups" element={<CreateGroup />}  />
+                <Route path="/groups/:groupCode" element={<GroupPage />} />
+                <Route path="/users" element={<Users />} />
+            </Routes>
+        </RefreshContext.Provider>
+    </Router>
   );
 }
 

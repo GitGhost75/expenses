@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { fetchUsers, addUser, deleteUser } from "../service/UserService";
-import "./UserAdd.css";
+import React, { useState } from "react";
+import { addUser } from "../../service/UserService";
+import "../../App.css";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 
 export default function UserAdd({ onUserAdded }) {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [errors, setErrors] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -18,16 +17,14 @@ export default function UserAdd({ onUserAdded }) {
     setErrors("");
     setValidationErrors({});
 
-      const newUser = await addUser({ name, email });
+      const newUser = await addUser({ name });
 
       if (newUser.ok) {
             setName("");
-            setEmail("");
             onUserAdded();
       } else {
             const errorBody = await newUser.json();
 
-          // Strukturierte Fehler auswerten
           if (errorBody.validationErrors) {
             setValidationErrors(errorBody.validationErrors);
           } else {
@@ -47,14 +44,6 @@ export default function UserAdd({ onUserAdded }) {
               placeholder={t('placeholder_name')}
             />
             {validationErrors.name && <span style={{ color: "red" }}>{validationErrors.name}</span>}
-        </div>
-        <div>
-            <Form.Control type="email"
-              placeholder={t('placeholder_email')}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {validationErrors.email && <span style={{ color: "red" }}>{validationErrors.email}</span>}
         </div>
         <div style={{valign:"top"}}>
             <Button variant="primary" onClick={handleAdd}>{t('add')}</Button>

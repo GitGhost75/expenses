@@ -1,11 +1,16 @@
 {
   "app_name": "Our Expenses",
-  "add_user": "User hinzufügen",
+  "add_user": "Mitglied hinzufügen",
   "list_user": "Liste der User",
   "delete": "Löschen",
   "add": "Hinzufügen",
   "placeholder_name": "Name",
   "placeholder_email": "name@example.com",
   "no_users_available": "Keine User gefunden",
-  "error": "Fehler"
+  "no_groups_available": "Keine Gruppen gefunden",
+  "error": "Fehler",
+  "nav_users": "Benutzer",
+  "nav_groups": "Gruppen",
+  "nav_create_groups" : "Gruppe erstellen",
+  "leave_group" : "Gruppe verlassen"
 }

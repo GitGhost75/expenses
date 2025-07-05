@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchUsers, deleteUser } from "../service/UserService";
-import "./UserList.css";
+import { deleteUser } from "../../service/UserService";
+import "../../App.css";
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -9,12 +9,12 @@ export default function UserList({ refreshTrigger }) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    loadUsers(); // initial und bei refreshTrigger-Änderung
+    loadUsers();
   }, [refreshTrigger]);
 
   async function loadUsers() {
-    const data = await fetchUsers();
-    setUsers(data);
+//    const data = await fetchUsers();
+//    setUsers(data);
   }
 
   async function handleDelete(userId) {
@@ -36,7 +36,6 @@ export default function UserList({ refreshTrigger }) {
           {users.map((user) => (
             <div key={user.id} className="user-card">
                 <strong>{user.name}</strong>
-                <small>{user.email}</small>
               <Button variant="primary" onClick={() => handleDelete(user.id)}>{t('delete')}</Button>
             </div>
           ))}

@@ -7,5 +7,10 @@
   "placeholder_name": "Name",
   "placeholder_email": "name@example.com",
   "no_users_available": "No users found",
-  "error": "Error"
+  "no_groups_available": "No groups found",
+  "error": "Error",
+  "nav_users": "Users",
+  "nav_groups": "Groups",
+  "nav_create_groups" : "Create group",
+  "leave_group" : "Leave group"
 }
