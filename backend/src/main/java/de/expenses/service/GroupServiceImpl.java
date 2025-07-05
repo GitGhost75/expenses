@@ -40,7 +40,14 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public GroupDto getGroup(UUID id) {
 		Group group = groupRepo.findById(id)
-		                       .orElseThrow(() -> new EntityNotFoundException("Group not found with id: " + id));
+		                       .orElseThrow(() -> new EntityNotFoundException("GroupCode not found with id: " + id));
+		return groupMapper.toGroupDto(group);
+	}
+
+	@Override
+	public GroupDto getGroup(UUID id, String code) {
+		Group group = groupRepo.findByIdAndCode(id, code)
+		                       .orElseThrow(() -> new EntityNotFoundException("GroupCode not found with id: " + id));
 		return groupMapper.toGroupDto(group);
 	}
 
@@ -58,7 +65,7 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public GroupDto createMember(UUID groupId, UserDto userDto) {
 		Group group = groupRepo.findById(groupId).orElseThrow(
-				() -> new EntityNotFoundException("Group " + groupId + " not found."));
+				() -> new EntityNotFoundException("GroupCode " + groupId + " not found."));
 
 		User user = userMapper.toUser(userDto);
 		group.addMember(user);
@@ -67,9 +74,23 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
+	public GroupDto addMember(GroupDto group, String memberName) {
+		Group groupToSave = groupRepo.findById(group.getId()).orElseThrow(
+				() -> new EntityNotFoundException("GroupCode " + group.getId() + " not found."));
+
+		User userToSave = new User();
+		userToSave.setName(memberName);
+		User savedUser = userRepo.save(userToSave);
+
+		groupToSave.addMember(savedUser);
+		Group savedGroup = groupRepo.save(groupToSave);
+		return groupMapper.toGroupDto(savedGroup);
+	}
+
+	@Override
 	public GroupDto addMember(UUID groupId, UUID userId) {
 		Group group = groupRepo.findById(groupId).orElseThrow(
-				() -> new EntityNotFoundException("Group " + groupId + " not found."));
+				() -> new EntityNotFoundException("GroupCode " + groupId + " not found."));
 		User user = userRepo.findById(userId).orElseThrow(
 				() -> new EntityNotFoundException("user not found"));
 
@@ -80,7 +101,33 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public List<GroupDto> getGroupsOfUser(String userId) {
+		if (userId == null || userId.isBlank() || userRepo.findById(UUID.fromString(userId)).isEmpty()) {
+			throw new EntityNotFoundException("User " + userId + " not available");
+		}
 		List<Group> groups = groupRepo.findByMembers_Id(UUID.fromString(userId));
 		return groupMapper.toGroupList(groups);
+	}
+
+
+	public GroupDto createNewGroup(String name) {
+		Group group = new Group();
+		group.setName(name);
+		group.setCode(generateGroupCode());
+		Group saved = groupRepo.save(group);
+		return groupMapper.toGroupDto(saved);
+	}
+
+	public boolean isCodeValid(UUID groupId, String submittedCode) {
+		return groupRepo.findById(groupId)
+		                      .map(g -> g.getCode().equals(submittedCode))
+		                      .orElse(false);
+	}
+
+	private String generateGroupCode() {
+		// 9-stelliger alphanumerischer Code, z. B. "X9F2D3"
+		return UUID.randomUUID().toString()
+		           .replace("-", "")
+		           .substring(0, 9)
+		           .toUpperCase();
 	}
 }

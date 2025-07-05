@@ -25,7 +25,7 @@ public class Expense {
 
 //	@ManyToOne
 //	@JoinColumn(name = "group_id")
-//	private Group group;
+//	private GroupCode group;
 
 //	@ManyToOne
 //	@JoinColumn(name = "paid_by")

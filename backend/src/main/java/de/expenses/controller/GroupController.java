@@ -1,6 +1,7 @@
 package de.expenses.controller;
 
-import de.expenses.annotation.CurrentUser;
+import de.expenses.annotation.GroupCode;
+import de.expenses.annotation.GroupId;
 import de.expenses.dto.GroupDto;
 import de.expenses.dto.UserDto;
 import de.expenses.service.GroupService;
@@ -8,6 +9,10 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -16,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"),
@@ -44,10 +48,14 @@ public class GroupController {
 			summary = "The summary",
 			tags = {"get groups"}
 	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Groups found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GroupDto.class))}),
+	})
 	@GetMapping
-	public ResponseEntity<List<GroupDto>> getGroups(@CurrentUser @Parameter(hidden = true) String userId) {
-		logger.info("get all groups of user {}", userId);
-		return ResponseEntity.ok(groupService.getGroupsOfUser(userId));
+	public ResponseEntity<GroupDto> getGroup(@GroupId String groupId,
+	                                               @GroupCode String groupCode) {
+		logger.info("get group with id {} and code {}", groupId, groupCode);
+		return ResponseEntity.ok(groupService.getGroup(UUID.fromString(groupId), groupCode));
 	}
 
 	@Operation(
@@ -71,6 +79,18 @@ public class GroupController {
 		logger.info("create a new group");
 		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupDto));
 	}
+
+	@Operation(
+			description = "Create a group",
+			summary = "The summary",
+			tags = {"create group"}
+	)
+	@PostMapping("/{name}")
+	public ResponseEntity<GroupDto> createGroup(@PathVariable String name) {
+		logger.info("create group");
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createNewGroup(name));
+	}
+
 
 	@Operation(
 			description = "Delete a group",
@@ -100,9 +120,10 @@ public class GroupController {
 			summary = "The summary",
 			tags = {"add member to group"}
 	)
-	@PostMapping("/{groupId}/members/{userId}")
-	public ResponseEntity<GroupDto> addMember(@PathVariable UUID groupId, @PathVariable UUID userId) {
+	@PostMapping("/members/{memberName}")
+	public ResponseEntity<GroupDto> addMember(@RequestBody GroupDto group, @PathVariable String memberName) {
 		logger.info("add member to group");
-		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.addMember(groupId, userId));
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.addMember(group, memberName));
 	}
+
 }

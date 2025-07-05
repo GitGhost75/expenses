@@ -13,6 +13,8 @@ public class GroupDto {
 
 	private UUID id;
 
+	private String code;
+
 	@NotBlank(message = "{group.name.notBlank}")
 	private String name;
 

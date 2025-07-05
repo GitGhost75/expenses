@@ -5,6 +5,6 @@ import java.lang.annotation.*;
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface CurrentUser {
+public @interface GroupId {
     boolean required() default true;
 }

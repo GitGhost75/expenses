@@ -26,6 +26,9 @@ public class Group {
 	@Column(unique = true)
 	private String name;
 
+	@Column(nullable = false, unique = true)
+	private String code;
+
 	@ManyToMany
 	@JoinTable(name = "group_members",
 			joinColumns = @JoinColumn(name = "group_id"),
