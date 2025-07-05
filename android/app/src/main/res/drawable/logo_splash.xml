@@ -6,7 +6,7 @@
             android:antialias="true"
             android:filter="true"
             android:gravity="center"
-            android:src="@drawable/expenses_logo_splash"
+            android:src="@mipmap/ic_launcher"
             android:tileMode="disabled" />
     </item>
 </layer-list>

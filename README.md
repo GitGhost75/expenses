@@ -35,3 +35,4 @@ table description: describe <<table>>;
 docker run -d --name expenses_db_local -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=expensesdb -p 3308:3306 mariadb:latest
 ## local db phpmyadmin
 docker run -d --name=expenses-db-admin -p=9000:80 -e PMA_HOST=host.docker.internal -e PMA_PORT=3308 phpmyadmin/phpmyadmin:latest
+
