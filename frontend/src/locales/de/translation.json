@@ -11,6 +11,6 @@
   "error": "Fehler",
   "nav_users": "Benutzer",
   "nav_groups": "Gruppen",
-  "nav_create_groups" : "Gruppe erstellen",
+  "nav_manage_groups" : "Gruppen verwalten",
   "leave_group" : "Gruppe verlassen"
 }

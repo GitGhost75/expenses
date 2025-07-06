@@ -6,5 +6,4 @@ public final class GroupConstants {
     }
 
     public static final String GROUP_CODE = "groupCode";
-    public static final String GROUP_ID = "groupId";
 }

@@ -25,6 +25,7 @@ public class User {
 	@Column(nullable = false)
 	private String name;
 
-	@ManyToMany(mappedBy = "members")
-	private List<Group> groups = new ArrayList<>();
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "group_code", nullable = false)
+	private Group group;
 }

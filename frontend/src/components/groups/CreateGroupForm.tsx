@@ -3,14 +3,13 @@ import { createGroup } from "../../service/GroupService";
 import "../../App.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-
 import { RefreshContext } from '../../RefreshContext';
 
-export default function GroupForm() {
+export default function CreateGroupForm() {
   const [name, setName] = useState("");
   const context = useContext(RefreshContext);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleCreateGroup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     if (!context) {
@@ -21,21 +20,23 @@ export default function GroupForm() {
     const response = await createGroup(name);
     console.log(`Gruppe erstellt: ${response.code}`);
 
+    setName("");
     setRefreshTrigger(prev => prev + 1);
   }
 
   return (
-        <div className="add-card">
-            <form onSubmit={handleSubmit}>
-              <Form.Control
-                type="text"
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="Gruppenname"
-                required
-              />
-              <Button variant="primary" type="submit">Gruppe erstellen</Button>
+            <form onSubmit={handleCreateGroup} className="w-100">
+                <div className="d-flex gap-2">
+                  <Form.Control
+                    type="text"
+                    value={name}
+                    onChange={e => setName(e.target.value)}
+                    placeholder="Gruppenname"
+                    required
+                    className="flex-grow-1"
+                  />
+                  <Button variant="primary" type="submit">Gruppe erstellen</Button>
+                </div>
             </form>
-        </div>
   );
 }

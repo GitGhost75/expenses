@@ -1,13 +1,11 @@
 package de.expenses.controller;
 
 import de.expenses.annotation.GroupCode;
-import de.expenses.annotation.GroupId;
 import de.expenses.dto.GroupDto;
 import de.expenses.dto.UserDto;
 import de.expenses.service.GroupService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"),
 tags = {
@@ -52,21 +48,9 @@ public class GroupController {
 			@ApiResponse(responseCode = "200", description = "Groups found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GroupDto.class))}),
 	})
 	@GetMapping
-	public ResponseEntity<GroupDto> getGroup(@GroupId String groupId,
-	                                               @GroupCode String groupCode) {
-		logger.info("get group with id {} and code {}", groupId, groupCode);
-		return ResponseEntity.ok(groupService.getGroup(UUID.fromString(groupId), groupCode));
-	}
-
-	@Operation(
-			description = "Retrieve the group with given id.",
-			summary = "The summary",
-			tags = {"get groups"}
-	)
-	@GetMapping("/{id}")
-	public ResponseEntity<GroupDto> getGroup( @PathVariable UUID id) {
-		logger.info("get group with id {}", id);
-		return  ResponseEntity.ok(groupService.getGroup(id));
+	public ResponseEntity<GroupDto> getGroup(@GroupCode String groupCode) {
+		logger.info("get group with and code {}", groupCode);
+		return ResponseEntity.ok(groupService.getGroup(groupCode));
 	}
 
 	@Operation(
@@ -78,6 +62,12 @@ public class GroupController {
 	public ResponseEntity<GroupDto> createGroup(@Valid @RequestBody GroupDto groupDto) {
 		logger.info("create a new group");
 		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupDto));
+	}
+
+	@PatchMapping
+	public ResponseEntity<GroupDto> patchGroup(@Valid @RequestBody GroupDto groupDto) {
+		logger.info("patch group");
+		return ResponseEntity.status(HttpStatus.OK).body(groupService.updateGroup(groupDto));
 	}
 
 	@Operation(
@@ -98,9 +88,9 @@ public class GroupController {
 			tags = {"delete group"}
 	)
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteGroup(@PathVariable UUID id) {
-		logger.info("delete group with id {}", id);
-		groupService.deleteGroup(id);
+	public ResponseEntity<Void> deleteGroup(@PathVariable String code) {
+		logger.info("delete group with id {}", code);
+		groupService.deleteGroup(code);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -110,9 +100,9 @@ public class GroupController {
 			tags = {"create user"}
 	)
 	@PostMapping("/{groupId}/members")
-	public ResponseEntity<GroupDto> createUser(@PathVariable UUID groupId, @Valid @RequestBody UserDto userDto) {
+	public ResponseEntity<GroupDto> createUser(@PathVariable String code, @Valid @RequestBody UserDto userDto) {
 		logger.info("create a new user");
-		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createMember(groupId, userDto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createMember(code, userDto));
 	}
 
 	@Operation(

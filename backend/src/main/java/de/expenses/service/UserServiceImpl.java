@@ -31,14 +31,9 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private GroupMapper groupMapper;
 
-	@Override
-	public List<UserDto> getUsers() {
-		return userRepo.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
-		               .map(user -> userMapper.toUserDto(user)).collect(Collectors.toList());
-	}
 
 	@Override
-	public void deleteUser(UUID id) {
-		userRepo.deleteById(id);
+	public void renameUser(UserDto user) {
+
 	}
 }

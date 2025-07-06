@@ -2,10 +2,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './App.css';
-import Home from './pages/Home';
-import CreateGroup from './pages/CreateGroup';
+import HomePage from './pages/HomePage';
+import ManageGroupsPage from './pages/ManageGroupsPage';
 import GroupPage from './pages/GroupPage';
-import Users from './pages/Users';
 import MyNavbar from './MyNavbar';
 import { RefreshContext } from './RefreshContext';
 
@@ -14,15 +13,19 @@ function App() {
 
   const [refreshTrigger, setRefreshTrigger] = React.useState(0);
 
+  const contextValue = React.useMemo(() => ({
+    refreshTrigger,
+    setRefreshTrigger,
+  }), [refreshTrigger]);
+
   return (
       <Router>
-        <RefreshContext.Provider value={{refreshTrigger, setRefreshTrigger}}>
+        <RefreshContext.Provider value={contextValue}>
             <MyNavbar />
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/create-groups" element={<CreateGroup />}  />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/manage-groups" element={<ManageGroupsPage />}  />
                 <Route path="/groups/:groupCode" element={<GroupPage />} />
-                <Route path="/users" element={<Users />} />
             </Routes>
         </RefreshContext.Provider>
     </Router>

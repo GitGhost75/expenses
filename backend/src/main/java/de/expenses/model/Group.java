@@ -18,34 +18,17 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Group {
 
-	@Id
-	@GeneratedValue
-	@JdbcTypeCode(SqlTypes.UUID)
-	private UUID id;
-
 	@Column(unique = true)
 	private String name;
 
+	@Id
 	@Column(nullable = false, unique = true)
 	private String code;
 
-	@ManyToMany
-	@JoinTable(name = "group_members",
-			joinColumns = @JoinColumn(name = "group_id"),
-			inverseJoinColumns = @JoinColumn(name = "user_id"))
-	private List<User> members;
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<User> members = new ArrayList<>();
 
 	public void addMember(User member) {
-		if (members == null) {
-			members = new ArrayList<>();
-		}
 		members.add(member);
 	}
-
-	public void removeMember(User member) {
-		if (members != null) {
-			members.remove(member);
-		}
-	}
-
 }

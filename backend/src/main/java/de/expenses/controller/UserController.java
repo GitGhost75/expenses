@@ -22,16 +22,4 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	@GetMapping
-	public ResponseEntity<List<UserDto>> getAllUsers() {
-		logger.info("get all users");
-		return ResponseEntity.ok(userService.getUsers());
-	}
-
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-		logger.info("delete user with id {}", id);
-		userService.deleteUser(id);
-		return ResponseEntity.noContent().build();
-	}
 }

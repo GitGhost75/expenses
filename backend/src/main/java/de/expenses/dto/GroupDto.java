@@ -11,8 +11,6 @@ import java.util.UUID;
 @Builder
 public class GroupDto {
 
-	private UUID id;
-
 	private String code;
 
 	@NotBlank(message = "{group.name.notBlank}")

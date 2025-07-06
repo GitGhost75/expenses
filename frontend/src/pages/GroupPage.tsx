@@ -1,20 +1,23 @@
-import { useParams } from 'react-router-dom';
-import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from "react";
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
 import "../App.css";
 import { useTranslation } from 'react-i18next';
 import {GroupDto} from '../types/GroupDto'
 import {UserDto} from '../types/UserDto';
-import {fetchGroupByCode, addMember} from '../service/GroupService';
-
+import {fetchGroupByCode, leaveGroup} from '../service/GroupService';
+import { RefreshContext } from '../RefreshContext';
+import RenameGroupForm from '../components/groups/RenameGroupForm'
+import GroupMembersForm from '../components/groups/GroupMembersForm'
 
 export default function GroupPage() {
 
-    const [name, setName] = useState("");
     const [group, setGroup] = useState<GroupDto>();
     const { groupCode } = useParams();
     const { t } = useTranslation();
+    const navigate = useNavigate();
+    const context = useContext(RefreshContext);
+    const refreshTrigger = context?.refreshTrigger;
 
       useEffect(() => {
           console.log("enter GroupPage");
@@ -28,66 +31,60 @@ export default function GroupPage() {
               setGroup(group);
           }
           loadGroup();
-      }, [groupCode]);
+      }, [groupCode, refreshTrigger]);
 
-    const handleAddMember = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        console.log(`add member ${name}`);
-
-        if(!group) {
-            console.error(`Group not available`);
-            return;
-        }
-        const savedGroup = await addMember(name, group);
-        setName("");
-        setGroup(savedGroup);
-    }
-
-
-    const leaveGroup = async(e: any) => {
+    const handleLeaveGroup = async(e: any) => {
         e.preventDefault();
         console.log(`leave group ${groupCode}`);
 
+        if (!groupCode) {
+            console.error(`No groupcode provided to leave group`);
+            return;
+        }
+        leaveGroup(groupCode);
+        navigate('/');
 
-        // user austragen
-
-        // localstorage updaten
+        if (!context) {
+          throw new Error("RefreshContext must be used within a RefreshContext.Provider");
+        }
+        const {setRefreshTrigger} = context;
+        setRefreshTrigger(prev => prev + 1);
 
 
     }
 
     return(
         <>
-            <div>Details zur Gruppe: {groupCode}</div>
-
-            <div>
-                <div>Liste der Mitglieder</div>
-                <div>
-                    {group && group.members.map((user: UserDto) => (
-                        <div key={user.id}>
+            <div className="add-border">
+                <div className="user-cards">
+                    {group && group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
+                        <div className="user-card" key={user.id}>
                             <strong>{user.name}</strong>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div>
-                <div>Mitglied hinzufügen</div>
-                <form onSubmit={handleAddMember}>
-                    <Form.Control type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder={t('placeholder_name')}
-                    />
-                    <div>
-                        <br/>
-                        <Button type="submit" variant="primary">{t('add_user')}</Button>
+            {group && (
+                <div className="add-border ">
+                    <div className="user-card">
+                        <GroupMembersForm group={group} />
                     </div>
-                </form>
-            </div>
-            <div>
-                <br/>
-                <Button variant="primary" onClick={leaveGroup}>{t('leave_group')}</Button>
+                </div>
+            )}
+
+            {groupCode && (
+                <div className="add-border ">
+                    <div className="user-card">
+                        <RenameGroupForm groupCode={groupCode} />
+                    </div>
+                </div>
+            )}
+
+            <div className="add-border">
+                <div className="user-card text-center">
+                    <Button className="delete-button"  variant="secondary" onClick={handleLeaveGroup}>{t('leave_group')}</Button>
+                </div>
             </div>
 
         </>

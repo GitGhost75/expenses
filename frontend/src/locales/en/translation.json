@@ -11,6 +11,6 @@
   "error": "Error",
   "nav_users": "Users",
   "nav_groups": "Groups",
-  "nav_create_groups" : "Create group",
+  "nav_manage_groups" : "Manage Groups",
   "leave_group" : "Leave group"
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.UUID;
 
 @Component
@@ -25,14 +26,11 @@ public class GroupCodeFilter extends OncePerRequestFilter {
 	                                FilterChain filterChain)
 			throws ServletException, IOException {
 
-		String groupId = request.getHeader("X-Group-Id");
 		String groupCode = request.getHeader("X-Group-Code");
 
-		if (groupId != null && groupCode != null && !groupService.isCodeValid(UUID.fromString(groupId), groupCode)) {
-			response.sendError(HttpStatus.FORBIDDEN.value(), "Invalid group code");
-			return;
+		if ( groupCode != null && !groupService.isCodeValid(groupCode)) {
+			throw new InvalidParameterException("Code " + groupCode + " is invalid");
 		}
-		request.setAttribute(GroupConstants.GROUP_ID, groupId);
 		request.setAttribute(GroupConstants.GROUP_CODE, groupCode);
 		filterChain.doFilter(request, response);
 	}

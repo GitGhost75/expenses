@@ -1,8 +1,5 @@
 package de.expenses.configuration;
 
-import de.expenses.annotation.CurrentUserArgumentResolver;
-import de.expenses.annotation.GroupCodeArgumentResolver;
-import de.expenses.annotation.GroupIdArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
