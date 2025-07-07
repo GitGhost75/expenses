@@ -1,13 +1,30 @@
 package de.expenses.service;
 
 import de.expenses.dto.UserDto;
+import de.expenses.mapper.GroupMapper;
+import de.expenses.mapper.UserMapper;
+import de.expenses.repository.GroupRepository;
+import de.expenses.repository.UserRepository;
+import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+@Service
+@Data
+public class UserService {
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-public interface UserService {
+	@Autowired
+	private UserRepository userRepo;
 
-	public void renameUser(UserDto user);
+	@Autowired
+	private UserMapper userMapper;
 
 
+
+	public void renameUser(UserDto user) {
+
+	}
 }

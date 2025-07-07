@@ -23,13 +23,9 @@ public class Expense {
 	@JdbcTypeCode(SqlTypes.UUID)
 	private UUID id;
 
-//	@ManyToOne
-//	@JoinColumn(name = "group_id")
-//	private GroupCode group;
-
-//	@ManyToOne
-//	@JoinColumn(name = "paid_by")
-//	private User paidBy;
+	@ManyToOne
+	@JoinColumn(name = "group_code")
+	private Group group;
 
 	private BigDecimal amount;
 

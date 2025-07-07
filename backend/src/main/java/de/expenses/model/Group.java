@@ -31,4 +31,11 @@ public class Group {
 	public void addMember(User member) {
 		members.add(member);
 	}
+
+	@OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Expense> expenses = new ArrayList<>();
+
+	public void addExpense(Expense expense) {
+		expenses.add(expense);
+	}
 }

@@ -19,14 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"),
-tags = {
-		@Tag(name = "create group", description = "Endpoints for creating a group"),
-		@Tag(name = "get groups", description = "Endpoints for getting groups in various ways"),
-		@Tag(name = "delete group", description = "Endpoints for deleting a group"),
-		@Tag(name = "create user", description = "Endpoints for creating a user"),
-		@Tag(name = "add member to group", description = "Endpoints for adding users to groups")
-})
+@OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"))
 @RestController
 @RequestMapping("/api/groups")
 public class GroupController {
@@ -41,8 +34,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Retrieve all groups of the current user.",
-			summary = "The summary",
-			tags = {"get groups"}
+			summary = "The summary"
 	)
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Groups found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GroupDto.class))}),
@@ -55,8 +47,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Create a group",
-			summary = "The summary",
-			tags = {"create group"}
+			summary = "The summary"
 	)
 	@PostMapping
 	public ResponseEntity<GroupDto> createGroup(@Valid @RequestBody GroupDto groupDto) {
@@ -72,8 +63,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Create a group",
-			summary = "The summary",
-			tags = {"create group"}
+			summary = "The summary"
 	)
 	@PostMapping("/{name}")
 	public ResponseEntity<GroupDto> createGroup(@PathVariable String name) {
@@ -84,8 +74,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Delete a group",
-			summary = "The summary",
-			tags = {"delete group"}
+			summary = "The summary"
 	)
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteGroup(@PathVariable String code) {
@@ -96,8 +85,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Create a user and add to a group",
-			summary = "The summary",
-			tags = {"create user"}
+			summary = "The summary"
 	)
 	@PostMapping("/{groupId}/members")
 	public ResponseEntity<GroupDto> createUser(@PathVariable String code, @Valid @RequestBody UserDto userDto) {
@@ -107,8 +95,7 @@ public class GroupController {
 
 	@Operation(
 			description = "Add a user to a group",
-			summary = "The summary",
-			tags = {"add member to group"}
+			summary = "The summary"
 	)
 	@PostMapping("/members/{memberName}")
 	public ResponseEntity<GroupDto> addMember(@RequestBody GroupDto group, @PathVariable String memberName) {

@@ -11,8 +11,6 @@ public interface UserMapper {
 
 	public UserDto toUserDto(User user);
 
-//	public User toUser(UserDto userDto);
-
 	@Mapping(source = "userDto.name", target = "name")
 	@Mapping(source = "groupDto", target = "group")
 	public User toUser(UserDto userDto, GroupDto groupDto);
