@@ -4,10 +4,12 @@ import "../../App.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { RefreshContext } from '../../RefreshContext';
+import { useTranslation } from 'react-i18next';
 
 export default function AssignToGroupForm() {
   const [code, setCode] = useState("");
   const context = useContext(RefreshContext);
+  const { t } = useTranslation();
 
   async function handleEnterGroup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -36,11 +38,11 @@ export default function AssignToGroupForm() {
                     type="text"
                     value={code}
                     onChange={e => setCode(e.target.value)}
-                    placeholder="Gruppencode"
+                    placeholder={t('placeholder_group_code')}
                     required
                     className="flex-grow-1"
                   />
-                  <Button variant="primary" type="submit">Gruppe beitreten</Button>
+                  <Button variant="primary" type="submit">{t('assign_group')}</Button>
                 </div>
             </form>
 

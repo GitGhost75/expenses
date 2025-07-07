@@ -4,23 +4,32 @@ import "../../App.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { RefreshContext } from '../../RefreshContext';
+import {GroupDto} from '../../types/GroupDto';
+import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 
 export default function CreateGroupForm() {
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const context = useContext(RefreshContext);
 
   async function handleCreateGroup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    setName("");
+    setError("");
 
     if (!context) {
       throw new Error("RefreshContext must be used within a RefreshContext.Provider");
     }
     const {setRefreshTrigger} = context;
 
-    const response = await createGroup(name);
-    console.log(`Gruppe erstellt: ${response.code}`);
+    const response : GroupDto | ApiErrorResponse = await createGroup(name);
 
-    setName("");
+    if ('error' in response) {
+        setError((response as ApiErrorResponse).message);
+        return;
+    }
+
     setRefreshTrigger(prev => prev + 1);
   }
 
@@ -37,6 +46,7 @@ export default function CreateGroupForm() {
                   />
                   <Button variant="primary" type="submit">Gruppe erstellen</Button>
                 </div>
+                {error && <span style={{ color: "red" }}>{error}</span>}
             </form>
   );
 }

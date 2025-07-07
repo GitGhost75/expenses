@@ -4,7 +4,11 @@ body {
 }
 
 .custom-navbar {
-  height: 80px; /* oder was du brauchst */
+  height: 80px;
+}
+
+.navbar>.container {
+    margin-right: 0;
 }
 
 .add-border {

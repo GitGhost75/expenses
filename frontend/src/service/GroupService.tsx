@@ -3,24 +3,25 @@ import { ApiErrorResponse } from "../types/ApiErrorResponse";
 
 const API_URL = process.env.REACT_APP_API_URL_GROUPS;
 
-export async function createGroup(name: string) {
+export async function createGroup(name: string) : Promise<GroupDto | ApiErrorResponse> {
   const response = await fetch(`${API_URL}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
   });
 
-    if (!response) {
-        console.error(`Group with name ${name} already exists`);
-        return;
+    if (!response.ok) {
+        const error = await response.json();
+        return error;
     }
+
+    const result: GroupDto = await response.json();
 
   const storedGroups = localStorage.getItem("groups");
   const groups = storedGroups ? JSON.parse(storedGroups) : [];
-  const newGroup = await response.json();
-  groups.push(newGroup);
+  groups.push(result);
   localStorage.setItem('groups', JSON.stringify(groups));
 
-  return newGroup;
+  return result;
 }
 
 export function leaveGroup(code: string) : GroupDto[] {
@@ -34,12 +35,6 @@ export function leaveGroup(code: string) : GroupDto[] {
 export async function fetchGroups() : Promise<GroupDto[]> {
     const storedGroups = localStorage.getItem("groups");
     const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-//
-//     const updatedGroups = await Promise.all(
-//         groups.map(group => fetchFromBackend(group))
-//     );
-
-//     localStorage.setItem('groups', JSON.stringify(updatedGroups));
     groups.sort((a,b)=>a.name.localeCompare(b.name));
     return groups;
 }
