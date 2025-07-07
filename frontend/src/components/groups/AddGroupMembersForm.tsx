@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { addMember } from "../../service/GroupService";
 import "../../App.css";
 import {Button, Form} from 'react-bootstrap';
@@ -7,12 +7,16 @@ import {GroupDto} from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 
-export default function GroupMembersForm({ group }: { group: GroupDto }) {
+export default function AddGroupMembersForm({ group }: { group: GroupDto }) {
   
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
+
+    useEffect(() => {
+        setError("");
+    }, []);
 
     const handleAddMember = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -43,7 +47,7 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
                   placeholder={t('placeholder_name')}
                   className="flex-grow-1"
                 />
-                <Button className="add-button" type="submit" variant="primary" >{t('add_user')}</Button>
+                <Button type="submit" variant="primary" >{t('add_user')}</Button>
             </div>
             {error && <span style={{ color: "red" }}>{error}</span>}
         </form>

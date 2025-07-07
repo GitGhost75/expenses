@@ -34,14 +34,14 @@ export function leaveGroup(code: string) : GroupDto[] {
 export async function fetchGroups() : Promise<GroupDto[]> {
     const storedGroups = localStorage.getItem("groups");
     const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
+//
+//     const updatedGroups = await Promise.all(
+//         groups.map(group => fetchFromBackend(group))
+//     );
 
-    const updatedGroups = await Promise.all(
-        groups.map(group => fetchFromBackend(group))
-    );
-
-    localStorage.setItem('groups', JSON.stringify(updatedGroups));
-    updatedGroups.sort((a,b)=>a.name.localeCompare(b.name));
-    return updatedGroups;
+//     localStorage.setItem('groups', JSON.stringify(updatedGroups));
+    groups.sort((a,b)=>a.name.localeCompare(b.name));
+    return groups;
 }
 
 async function fetchFromBackend(group: GroupDto) : Promise<GroupDto> {

@@ -18,10 +18,9 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
 
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>{t('info')}</Modal.Title>
+          <Modal.Title>{group.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <div>Name: {group.name}</div>
             <div>Code: {group.code}</div>
         </Modal.Body>
         <Modal.Footer>

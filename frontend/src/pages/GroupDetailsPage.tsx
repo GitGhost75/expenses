@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import React, { useEffect, useState, useContext } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import Button from 'react-bootstrap/Button';
 import "../App.css";
 import { useTranslation } from 'react-i18next';
@@ -8,10 +8,10 @@ import {UserDto} from '../types/UserDto';
 import {fetchGroupByCode, leaveGroup} from '../service/GroupService';
 import { RefreshContext } from '../RefreshContext';
 import RenameGroupForm from '../components/groups/RenameGroupForm'
-import GroupMembersForm from '../components/groups/GroupMembersForm'
+import AddGroupMembersForm from '../components/groups/AddGroupMembersForm'
 import GroupInfoForm from '../components/groups/GroupInfoForm'
 
-export default function GroupPage() {
+export default function GroupDetailsPage() {
 
     const [group, setGroup] = useState<GroupDto>();
     const { groupCode } = useParams();
@@ -19,43 +19,52 @@ export default function GroupPage() {
     const navigate = useNavigate();
     const context = useContext(RefreshContext);
     const refreshTrigger = context?.refreshTrigger;
+    const blockRefresh = useRef(false);
 
       useEffect(() => {
-          console.log("enter GroupPage");
           async function loadGroup() {
-              if (!groupCode) {
-                  console.error("ERROR");
+
+              if (blockRefresh.current) {
+                  blockRefresh.current = false; // Reset für zukünftige Änderungen
                   return;
+                }
+
+              if (groupCode) {
+                  console.log(`Load group: ${groupCode}`);
+                  const group = await fetchGroupByCode(groupCode);
+                  if (group) {
+                      setGroup(group);
+                  }
               }
-              console.log(`Load group: ${groupCode}`);
-              const group = await fetchGroupByCode(groupCode);
-              setGroup(group);
           }
           loadGroup();
       }, [groupCode, refreshTrigger]);
 
     const handleLeaveGroup = async(e: any) => {
         e.preventDefault();
-        console.log(`leave group ${groupCode}`);
 
-        if (!groupCode) {
-            console.error(`No groupcode provided to leave group`);
-            return;
+        if (groupCode) {
+            await leaveGroup(groupCode);
+            blockRefresh.current = true;
+
+            if (context) {
+                const {setRefreshTrigger} = context;
+                setRefreshTrigger(prev => prev + 1);
+            }
+            navigate('/');
         }
-        leaveGroup(groupCode);
-        navigate('/');
-
-        if (!context) {
-          throw new Error("RefreshContext must be used within a RefreshContext.Provider");
-        }
-        const {setRefreshTrigger} = context;
-        setRefreshTrigger(prev => prev + 1);
-
-
     }
 
     return(
         <>
+            {group && (
+                <div className="add-border">
+                    <div className="user-cards">
+                        {group.name}
+                    </div>
+                </div>
+            )}
+
             <div className="add-border">
                 <div className="user-cards">
                     {group && group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
@@ -69,7 +78,7 @@ export default function GroupPage() {
             {group && (
                 <div className="add-border ">
                     <div className="user-card">
-                        <GroupMembersForm group={group} />
+                        <AddGroupMembersForm group={group} />
                     </div>
                 </div>
             )}
@@ -92,7 +101,7 @@ export default function GroupPage() {
 
             <div className="add-border">
                 <div className="user-card text-center">
-                    <Button className="delete-button"  variant="secondary" onClick={handleLeaveGroup}>{t('leave_group')}</Button>
+                    <Button  variant="secondary" onClick={handleLeaveGroup}>{t('leave_group')}</Button>
                 </div>
             </div>
 

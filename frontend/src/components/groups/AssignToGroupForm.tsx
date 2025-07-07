@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { RefreshContext } from '../../RefreshContext';
 
-export default function EnterGroupForm() {
+export default function AssignToGroupForm() {
   const [code, setCode] = useState("");
   const context = useContext(RefreshContext);
 
@@ -24,6 +24,7 @@ export default function EnterGroupForm() {
         return;
     }
 
+    setCode("");
     console.log(`Gruppe ${code} beitreten`);
     setRefreshTrigger(prev => prev + 1);
   }
@@ -39,7 +40,7 @@ export default function EnterGroupForm() {
                     required
                     className="flex-grow-1"
                   />
-                  <Button className="add-button" variant="primary" type="submit">Gruppe beitreten</Button>
+                  <Button variant="primary" type="submit">Gruppe beitreten</Button>
                 </div>
             </form>
 

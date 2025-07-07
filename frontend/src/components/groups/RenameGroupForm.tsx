@@ -44,7 +44,7 @@ export default function RenameGroupForm({ groupCode }: { groupCode: string }) {
                     required
                     className="flex-grow-1"
                   />
-                  <Button className="add-button" variant="primary" type="submit">{t('rename_group')}</Button>
+                  <Button variant="primary" type="submit">{t('rename_group')}</Button>
                 </div>
                 {error && <span style={{ color: "red" }}>{error}</span>}
             </form>

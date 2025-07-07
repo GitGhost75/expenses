@@ -1,5 +1,6 @@
 {
   "app_name": "Our Expenses",
+  "app_author": "Alexander Kiemle",
   "add_user": "Mitglied hinzufügen",
   "list_user": "Liste der User",
   "delete": "Löschen",
@@ -12,6 +13,7 @@
   "nav_users": "Benutzer",
   "nav_groups": "Gruppen",
   "nav_manage_groups" : "Gruppen verwalten",
+  "nav_my_groups" : "Meine Gruppen",
   "leave_group" : "Gruppe verlassen",
   "rename_group" : "Gruppe umbenennen",
   "show_group_info": "Infos anzeigen",

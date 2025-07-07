@@ -7,16 +7,6 @@ body {
   height: 80px; /* oder was du brauchst */
 }
 
-.nav-link {
-  color: #fff !important;
-  text-decoration: none;
-}
-
-.nav-link.active {
-  color: #fff !important;
-  font-weight: bold;
-}
-
 .add-border {
   max-width: 600px;
   margin: 0 auto;
@@ -55,16 +45,6 @@ Button {
 .Button:hover {
   color: #a4161a;
 }
-
-.add-button {
-    color: #e63946;
-}
-
-.delete-button {
-  color: #e63946;
-}
-
-
 
 .user-list {
   max-width: 600px;
