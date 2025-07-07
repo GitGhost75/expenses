@@ -92,7 +92,6 @@ export async function renameGroup(code: string, name: string) : Promise<GroupDto
     if (!response.ok) {
         const error = await response.json();
         return error;
-//         throw new Error(`Fehler beim Laden der Gruppe ${error.error}`);
     }
 
     const result: GroupDto = await response.json();
@@ -138,7 +137,7 @@ export async function fetchGroup(name: string) : Promise<GroupDto> {
       return await fetchFromBackend(targetGroup);
 }
 
-export async function addMember(groupName: string, group: GroupDto) : Promise<GroupDto>{
+export async function addMember(groupName: string, group: GroupDto) : Promise<GroupDto | ApiErrorResponse> {
       const response = await fetch(`${API_URL}/members/${encodeURIComponent(groupName)}`, {
         method: "POST",
         credentials: "include",
@@ -147,6 +146,11 @@ export async function addMember(groupName: string, group: GroupDto) : Promise<Gr
         },
         body: JSON.stringify(group)
       });
+
+        if (!response.ok) {
+            const error = await response.json();
+            return error;
+        }
 
       return await response.json();
 }

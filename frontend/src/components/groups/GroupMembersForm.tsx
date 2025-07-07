@@ -1,38 +1,36 @@
 import React, { useState, useContext } from "react";
 import { addMember } from "../../service/GroupService";
 import "../../App.css";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import {Button, Form} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
-
 import {GroupDto} from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
+import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 
 export default function GroupMembersForm({ group }: { group: GroupDto }) {
   
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
 
     const handleAddMember = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(`add member ${name}`);
 
-        if(!group) {
-            console.error(`Group not available`);
-            return;
-        }
-
-        if(!name){
-            console.error(`Name is missing`);
-            return;
-        }
-        await addMember(name, group);
         setName("");
+        setError("");
 
-         if (context) {
-             const { setRefreshTrigger } = context;
-             setRefreshTrigger(prev => prev + 1);
+        if(group && name) {
+            const result : GroupDto | ApiErrorResponse = await addMember(name, group);
+            if ('error' in result) {
+                setError((result as ApiErrorResponse).message);
+                return;
+            }
+
+             if (context) {
+                 const { setRefreshTrigger } = context;
+                 setRefreshTrigger(prev => prev + 1);
+            }
         }
     }
 
@@ -47,6 +45,7 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
                 />
                 <Button className="add-button" type="submit" variant="primary" >{t('add_user')}</Button>
             </div>
+            {error && <span style={{ color: "red" }}>{error}</span>}
         </form>
 
   );

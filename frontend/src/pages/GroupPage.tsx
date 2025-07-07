@@ -9,6 +9,7 @@ import {fetchGroupByCode, leaveGroup} from '../service/GroupService';
 import { RefreshContext } from '../RefreshContext';
 import RenameGroupForm from '../components/groups/RenameGroupForm'
 import GroupMembersForm from '../components/groups/GroupMembersForm'
+import GroupInfoForm from '../components/groups/GroupInfoForm'
 
 export default function GroupPage() {
 
@@ -77,6 +78,14 @@ export default function GroupPage() {
                 <div className="add-border ">
                     <div className="user-card">
                         <RenameGroupForm groupCode={groupCode} />
+                    </div>
+                </div>
+            )}
+
+            {group && (
+                <div className="add-border ">
+                    <div className="user-card">
+                        <GroupInfoForm group={group} />
                     </div>
                 </div>
             )}

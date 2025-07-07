@@ -5,12 +5,17 @@
   "delete": "Löschen",
   "add": "Hinzufügen",
   "placeholder_name": "Name",
-  "placeholder_email": "name@example.com",
+  "placeholder_group_name": "Gruppenname",
   "no_users_available": "Keine User gefunden",
   "no_groups_available": "Keine Gruppen gefunden",
   "error": "Fehler",
   "nav_users": "Benutzer",
   "nav_groups": "Gruppen",
   "nav_manage_groups" : "Gruppen verwalten",
-  "leave_group" : "Gruppe verlassen"
+  "leave_group" : "Gruppe verlassen",
+  "rename_group" : "Gruppe umbenennen",
+  "show_group_info": "Infos anzeigen",
+  "group_info": "Gruppeninformationen",
+  "ok": "Ok",
+  "info": "Infos"
 }

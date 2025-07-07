@@ -1,5 +1,6 @@
 import CreateGroupForm from "../components/groups/CreateGroupForm";
 import EnterGroupForm from "../components/groups/EnterGroupForm";
+import GroupsOverviewForm from "../components/groups/GroupsOverviewForm";
 
 
 export default function ManageGroupsPage() {
@@ -14,6 +15,11 @@ export default function ManageGroupsPage() {
         <div className="add-border ">
             <div className="user-card">
                 <EnterGroupForm />
+            </div>
+        </div>
+        <div className="add-border ">
+            <div className="user-card">
+                <GroupsOverviewForm />
             </div>
         </div>
       </div>
