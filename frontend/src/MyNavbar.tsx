@@ -33,21 +33,38 @@ export default function MyNavbar() {
 
   return (
     <>
-        <Navbar style={{ backgroundColor:'#122025'}} >
+        <Navbar style={{ backgroundColor: '#122025' }} expand="lg">
           <Container>
-            <Navbar.Brand as={NavLink} to="/" style={{color:'#47C2BF'}}>
+            <div className="d-flex align-items-center mx-auto">
+              <Navbar.Brand as={NavLink} to="/" className="me-3" style={{ color: '#47C2BF' }}>
                 <img src="/logo.png" width="50px" alt="logo" />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                  <Nav className="me-auto">
-                      <Nav.Link style={{color:'#47C2BF'}} href="#" onClick={handleOpenModal}>{t('nav_my_groups')}</Nav.Link>
-                      <GroupsOverviewModal show={showModal} onClose={handleCloseModal} />
-                    <Nav.Link as={NavLink} style={{color:'#47C2BF'}} to="/manage-groups">{t('nav_manage_groups')}</Nav.Link>
-                  </Nav>
-            </Navbar.Collapse>
+              </Navbar.Brand>
+
+              <Nav className="d-flex flex-row align-items-center">
+                <Nav.Link
+                  style={{ color: '#47C2BF' }}
+                  href="#"
+                  onClick={handleOpenModal}
+                  className="mx-2"
+                >
+                  {t('nav_my_groups')}
+                </Nav.Link>
+
+                <GroupsOverviewModal show={showModal} onClose={handleCloseModal} />
+
+                <Nav.Link
+                  as={NavLink}
+                  to="/manage-groups"
+                  style={{ color: '#47C2BF' }}
+                  className="mx-2"
+                >
+                  {t('nav_manage_groups')}
+                </Nav.Link>
+              </Nav>
+            </div>
           </Container>
         </Navbar>
+
     </>
   );
 }

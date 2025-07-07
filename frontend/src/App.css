@@ -7,10 +7,6 @@ body {
   height: 80px;
 }
 
-.navbar>.container {
-    margin-right: 0;
-}
-
 .add-border {
   max-width: 600px;
   margin: 0 auto;
