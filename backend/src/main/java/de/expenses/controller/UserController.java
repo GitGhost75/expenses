@@ -7,11 +7,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.validation.annotation.Validated;
+
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
+@Validated
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -23,7 +28,7 @@ public class UserController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
 		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
@@ -38,7 +43,13 @@ public class UserController {
 	}
 
 	@PatchMapping
-	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto) {
 		return ResponseEntity.ok(userService.updateUser(userDto));
+	}
+
+	@DeleteMapping("/{userId}")
+	public ResponseEntity deleteUser(@PathVariable UUID userId) {
+		userService.deleteUser(userId);
+		return ResponseEntity.noContent().build();
 	}
 }

@@ -60,4 +60,8 @@ public class UserService {
 		User saved = userRepo.save(u);
 		return userMapper.toDto(saved);
 	}
+
+	public void deleteUser(UUID userId) {
+		userRepo.deleteById(userId);
+	}
 }

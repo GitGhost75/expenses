@@ -24,7 +24,7 @@ import java.util.List;
 
 @OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"))
 @RestController
-@RequestMapping("/api/expenses")
+@RequestMapping("/api/v1/expenses")
 public class ExpenseController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ExpenseController.class);

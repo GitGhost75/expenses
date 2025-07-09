@@ -44,19 +44,6 @@ public class GroupService {
 		groupRepo.deleteById(code);
 	}
 
-
-//	public GroupDto addMember(GroupDto group, String memberName) {
-//		Group groupToSave = groupRepo.findById(group.getCode()).orElseThrow(
-//				() -> new EntityNotFoundException("GroupCode " + group.getCode() + " not found."));
-//
-//		UserDto userDto = userService.createUser(memberName);
-//
-//		groupToSave.addMember(userMapper.toEntity(userDto));
-//
-//		return groupMapper.toGroupDto(groupToSave);
-//	}
-
-
 	public GroupDto createNewGroup(String name) {
 		Group group = new Group();
 		group.setName(name);
