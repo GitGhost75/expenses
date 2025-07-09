@@ -35,7 +35,7 @@ export function leaveGroup(code: string) : GroupDto[] {
 export async function fetchGroups() : Promise<GroupDto[]> {
     const storedGroups = localStorage.getItem("groups");
     const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-//     groups.sort((a,b)=>a.name.localeCompare(b.name));
+    groups.sort((a,b)=>a.name.localeCompare(b.name));
     return groups;
 }
 
@@ -68,14 +68,7 @@ export async function fetchGroupByCode(code: string) : Promise<GroupDto> {
       return await fetchFromBackend(targetGroup);
 }
 
-export async function renameGroup(code: string, name: string) : Promise<GroupDto | ApiErrorResponse> {
-    const group : GroupDto = await fetchGroupByCode(code);
-
-    if (!group) {
-        throw new Error(`Group with code ${code} not found.`);
-    }
-
-    group.name = name;
+export async function renameGroup(group: GroupDto) : Promise<GroupDto | ApiErrorResponse> {
 
     const response = await fetch(`${API_URL}`, {
           headers: {
@@ -85,15 +78,15 @@ export async function renameGroup(code: string, name: string) : Promise<GroupDto
           body: JSON.stringify(group)
     });
     if (!response.ok) {
-        const error = await response.json();
-        return error;
+        return await response.json();
     }
 
     const result: GroupDto = await response.json();
 
     const storedGroups = localStorage.getItem("groups");
     const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    const updatedGroups = groups.map(group => group.code === code) ? {...group, name: name} : group;
+
+    const updatedGroups = groups.map(g => g.code === group.code ? group : g);
 
     localStorage.setItem('groups', JSON.stringify(updatedGroups));
 

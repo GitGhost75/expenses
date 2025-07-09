@@ -11,6 +11,7 @@ import RenameGroupForm from '../components/groups/RenameGroupForm'
 import AddGroupMembersForm from '../components/groups/AddGroupMembersForm'
 import GroupInfoForm from '../components/groups/GroupInfoForm'
 import EditUserModal from '../components/users/EditUserModal'
+import AddUserModal from '../components/users/AddUserModal'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function GroupDetailsPage() {
@@ -57,47 +58,36 @@ export default function GroupDetailsPage() {
         }
     }
 
-    function handleEditMember(user:UserDto) {
-
-    }
 
     return(
         <>
             {group && (
-                <div className="card">{group.name}</div>
-            )}
-
-            {group && group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
-                <div className="user-card" key={user.id} >
-                    <div style={{width:'100%'}}>{user.name}</div>
-                    <EditUserModal user={user} />
-                    <Button  variant="outline-secondary"  onClick={handleLeaveGroup}>
-                        <i className="bi bi-person-x"></i>
-                    </Button>
-                </div>
-            ))}
-
-            {group && (
-                <div className="user-card">
-                    <AddGroupMembersForm group={group} />
-                </div>
-            )}
-
-            {groupCode && (
-                <div className="user-card">
-                    <RenameGroupForm groupCode={groupCode} />
-                </div>
-            )}
-
-            {group && (
-                <div className="button-container">
-                    <GroupInfoForm group={group} />
-                    <Button title={t('leave_group')} onClick={handleLeaveGroup}>
-                        <i className="bi bi-box-arrow-right"></i>
-                    </Button>
+                <div>
+                    <div className="card">{group.name}</div>
+                    {group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
+                        <div className="user-card" key={user.id} >
+                            <div style={{width:'100%'}}>{user.name}</div>
+                            <EditUserModal user={user} />
+                            <Button  variant="outline-secondary"  onClick={handleLeaveGroup}>
+                                <i className="bi bi-person-x"></i>
+                            </Button>
+                        </div>
+                    ))}
+                    <div className="user-card">
+                        <AddGroupMembersForm group={group} />
+                    </div>
+                    <div className="user-card">
+                        <RenameGroupForm group={group} />
+                    </div>
+                    <div className="button-container">
+                        <AddUserModal group={group} />
+                        <GroupInfoForm group={group} />
+                        <Button title={t('leave_group')} onClick={handleLeaveGroup}>
+                            <i className="bi bi-box-arrow-right"></i>
+                        </Button>
+                    </div>
                 </div>
             )}
-
         </>
         );
 }

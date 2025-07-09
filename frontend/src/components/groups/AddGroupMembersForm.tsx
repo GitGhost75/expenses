@@ -19,10 +19,6 @@ export default function AddGroupMembersForm({ group }: { group: GroupDto }) {
     useEffect(() => {
         setError("");
     }, []);
-
-//     const handleAddMember = async (e: React.FormEvent<HTMLFormElement>) => {
-//         e.preventDefault();
-
         async function handleAddMember() {
         setName("");
         setError("");

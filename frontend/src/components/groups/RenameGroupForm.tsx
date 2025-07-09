@@ -7,7 +7,7 @@ import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 import {GroupDto} from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 
-export default function RenameGroupForm({ groupCode }: { groupCode: string }) {
+export default function RenameGroupForm({ group }: { group: GroupDto }) {
   
   const [name, setName] = useState("");
   const [error, setError] = useState("");
@@ -16,11 +16,12 @@ export default function RenameGroupForm({ groupCode }: { groupCode: string }) {
 
   async function handleRenameGroup() {
 
-    setName("");
+    group.name = name;
     setError("");
+    setName("");
 
     if (context) {
-        const result : GroupDto | ApiErrorResponse = await renameGroup(groupCode, name);
+        const result : GroupDto | ApiErrorResponse = await renameGroup(group);
         if ('error' in result) {
             setError((result as ApiErrorResponse).message);
             return;
