@@ -1,18 +1,18 @@
+import "../../App.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext } from "react";
 import { assignToGroup } from "../../service/GroupService";
-import "../../App.css";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import {Button, Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import { useTranslation } from 'react-i18next';
 
 export default function AssignToGroupForm() {
   const [code, setCode] = useState("");
+  const [error, setError] = useState("");
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
 
-  async function handleEnterGroup(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleEnterGroup() {
 
     if (!context) {
       throw new Error("RefreshContext must be used within a RefreshContext.Provider");
@@ -32,19 +32,31 @@ export default function AssignToGroupForm() {
   }
 
   return (
-            <form onSubmit={handleEnterGroup} className="w-100">
-                <div className="d-flex gap-2">
+            <>
+                <div className="d-flex gap-2 w-100">
+                <InputGroup>
                   <Form.Control
                     type="text"
                     value={code}
                     onChange={e => setCode(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') handleEnterGroup();
+                    }}
                     placeholder={t('placeholder_group_code')}
-                    required
                     className="flex-grow-1"
                   />
-                  <Button variant="primary" type="submit">{t('assign_group')}</Button>
+                  <InputGroup.Text
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleEnterGroup}
+                      title="Gruppe beitreten"
+                      style={{ cursor: 'pointer' }}>
+                    <i className="bi bi-door-open"></i>
+                  </InputGroup.Text>
+                </InputGroup>
                 </div>
-            </form>
+                {error && <span style={{ color: "red" }}>{error}</span>}
+            </>
 
   );
 }

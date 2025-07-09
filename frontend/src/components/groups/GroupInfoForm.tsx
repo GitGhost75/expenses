@@ -14,7 +14,9 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
 
   return (
     <>
-      <Button onClick={() => setShow(true)}>{t('show_group_info')}</Button>
+      <Button title={t('show_group_info')} onClick={() => setShow(true)}>
+        <i className="bi bi-info-circle"></i>
+      </Button>
 
       <Modal show={show} onHide={() => setShow(false)}>
         <Modal.Header closeButton>
@@ -23,11 +25,6 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
         <Modal.Body>
             <div>Code: {group.code}</div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={() => setShow(false)}>
-            {t('ok')}
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

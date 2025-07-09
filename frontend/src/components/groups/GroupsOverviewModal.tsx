@@ -58,11 +58,6 @@ export default function GroupsOverviewModal({ show, onClose }: MyModalProps) {
                     )}
             </Modal.Body>
         )}
-        <Modal.Footer>
-          <Button variant="primary" onClick={onClose}>
-            {t('ok')}
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

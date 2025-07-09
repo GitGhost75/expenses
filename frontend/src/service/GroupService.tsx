@@ -35,7 +35,7 @@ export function leaveGroup(code: string) : GroupDto[] {
 export async function fetchGroups() : Promise<GroupDto[]> {
     const storedGroups = localStorage.getItem("groups");
     const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    groups.sort((a,b)=>a.name.localeCompare(b.name));
+//     groups.sort((a,b)=>a.name.localeCompare(b.name));
     return groups;
 }
 
@@ -90,6 +90,14 @@ export async function renameGroup(code: string, name: string) : Promise<GroupDto
     }
 
     const result: GroupDto = await response.json();
+
+    const storedGroups = localStorage.getItem("groups");
+    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
+    const updatedGroups = groups.map(group => group.code === code) ? {...group, name: name} : group;
+
+    localStorage.setItem('groups', JSON.stringify(updatedGroups));
+
+
     return result;
 }
 

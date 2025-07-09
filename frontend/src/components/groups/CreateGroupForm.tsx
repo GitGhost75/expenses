@@ -1,8 +1,8 @@
+import "../../App.css";
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext } from "react";
 import { createGroup } from "../../service/GroupService";
-import "../../App.css";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import {Button, Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import {GroupDto} from '../../types/GroupDto';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
@@ -12,8 +12,7 @@ export default function CreateGroupForm() {
   const [error, setError] = useState("");
   const context = useContext(RefreshContext);
 
-  async function handleCreateGroup(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleCreateGroup() {
 
     setName("");
     setError("");
@@ -34,19 +33,30 @@ export default function CreateGroupForm() {
   }
 
   return (
-            <form onSubmit={handleCreateGroup} className="w-100">
-                <div className="d-flex gap-2">
-                  <Form.Control
-                    type="text"
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="Gruppenname"
-                    required
-                    className="flex-grow-1"
-                  />
-                  <Button variant="primary" type="submit">Gruppe erstellen</Button>
+            <>
+                <div className="d-flex gap-2 w-100">
+                  <InputGroup>
+                      <Form.Control
+                        type="text"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') handleCreateGroup();
+                          }}
+                        placeholder="Gruppenname"
+                        className="flex-grow-1"
+                      />
+                    <InputGroup.Text
+                        role="button"
+                        tabIndex={0}
+                        onClick={handleCreateGroup}
+                        title="Gruppe erstellen"
+                        style={{ cursor: 'pointer' }}>
+                      <i className="bi bi-building-add"></i>
+                    </InputGroup.Text>
+                  </InputGroup>
                 </div>
                 {error && <span style={{ color: "red" }}>{error}</span>}
-            </form>
+            </>
   );
 }

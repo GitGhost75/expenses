@@ -1,8 +1,7 @@
 import React, { useState, useContext } from "react";
 import { renameGroup } from "../../service/GroupService";
 import "../../App.css";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import {Button, Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 import {GroupDto} from '../../types/GroupDto';
@@ -15,8 +14,7 @@ export default function RenameGroupForm({ groupCode }: { groupCode: string }) {
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
 
-  async function handleRenameGroup(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  async function handleRenameGroup() {
 
     setName("");
     setError("");
@@ -34,20 +32,31 @@ export default function RenameGroupForm({ groupCode }: { groupCode: string }) {
   }
 
   return (
-            <form onSubmit={handleRenameGroup} className="w-100">
-                <div className="d-flex gap-2">
+      <>
+            <div className="d-flex gap-2 w-100">
+                <InputGroup>
                   <Form.Control
                     type="text"
                     value={name}
                     onChange={e => setName(e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleRenameGroup();
+                    }}
                     placeholder={t('placeholder_group_name')}
-                    required
                     className="flex-grow-1"
                   />
-                  <Button variant="primary" type="submit">{t('rename_group')}</Button>
-                </div>
-                {error && <span style={{ color: "red" }}>{error}</span>}
-            </form>
+                  <InputGroup.Text
+                      role="button"
+                      tabIndex={0}
+                      onClick={handleRenameGroup}
+                      title={t('rename_group')}
+                      style={{ cursor: 'pointer' }}>
+                    <i className="bi bi-pencil"></i>
+                  </InputGroup.Text>
+                </InputGroup>
+            </div>
+            {error && <span style={{ color: "red" }}>{error}</span>}
+      </>
 
   );
 }

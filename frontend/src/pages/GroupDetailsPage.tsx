@@ -10,6 +10,8 @@ import { RefreshContext } from '../RefreshContext';
 import RenameGroupForm from '../components/groups/RenameGroupForm'
 import AddGroupMembersForm from '../components/groups/AddGroupMembersForm'
 import GroupInfoForm from '../components/groups/GroupInfoForm'
+import EditUserModal from '../components/users/EditUserModal'
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function GroupDetailsPage() {
 
@@ -55,55 +57,46 @@ export default function GroupDetailsPage() {
         }
     }
 
+    function handleEditMember(user:UserDto) {
+
+    }
+
     return(
         <>
             {group && (
-                <div className="add-border">
-                    <div className="user-cards">
-                        {group.name}
-                    </div>
-                </div>
+                <div className="card">{group.name}</div>
             )}
 
-            <div className="add-border">
-                <div className="user-cards">
-                    {group && group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
-                        <div className="user-card" key={user.id}>
-                            <strong>{user.name}</strong>
-                        </div>
-                    ))}
+            {group && group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
+                <div className="user-card" key={user.id} >
+                    <div style={{width:'100%'}}>{user.name}</div>
+                    <EditUserModal user={user} />
+                    <Button  variant="outline-secondary"  onClick={handleLeaveGroup}>
+                        <i className="bi bi-person-x"></i>
+                    </Button>
                 </div>
-            </div>
+            ))}
 
             {group && (
-                <div className="add-border ">
-                    <div className="user-card">
-                        <AddGroupMembersForm group={group} />
-                    </div>
+                <div className="user-card">
+                    <AddGroupMembersForm group={group} />
                 </div>
             )}
 
             {groupCode && (
-                <div className="add-border ">
-                    <div className="user-card">
-                        <RenameGroupForm groupCode={groupCode} />
-                    </div>
+                <div className="user-card">
+                    <RenameGroupForm groupCode={groupCode} />
                 </div>
             )}
 
             {group && (
-                <div className="add-border ">
-                    <div className="user-card">
-                        <GroupInfoForm group={group} />
-                    </div>
+                <div className="button-container">
+                    <GroupInfoForm group={group} />
+                    <Button title={t('leave_group')} onClick={handleLeaveGroup}>
+                        <i className="bi bi-box-arrow-right"></i>
+                    </Button>
                 </div>
             )}
-
-            <div className="add-border">
-                <div className="user-card text-center">
-                    <Button  variant="secondary" onClick={handleLeaveGroup}>{t('leave_group')}</Button>
-                </div>
-            </div>
 
         </>
         );

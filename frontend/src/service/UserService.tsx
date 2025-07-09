@@ -1,12 +1,7 @@
 import {UserDto} from '../types/UserDto';
+import {ApiErrorResponse} from '../types/ApiErrorResponse';
 const API_URL = process.env.REACT_APP_API_URL_USERS;
 
-
-export async function fetchUsers() {
-  const response = await fetch(`${API_URL}`);
-  if (!response.ok) throw new Error("Fehler beim Laden der Benutzer");
-  return response.json();
-}
 
 export async function deleteUser(userId: string) : Promise<UserDto>{
   const response = await fetch(`${API_URL}/${userId}`, {
@@ -18,11 +13,32 @@ export async function deleteUser(userId: string) : Promise<UserDto>{
   return await response.json();
 }
 
-export async function addUser(name: string) : Promise<UserDto>{
+export async function createUser(user: UserDto) : Promise<UserDto | ApiErrorResponse>{
   const response = await fetch(`${API_URL}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(name)
+    body: JSON.stringify(user)
   });
-return await response.json();
+
+    if (!response.ok) {
+        const error = await response.json();
+        return error;
+    }
+
+    return await response.json();
+}
+
+export async function updateUser(user: UserDto) : Promise<UserDto |ApiErrorResponse> {
+  const response = await fetch(`${API_URL}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(user)
+  });
+
+    if (!response.ok) {
+        const error = await response.json();
+        return error;
+    }
+
+    return await response.json();
 }

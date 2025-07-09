@@ -6,15 +6,11 @@ export default function ManageGroupsPage() {
 
   return (
       <div>
-        <div className="add-border ">
-            <div className="user-card">
-                <CreateGroupForm  />
-            </div>
+        <div className="user-card">
+            <CreateGroupForm  />
         </div>
-        <div className="add-border ">
-            <div className="user-card">
-                <AssignToGroupForm />
-            </div>
+        <div className="user-card">
+            <AssignToGroupForm />
         </div>
       </div>
   );
