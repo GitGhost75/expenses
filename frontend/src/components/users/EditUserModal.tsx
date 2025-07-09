@@ -13,7 +13,7 @@ export default function EditUserModal({user }: {user:UserDto}) {
 
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(user.name);
   const [error, setError] = useState("");
   const context = useContext(RefreshContext);
 

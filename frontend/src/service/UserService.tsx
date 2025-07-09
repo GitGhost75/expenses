@@ -3,14 +3,13 @@ import {ApiErrorResponse} from '../types/ApiErrorResponse';
 const API_URL = process.env.REACT_APP_API_URL_USERS;
 
 
-export async function deleteUser(userId: string) : Promise<UserDto>{
+export async function deleteUser(userId: string) {
   const response = await fetch(`${API_URL}/${userId}`, {
     method: "DELETE",
   });
   if (!response.ok) {
     throw new Error("Failed to delete user");
   }
-  return await response.json();
 }
 
 export async function createUser(user: UserDto) : Promise<UserDto | ApiErrorResponse>{

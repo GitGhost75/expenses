@@ -1,5 +1,6 @@
 import { GroupDto } from "../types/GroupDto";
 import { ApiErrorResponse } from "../types/ApiErrorResponse";
+import {loadLocalStorage, addToLocalStorage, findByNameInLocalStorage, findByCodeInLocalStorage, updateInLocalStorage, removeFromLocalStorage } from "./LocalStorageService";
 
 const API_URL = process.env.REACT_APP_API_URL_GROUPS;
 
@@ -16,27 +17,17 @@ export async function createGroup(name: string) : Promise<GroupDto | ApiErrorRes
 
     const result: GroupDto = await response.json();
 
-  const storedGroups = localStorage.getItem("groups");
-  const groups = storedGroups ? JSON.parse(storedGroups) : [];
-  groups.push(result);
-  localStorage.setItem('groups', JSON.stringify(groups));
+    addToLocalStorage(result);
 
   return result;
 }
 
 export function leaveGroup(code: string) : GroupDto[] {
-    const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    const updatedGroups : GroupDto[] = groups.filter(group => group.code !== code);
-    localStorage.setItem('groups', JSON.stringify(updatedGroups));
-    return updatedGroups;
+    return removeFromLocalStorage(code);
 }
 
 export async function fetchGroups() : Promise<GroupDto[]> {
-    const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    groups.sort((a,b)=>a.name.localeCompare(b.name));
-    return groups;
+    return loadLocalStorage();
 }
 
 async function fetchFromBackend(group: GroupDto) : Promise<GroupDto> {
@@ -57,11 +48,9 @@ async function fetchFromBackend(group: GroupDto) : Promise<GroupDto> {
 
 export async function fetchGroupByCode(code: string) : Promise<GroupDto> {
 
-    const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    const targetGroup = groups.find(group => group.code === code);
+    const targetGroup = findByCodeInLocalStorage(code);
 
-    if (!targetGroup) {
+    if (targetGroup === undefined) {
       throw new Error(`Gruppe mit dem code ${code} nicht gefunden`);
     }
 
@@ -83,50 +72,34 @@ export async function renameGroup(group: GroupDto) : Promise<GroupDto | ApiError
 
     const result: GroupDto = await response.json();
 
-    const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-
-    const updatedGroups = groups.map(g => g.code === group.code ? group : g);
-
-    localStorage.setItem('groups', JSON.stringify(updatedGroups));
-
+    updateInLocalStorage(group);
 
     return result;
 }
 
 export async function assignToGroup(code: string) : Promise<GroupDto> {
-        const storedGroups = localStorage.getItem("groups");
-        const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-        const targetGroup = groups.find(group => group.code === code);
-        if (targetGroup) {
-            // already assigned
-            return targetGroup;
-        }
-        // check backend for group
-        const response = await fetch(`${API_URL}`, {
-                    headers: {
-                      "Content-Type": "application/json",
-                      "X-Group-Code": code || ""
-                    },
-                    credentials: "include"
-                });
-        if (!response.ok) {
-            throw new Error(`Fehler beim Laden der Gruppe ${code}`);
-        }
+    // check backend for group
+    const response = await fetch(`${API_URL}`, {
+                headers: {
+                  "Content-Type": "application/json",
+                  "X-Group-Code": code || ""
+                },
+                credentials: "include"
+            });
+    if (!response.ok) {
+        throw new Error(`Fehler beim Laden der Gruppe ${code}`);
+    }
 
-        const result: GroupDto = await response.json();
-        groups.push(result);
-        localStorage.setItem('groups', JSON.stringify(groups));
-        return result;
+    const result: GroupDto = await response.json();
+    addToLocalStorage(result);
+    return result;
 }
 
 export async function fetchGroup(name: string) : Promise<GroupDto> {
 
-    const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    const targetGroup = groups.find(group => group.name === name);
+    const targetGroup = findByNameInLocalStorage(name);
 
-    if (!targetGroup) {
+    if (targetGroup === undefined) {
       throw new Error(`Gruppe mit dem Namen ${name} nicht gefunden`);
     }
 
