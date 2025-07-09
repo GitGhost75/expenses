@@ -6,12 +6,15 @@ import de.expenses.model.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 
-	public UserDto toUserDto(User user);
+	@Mapping(source = "group.code", target = "groupCode")
+	public UserDto toDto(User user);
 
-	@Mapping(source = "userDto.name", target = "name")
-	@Mapping(source = "groupDto", target = "group")
-	public User toUser(UserDto userDto, GroupDto groupDto);
+	public User toEntity(UserDto userDto);
+
+	List<UserDto> toDtoList(List<User> members);
 }

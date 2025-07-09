@@ -8,9 +8,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-@OpenAPIDefinition(
-		info = @Info(title = "Expenses API", version = "0.2.0", description = "Verwalte Gruppen-Ausgaben")
-)
 @SpringBootApplication
 @EnableConfigurationProperties({CorsProperties.class, ServerProperties.class})
 public class ExpensesApp {

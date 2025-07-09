@@ -5,6 +5,7 @@ import de.expenses.dto.GroupDto;
 import de.expenses.model.Expense;
 import de.expenses.model.Group;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ public interface ExpenseMapper {
 
 	public List<ExpenseDto> toDtoList(List<Expense> entities);
 
+	@Mapping(source = "group.code", target = "groupCode")
 	public ExpenseDto toDto(Expense entity);
 
 	public Expense toEntity(ExpenseDto dto);

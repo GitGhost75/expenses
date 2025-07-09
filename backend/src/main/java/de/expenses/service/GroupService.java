@@ -1,13 +1,10 @@
 package de.expenses.service;
 
 import de.expenses.dto.GroupDto;
-import de.expenses.dto.UserDto;
 import de.expenses.mapper.GroupMapper;
 import de.expenses.mapper.UserMapper;
 import de.expenses.model.Group;
-import de.expenses.model.User;
 import de.expenses.repository.GroupRepository;
-import de.expenses.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -15,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -27,7 +23,7 @@ public class GroupService {
 	private GroupRepository groupRepo;
 
 	@Autowired
-	private UserRepository userRepo;
+	private UserService userService;
 
 	@Autowired
 	private GroupMapper groupMapper;
@@ -36,10 +32,11 @@ public class GroupService {
 	private UserMapper userMapper;
 
 
+
 	public GroupDto getGroup(String code) {
 		Group group = groupRepo.findById(code)
 		                       .orElseThrow(() -> new EntityNotFoundException("GroupCode not found with id: " + code));
-		return groupMapper.toGroupDto(group);
+		return groupMapper.toDto(group);
 	}
 
 
@@ -48,61 +45,16 @@ public class GroupService {
 	}
 
 
-	public GroupDto createGroup(GroupDto groupDto) {
-		try {
-			Group savedGroup = groupRepo.save(groupMapper.toGroup(groupDto));
-			return groupMapper.toGroupDto(savedGroup);
-		} catch (Exception e) {
-			throw new IllegalArgumentException("failed", e);
-		}
-	}
-
-
-	public GroupDto createMember(String code, UserDto userDto) {
-		Group group = groupRepo.findById(code).orElseThrow(
-				() -> new EntityNotFoundException("GroupCode " + code + " not found."));
-
-		User user = userMapper.toUser(userDto, groupMapper.toGroupDto(group));
-		userRepo.save(user);
-		group.addMember(user);
-		return groupMapper.toGroupDto(group);
-	}
-
-
-	public GroupDto addMember(GroupDto group, String memberName) {
-		Group groupToSave = groupRepo.findById(group.getCode()).orElseThrow(
-				() -> new EntityNotFoundException("GroupCode " + group.getCode() + " not found."));
-
-		User userToSave = new User();
-		userToSave.setName(memberName);
-		userToSave.setGroup(groupToSave);
-		User savedUser = userRepo.save(userToSave);
-
-		groupToSave.addMember(savedUser);
-		return groupMapper.toGroupDto(groupToSave);
-	}
-
-
-	public GroupDto addMember(String code, UUID userId) {
-		Group group = groupRepo.findById(code).orElseThrow(
-				() -> new EntityNotFoundException("GroupCode " + code + " not found."));
-		User user = userRepo.findById(userId).orElseThrow(
-				() -> new EntityNotFoundException("user not found"));
-
-		user.setGroup(group);
-		userRepo.save(user);
-		group.addMember(user);
-		return groupMapper.toGroupDto(group);
-	}
-
-
-	public List<GroupDto> getGroupsOfUser(String userId) {
-		if (userId == null || userId.isBlank() || userRepo.findById(UUID.fromString(userId)).isEmpty()) {
-			throw new EntityNotFoundException("User " + userId + " not available");
-		}
-		List<Group> groups = groupRepo.findByMembers_Id(UUID.fromString(userId));
-		return groupMapper.toGroupList(groups);
-	}
+//	public GroupDto addMember(GroupDto group, String memberName) {
+//		Group groupToSave = groupRepo.findById(group.getCode()).orElseThrow(
+//				() -> new EntityNotFoundException("GroupCode " + group.getCode() + " not found."));
+//
+//		UserDto userDto = userService.createUser(memberName);
+//
+//		groupToSave.addMember(userMapper.toEntity(userDto));
+//
+//		return groupMapper.toGroupDto(groupToSave);
+//	}
 
 
 	public GroupDto createNewGroup(String name) {
@@ -110,7 +62,7 @@ public class GroupService {
 		group.setName(name);
 		group.setCode(generateGroupCode());
 		Group saved = groupRepo.save(group);
-		return groupMapper.toGroupDto(saved);
+		return groupMapper.toDto(saved);
 	}
 
 	public boolean isCodeValid(String code) {
@@ -122,12 +74,12 @@ public class GroupService {
 		groupRepo.findById(dto.getCode()).orElseThrow(
 				() -> new EntityNotFoundException("GroupCode " + dto.getCode() + " not found."));
 
-		Group toSave = groupMapper.toGroup(dto);
+		Group toSave = groupMapper.toEntity(dto);
 		toSave.getMembers().forEach(member -> member.setGroup(toSave));
 
 		Group savedGroup = groupRepo.save(toSave);
 
-		return groupMapper.toGroupDto(savedGroup);
+		return groupMapper.toDto(savedGroup);
 	}
 
 	private String generateGroupCode() {

@@ -1,12 +1,17 @@
 package de.expenses.controller;
 
+import de.expenses.dto.UserDto;
 import de.expenses.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/api/group/users")
+@RequestMapping("/api/users")
 public class UserController {
 
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -17,4 +22,23 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	@PostMapping
+	public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+		return ResponseEntity.ok(userService.createUser(userDto));
+	}
+
+	@GetMapping("/{userId}")
+	public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
+		return ResponseEntity.ok(userService.getUser(userId));
+	}
+
+	@GetMapping("/group/{groupCode}")
+	public ResponseEntity<List<UserDto>> getMembers(@PathVariable String groupCode) {
+		return ResponseEntity.ok(userService.getGroupMembers(groupCode));
+	}
+
+	@PatchMapping
+	public ResponseEntity<UserDto> updateUser(@RequestBody UserDto userDto) {
+		return ResponseEntity.ok(userService.updateUser(userDto));
+	}
 }

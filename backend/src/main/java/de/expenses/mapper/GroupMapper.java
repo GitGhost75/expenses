@@ -9,9 +9,9 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = UserMapper.class)
 public interface GroupMapper {
 
-	public List<GroupDto> toGroupList(List<Group> groupList);
+	public List<GroupDto> toDtoList(List<Group> groupList);
 
-	public GroupDto toGroupDto(Group group);
+	public GroupDto toDto(Group group);
 
-	public Group toGroup(GroupDto groupDto);
+	public Group toEntity(GroupDto groupDto);
 }

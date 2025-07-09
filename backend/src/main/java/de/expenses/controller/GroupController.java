@@ -4,8 +4,10 @@ import de.expenses.annotation.GroupCode;
 import de.expenses.dto.GroupDto;
 import de.expenses.dto.UserDto;
 import de.expenses.service.GroupService;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -28,32 +30,47 @@ public class GroupController {
 
 	private final GroupService groupService;
 
+
 	public GroupController(GroupService groupService) {
 		this.groupService = groupService;
 	}
 
 	@Operation(
-			description = "Retrieve all groups of the current user.",
+			description = "Retrieve group with code",
 			summary = "The summary"
 	)
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Groups found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GroupDto.class))}),
 	})
 	@GetMapping
-	public ResponseEntity<GroupDto> getGroup(@GroupCode String groupCode) {
-		logger.info("get group with and code {}", groupCode);
+	public ResponseEntity<GroupDto> getGroup(@GroupCode @Parameter(hidden = true) String groupCode) {
+		logger.info("get group with code {}", groupCode);
 		return ResponseEntity.ok(groupService.getGroup(groupCode));
 	}
 
 	@Operation(
-			description = "Create a group",
+			description = "Retrieve group with code",
 			summary = "The summary"
 	)
-	@PostMapping
-	public ResponseEntity<GroupDto> createGroup(@Valid @RequestBody GroupDto groupDto) {
-		logger.info("create a new group");
-		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupDto));
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Groups found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = GroupDto.class))}),
+	})
+	@GetMapping("/{groupCode}")
+	public ResponseEntity<GroupDto> getGroupWithCode(@PathVariable String groupCode) {
+		logger.info("get group with code {}", groupCode);
+		return ResponseEntity.ok(groupService.getGroup(groupCode));
 	}
+
+//
+//	@Operation(
+//			description = "Create a group",
+//			summary = "The summary"
+//	)
+//	@PostMapping
+//	public ResponseEntity<GroupDto> createGroup(@Valid @RequestBody GroupDto groupDto) {
+//		logger.info("create a new group");
+//		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createGroup(groupDto));
+//	}
 
 	@PatchMapping
 	public ResponseEntity<GroupDto> patchGroup(@Valid @RequestBody GroupDto groupDto) {
@@ -76,31 +93,31 @@ public class GroupController {
 			description = "Delete a group",
 			summary = "The summary"
 	)
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteGroup(@PathVariable String code) {
-		logger.info("delete group with id {}", code);
-		groupService.deleteGroup(code);
+	@DeleteMapping("/{groupCode}")
+	public ResponseEntity<Void> deleteGroup(@PathVariable String groupCode) {
+		logger.info("delete group with id {}", groupCode);
+		groupService.deleteGroup(groupCode);
 		return ResponseEntity.noContent().build();
 	}
 
-	@Operation(
-			description = "Create a user and add to a group",
-			summary = "The summary"
-	)
-	@PostMapping("/{groupId}/members")
-	public ResponseEntity<GroupDto> createUser(@PathVariable String code, @Valid @RequestBody UserDto userDto) {
-		logger.info("create a new user");
-		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createMember(code, userDto));
-	}
+//	@Operation(
+//			description = "Create a user and add to a group",
+//			summary = "The summary"
+//	)
+//	@PostMapping("/{groupId}/members")
+//	public ResponseEntity<GroupDto> createUser(@PathVariable String code, @Valid @RequestBody UserDto userDto) {
+//		logger.info("create a new user");
+//		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.createMember(code, userDto));
+//	}
 
-	@Operation(
-			description = "Add a user to a group",
-			summary = "The summary"
-	)
-	@PostMapping("/members/{memberName}")
-	public ResponseEntity<GroupDto> addMember(@RequestBody GroupDto group, @PathVariable String memberName) {
-		logger.info("add member to group");
-		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.addMember(group, memberName));
-	}
+//	@Operation(
+//			description = "Add a user to a group",
+//			summary = "The summary"
+//	)
+//	@PostMapping("/members/{memberName}")
+//	public ResponseEntity<GroupDto> addMember(@RequestBody GroupDto group, @PathVariable String memberName) {
+//		logger.info("add member to group");
+//		return ResponseEntity.status(HttpStatus.CREATED).body(groupService.addMember(group, memberName));
+//	}
 
 }

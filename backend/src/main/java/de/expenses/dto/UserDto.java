@@ -4,6 +4,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -19,5 +20,8 @@ public class UserDto {
 
 	@NotBlank(message = "{user.name.notBlank}")
 	private String name;
+
+	@NotNull
+	private String groupCode;
 
 }

@@ -52,10 +52,10 @@ public class ExpenseController {
 			description = "Create an expense",
 			summary = "The summary"
 	)
-	@PostMapping("/{groupCode}")
-	public ResponseEntity<ExpenseDto> createExpense(@PathVariable String groupCode, @RequestBody ExpenseDto dto) {
+	@PostMapping
+	public ResponseEntity<ExpenseDto> createExpense(@RequestBody ExpenseDto dto) {
 		logger.info("create expense");
-		return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.createExpense(groupCode, dto));
+		return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.createExpense(dto));
 	}
 
 }

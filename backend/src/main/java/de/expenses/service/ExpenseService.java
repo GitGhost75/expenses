@@ -34,13 +34,12 @@ public class ExpenseService {
 		return expenseMapper.toDtoList(expenses);
 	}
 
-	public ExpenseDto createExpense(String groupCode, ExpenseDto dto) {
+	public ExpenseDto createExpense(ExpenseDto dto) {
 
-		Group g = groupRepo.findById(groupCode).orElseThrow(
+		Group g = groupRepo.findById(dto.getGroupCode()).orElseThrow(
 				() -> new EntityNotFoundException("Group not found"));
 		Expense ex = expenseMapper.toEntity(dto);
 		ex.setGroup(g);
-		g.addExpense(ex);
 		Expense savedExpense = expenseRepo.save(ex);
 
 		return expenseMapper.toDto(savedExpense);
