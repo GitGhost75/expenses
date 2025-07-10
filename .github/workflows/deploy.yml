@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Setup Node.js for frontend
+      # -- FRONTEND BUILD --
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -25,7 +25,7 @@ jobs:
           npm run build
         working-directory: ./frontend
 
-      # Setup Java for backend
+      # -- BACKEND BUILD --
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
@@ -36,23 +36,27 @@ jobs:
         run: mvn clean package -DskipTests
         working-directory: ./backend
 
-      # Test server availability
-      - name: Test DNS resolution
-        run: nslookup ${{ secrets.SERVER_HOST }}
-  
-      # Copy all files to server via SCP
-      - name: Copy project to server
+      # -- PREPARE DEPLOY DIR --
+      - name: Prepare deploy folder
+        run: |
+          mkdir deploy
+          cp -r docker-compose.yml deploy/
+          cp -r backend/target/*.jar deploy/backend.jar
+          cp -r frontend/build deploy/frontend
+        # optional: cp .env deploy/.env etc.
+
+      # -- DEPLOY TO SERVER --
+      - name: Copy deploy to server
         uses: appleboy/scp-action@v0.1.7
         with:
-          debug: true
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "."              # send everything including Dockerfiles, compose, builds
+          source: "deploy/*"
           target: "/home/github/app"
+          debug: true
 
-      # Connect via SSH and deploy using docker-compose
       - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -62,5 +66,4 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /home/github/app
-            docker-compose pull
             docker-compose up -d --build
