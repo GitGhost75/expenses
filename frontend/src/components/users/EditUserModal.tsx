@@ -1,17 +1,14 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import React, { useState, useContext, useEffect } from "react";
-import { Modal, Nav, Button, Form, InputGroup } from 'react-bootstrap';
-import { useNavigate, NavLink } from 'react-router-dom';
+import React, { useState, useContext } from "react";
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 import {UserDto} from '../../types/UserDto';
 import { updateUser } from "../../service/UserService";
-import { useTranslation } from 'react-i18next';
 import { RefreshContext } from '../../RefreshContext';
 
 export default function EditUserModal({user }: {user:UserDto}) {
 
-  const { t } = useTranslation();
   const [show, setShow] = useState(false);
   const [name, setName] = useState(user.name);
   const [error, setError] = useState("");

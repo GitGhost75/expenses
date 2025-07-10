@@ -1,18 +1,16 @@
 import React, { useState, useContext } from "react";
 import { renameGroup } from "../../service/GroupService";
 import "../../App.css";
-import {Button, Form, InputGroup} from 'react-bootstrap';
+import {Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 import {GroupDto} from '../../types/GroupDto';
-import { useTranslation } from 'react-i18next';
 
 export default function RenameGroupForm({ group }: { group: GroupDto }) {
   
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const context = useContext(RefreshContext);
-  const { t } = useTranslation();
 
   async function handleRenameGroup() {
 

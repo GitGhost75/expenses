@@ -2,7 +2,7 @@ import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext } from "react";
 import { createGroup } from "../../service/GroupService";
-import {Button, Form, InputGroup} from 'react-bootstrap';
+import {Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import {GroupDto} from '../../types/GroupDto';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';

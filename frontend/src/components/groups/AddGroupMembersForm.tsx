@@ -1,8 +1,7 @@
 import "../../App.css";
 import React, { useState, useContext, useEffect } from "react";
-import { addMember } from "../../service/GroupService";
 import { createUser } from "../../service/UserService";
-import {Button, Form, InputGroup} from 'react-bootstrap';
+import {Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import {GroupDto} from '../../types/GroupDto';
 import {UserDto} from '../../types/UserDto';

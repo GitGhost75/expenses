@@ -1,8 +1,7 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext, useEffect } from "react";
-import { Modal, Nav, Button, Form, InputGroup } from 'react-bootstrap';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import {ApiErrorResponse} from '../../types/ApiErrorResponse';
 import {UserDto} from '../../types/UserDto';
 import {GroupDto} from '../../types/GroupDto';

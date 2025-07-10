@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-
 import "../../App.css";
-import { Modal, Button } from 'react-bootstrap';
-
+import { Button, Modal } from 'react-bootstrap';
 import {GroupDto} from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 import {fetchGroups} from '../../service/GroupService';

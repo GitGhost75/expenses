@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../App.css";
-import { Modal, Nav, Button } from 'react-bootstrap';
+import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
 import {GroupDto} from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';

@@ -2,13 +2,12 @@ import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext } from "react";
 import { assignToGroup } from "../../service/GroupService";
-import {Button, Form, InputGroup} from 'react-bootstrap';
+import {Form, InputGroup} from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import { useTranslation } from 'react-i18next';
 
 export default function AssignToGroupForm() {
   const [code, setCode] = useState("");
-  const [error, setError] = useState("");
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
 
