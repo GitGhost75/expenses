@@ -7,6 +7,7 @@ import { RefreshContext } from '../../RefreshContext';
 import { useTranslation } from 'react-i18next';
 
 export default function AssignToGroupForm() {
+  const [error, setError] = useState("");
   const [code, setCode] = useState("");
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
@@ -21,7 +22,7 @@ export default function AssignToGroupForm() {
     const group = await assignToGroup(code);
 
     if(!group) {
-        console.error(`Group with code ${code} does not exist`);
+        setError(`Group with code ${code} does not exist`);
         return;
     }
 
