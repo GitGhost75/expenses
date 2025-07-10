@@ -47,7 +47,6 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           source: "."              # send everything including Dockerfiles, compose, builds
           target: "/home/github/app"
-          debug: true
 
       # Connect via SSH and deploy using docker-compose
       - name: Deploy over SSH
