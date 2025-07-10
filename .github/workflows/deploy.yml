@@ -1,4 +1,4 @@
-name: Build and Deploy Fullstack App
+name: Deploy to Server
 
 on:
   push:
@@ -6,42 +6,50 @@ on:
       - develop
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build frontend
-        working-directory: ./frontend
-        run: |
-          npm install --legacy-peer-deps
-          npm run build
+      # Setup Node.js for frontend
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
-      - name: Package backend
-        working-directory: ./backend
+      - name: Build frontend
+        run: |
+          npm install
+          npm run build
+        working-directory: ./frontend
+
+      # Setup Java for backend
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
-      - run: mvn clean package -DskipTests
+
+      - name: Build backend with Maven
+        run: mvn clean package -DskipTests
         working-directory: ./backend
 
-      - name: Upload app files to server
+      # Copy all files to server via SCP
+      - name: Copy project to server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
-          source: |
-            backend/
-            frontend/build/
-            docker-compose.yml
-          target: /home/github/app
+          source: "."              # send everything including Dockerfiles, compose, builds
+          target: "/home/github/app"
+          debug: true
 
-      - name: Deploy via SSH
+      # Connect via SSH and deploy using docker-compose
+      - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -50,6 +58,5 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             cd /home/github/app
-            docker-compose down
-            docker-compose build
-            docker-compose up -d
+            docker-compose pull
+            docker-compose up -d --build
