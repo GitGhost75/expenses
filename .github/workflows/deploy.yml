@@ -65,5 +65,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
-            cd /home/github/app
+            cd /home/github/app/deploy
             docker-compose up -d --build
