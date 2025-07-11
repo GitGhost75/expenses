@@ -48,7 +48,7 @@ android {
         }
         create("prod") {
             dimension = "env"
-            buildConfigField("String", "WEBVIEW_URL", "\"https://our-expenses.duckdns.org\"")
+            buildConfigField("String", "WEBVIEW_URL", "\"https://expenses.alexander-kiemle.de\"")
         }
     }
 
@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.ui.desktop)
+//    implementation(libs.androidx.ui.desktop)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
