@@ -17,11 +17,11 @@ spring:
 
 cors:
   allowed-origins:
-    - https://our-expenses.duckdns.org
+    - https://expenses.alexander-kiemle.de
 
 servers:
   allowed-servers:
-    - https://our-expenses.duckdns.org
+    - https://expenses.alexander-kiemle.de
     -
 springdoc:
   swagger-ui:
