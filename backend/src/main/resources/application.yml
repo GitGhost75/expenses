@@ -16,13 +16,11 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
 cors:
-  allowed-origins:
-    - https://expenses.alexander-kiemle.de
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://expenses.alexander-kiemle.de}
 
 servers:
-  allowed-servers:
-    - https://expenses.alexander-kiemle.de
-    -
+  allowed-servers: ${ALLOWED_SERVERS:https://expenses.alexander-kiemle.de}
+
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
