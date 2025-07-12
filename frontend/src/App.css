@@ -55,7 +55,7 @@ body {
 
 @media(max-width: 600px) {
     .user-card {
-        flex-direction: column;
+        /*flex-direction: column;*/
     }
 }
 
