@@ -1,5 +1,5 @@
 1. DB Daten auslagern
-2. github Aktions für build und deployment
+2. github Aktions für build und deployment => DONE
 3. Splashscreen mit Logo aus ChatGPT => DONE
 4. Android files ins Projekt in unterordner legen und pushen => DONE
 5. Group Endpunkte implementieren => DONE
@@ -7,3 +7,4 @@
 7. FE für Group => DONE
 8. Liquibase hinzufügen => DONE
 9. Expenses FE + BE
+10. URLs auslagern. Keine Umgebungsabhängige Konfig im Deployment

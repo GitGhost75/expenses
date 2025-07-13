@@ -2,7 +2,7 @@ import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext } from "react";
 import { assignToGroup } from "../../service/GroupService";
-import {Form, InputGroup} from 'react-bootstrap';
+import { Form, InputGroup } from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
 import { useTranslation } from 'react-i18next';
 
@@ -17,13 +17,13 @@ export default function AssignToGroupForm() {
     if (!context) {
       throw new Error("RefreshContext must be used within a RefreshContext.Provider");
     }
-    const {setRefreshTrigger} = context;
+    const { setRefreshTrigger } = context;
 
     const group = await assignToGroup(code);
 
-    if(!group) {
-        setError(`Group with code ${code} does not exist`);
-        return;
+    if (!group) {
+      setError(`Group with code ${code} does not exist`);
+      return;
     }
 
     setCode("");
@@ -32,31 +32,31 @@ export default function AssignToGroupForm() {
   }
 
   return (
-            <>
-                <div className="d-flex gap-2 w-100">
-                <InputGroup>
-                  <Form.Control
-                    type="text"
-                    value={code}
-                    onChange={e => setCode(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') handleEnterGroup();
-                    }}
-                    placeholder={t('placeholder_group_code')}
-                    className="flex-grow-1"
-                  />
-                  <InputGroup.Text
-                      role="button"
-                      tabIndex={0}
-                      onClick={handleEnterGroup}
-                      title="Gruppe beitreten"
-                      style={{ cursor: 'pointer' }}>
-                    <i className="bi bi-door-open"></i>
-                  </InputGroup.Text>
-                </InputGroup>
-                </div>
-                {error && <span style={{ color: "red" }}>{error}</span>}
-            </>
+    <>
+      <div className="d-flex gap-2 w-100">
+        <InputGroup>
+          <Form.Control
+            type="text"
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleEnterGroup();
+            }}
+            placeholder={t('placeholder_group_code')}
+            className="flex-grow-1"
+          />
+          <InputGroup.Text
+            role="button"
+            tabIndex={0}
+            onClick={handleEnterGroup}
+            title="Gruppe beitreten"
+            style={{ cursor: 'pointer' }}>
+            <i className="bi bi-door-open"></i>
+          </InputGroup.Text>
+        </InputGroup>
+      </div>
+      {error && <span style={{ color: "red" }}>{error}</span>}
+    </>
 
   );
 }

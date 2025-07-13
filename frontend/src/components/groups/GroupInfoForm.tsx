@@ -4,11 +4,11 @@ import "../../App.css";
 import { Modal, Button } from 'react-bootstrap';
 
 
-import {GroupDto} from '../../types/GroupDto';
+import { GroupDto } from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 
 export default function GroupMembersForm({ group }: { group: GroupDto }) {
-  
+
   const { t } = useTranslation();
   const [show, setShow] = useState(false);
 
@@ -23,7 +23,7 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
           <Modal.Title>{group.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-            <div>Code: {group.code}</div>
+          <div>Code: {group.code}</div>
         </Modal.Body>
       </Modal>
     </>

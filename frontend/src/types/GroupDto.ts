@@ -1,4 +1,4 @@
-import {UserDto} from './UserDto';
+import { UserDto } from './UserDto';
 
 export type GroupDto = {
   code: string;

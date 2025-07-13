@@ -1,5 +1,5 @@
-    export type UserDto = {
-      id: string;
-      name: string;
-      groupCode: string;
-    };
+export type UserDto = {
+  id: string;
+  name: string;
+  groupCode: string;
+};

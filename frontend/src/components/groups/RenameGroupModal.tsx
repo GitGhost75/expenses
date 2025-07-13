@@ -1,14 +1,14 @@
 import React, { useState, useContext } from "react";
 import { renameGroup } from "../../service/GroupService";
 import "../../App.css";
-import {Modal, Button, Form, InputGroup} from 'react-bootstrap';
+import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
-import {ApiErrorResponse} from '../../types/ApiErrorResponse';
-import {GroupDto} from '../../types/GroupDto';
+import { ApiErrorResponse } from '../../types/ApiErrorResponse';
+import { GroupDto } from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 
 export default function RenameGroupForm({ group }: { group: GroupDto }) {
-  
+
   const [name, setName] = useState(group.name);
   const [error, setError] = useState("");
   const [show, setShow] = useState(false);
@@ -21,52 +21,52 @@ export default function RenameGroupForm({ group }: { group: GroupDto }) {
     setError("");
 
     if (context) {
-        const result : GroupDto | ApiErrorResponse = await renameGroup(group);
-        if ('error' in result) {
-            setError((result as ApiErrorResponse).message);
-            return;
-        }
+      const result: GroupDto | ApiErrorResponse = await renameGroup(group);
+      if ('error' in result) {
+        setError((result as ApiErrorResponse).message);
+        return;
+      }
 
-        const {setRefreshTrigger} = context;
-        setRefreshTrigger(prev => prev + 1);
+      const { setRefreshTrigger } = context;
+      setRefreshTrigger(prev => prev + 1);
     }
   }
 
   return (
     <>
-    <Button title="Gruppe umbenennen" onClick={() => setShow(true)}>
+      <Button title="Gruppe umbenennen" onClick={() => setShow(true)}>
         <i className="bi bi-pencil"></i>
-    </Button>
-    {
-    group && (
-      <Modal show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>edit group</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-            <div className="d-flex gap-2 w-100">
+      </Button>
+      {
+        group && (
+          <Modal show={show} onHide={() => setShow(false)}>
+            <Modal.Header closeButton>
+              <Modal.Title>edit group</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className="d-flex gap-2 w-100">
                 <InputGroup>
                   <Form.Control
                     type="text"
                     value={name}
                     onChange={e => setName(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleRenameGroup();
+                      if (e.key === 'Enter') handleRenameGroup();
                     }}
                     placeholder={t('placeholder_group_name')}
                     className="flex-grow-1"
                   />
                   <InputGroup.Text
-                      role="button"
-                      tabIndex={0}
-                      onClick={handleRenameGroup}
-                      title={t('rename_group')}
-                      style={{ cursor: 'pointer' }}>
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleRenameGroup}
+                    title={t('rename_group')}
+                    style={{ cursor: 'pointer' }}>
                     <i className="bi bi-pencil"></i>
                   </InputGroup.Text>
                 </InputGroup>
-            </div>
-            {error && <span style={{ color: "red" }}>{error}</span>}
+              </div>
+              {error && <span style={{ color: "red" }}>{error}</span>}
             </Modal.Body>
           </Modal>
         )}
