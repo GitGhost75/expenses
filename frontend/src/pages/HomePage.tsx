@@ -20,7 +20,7 @@ function HomePage() {
             setGroups(groups);
 
             if (groups.length === 1) {
-                navigate(`/groups/${groups}`);
+                navigate(`/groups/${groups[0].code}`);
             }
         }
         loadGroups();
