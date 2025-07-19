@@ -1,6 +1,6 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 import { UserDto } from '../../types/UserDto';
@@ -16,6 +16,13 @@ export default function AddUserModal({ group }: { group: GroupDto }) {
   const [show, setShow] = useState(false);
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (show && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [show]);
 
   useEffect(() => {
     setError("");
@@ -42,6 +49,8 @@ export default function AddUserModal({ group }: { group: GroupDto }) {
         const { setRefreshTrigger } = context;
         setRefreshTrigger(prev => prev + 1);
       }
+
+      setShow(false);
     }
   }
 
@@ -61,6 +70,7 @@ export default function AddUserModal({ group }: { group: GroupDto }) {
                 <InputGroup>
                   <Form.Control
                     type="text"
+                    ref={inputRef}
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     onKeyDown={(e) => {

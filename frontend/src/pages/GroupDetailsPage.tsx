@@ -6,6 +6,7 @@ import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from '../types/GroupDto'
 import { UserDto } from '../types/UserDto';
+import { ApiErrorResponse } from '../types/ApiErrorResponse';
 import { fetchGroupByCode, leaveGroup } from '../service/GroupService';
 import { deleteUser } from '../service/UserService';
 import { RefreshContext } from '../RefreshContext';
@@ -34,10 +35,13 @@ export default function GroupDetailsPage() {
 
             if (groupCode) {
                 console.log(`Load group: ${groupCode}`);
-                const group = await fetchGroupByCode(groupCode);
-                if (group) {
-                    setGroup(group);
+                const result = await fetchGroupByCode(groupCode);
+                if ('error' in result) {
+                    // setError((result as ApiErrorResponse).message);
+                    return;
                 }
+                setGroup(result);
+
             }
         }
         loadGroup();
@@ -73,7 +77,7 @@ export default function GroupDetailsPage() {
             {group && (
                 <div>
                     <div className="card">{group.name}</div>
-                    
+
                     {group.members.length > 0 ? (
                         group.members
                             .sort((a, b) => a.name.localeCompare(b.name))

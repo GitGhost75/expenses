@@ -19,9 +19,9 @@ function HomePage() {
             const groups = await fetchGroups();
             setGroups(groups);
 
-            if (groups.length === 1) {
-                navigate(`/groups/${groups[0].code}`);
-            }
+            // if (groups.length === 1) {
+            //     navigate(`/groups/${groups[0].code}`);
+            // }
         }
         loadGroups();
     }, []);
@@ -37,7 +37,7 @@ function HomePage() {
                     <h2>{t('start')}</h2>
                 </div>
             </div>
-            {groups.length > 1 ? (
+            {groups.length > 0 ? (
                 <>
                     <div>
                         {groups.map((group, index) => (
@@ -50,7 +50,9 @@ function HomePage() {
                     </div>
                 </>
             ) : (
-                <h2>{t('no_groups_found')}</h2>
+                <div className="card">
+                    {t('no_groups_found')}
+                </div>
             )}
             <div>
                 <div className="card">

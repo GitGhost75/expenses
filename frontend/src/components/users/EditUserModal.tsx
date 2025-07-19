@@ -1,6 +1,6 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 import { UserDto } from '../../types/UserDto';
@@ -13,6 +13,13 @@ export default function EditUserModal({ user }: { user: UserDto }) {
   const [name, setName] = useState(user.name);
   const [error, setError] = useState("");
   const context = useContext(RefreshContext);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (show && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [show]);
 
   async function handleRename() {
 
@@ -28,6 +35,7 @@ export default function EditUserModal({ user }: { user: UserDto }) {
       const { setRefreshTrigger } = context;
       setRefreshTrigger(prev => prev + 1);
     }
+    setShow(false);
   }
 
   return (
@@ -46,6 +54,7 @@ export default function EditUserModal({ user }: { user: UserDto }) {
                 <InputGroup>
                   <Form.Control
                     type="text"
+                    ref={inputRef}
                     value={name}
                     onChange={e => setName(e.target.value)}
                     onKeyDown={(e) => {

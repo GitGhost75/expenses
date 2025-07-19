@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { renameGroup } from "../../service/GroupService";
 import "../../App.css";
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
@@ -14,6 +14,13 @@ export default function RenameGroupForm({ group }: { group: GroupDto }) {
   const [show, setShow] = useState(false);
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (show && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [show]);
 
   async function handleRenameGroup() {
 
@@ -29,6 +36,7 @@ export default function RenameGroupForm({ group }: { group: GroupDto }) {
 
       const { setRefreshTrigger } = context;
       setRefreshTrigger(prev => prev + 1);
+      setShow(false);
     }
   }
 
@@ -47,6 +55,7 @@ export default function RenameGroupForm({ group }: { group: GroupDto }) {
               <div className="d-flex gap-2 w-100">
                 <InputGroup>
                   <Form.Control
+                    ref={inputRef}
                     type="text"
                     value={name}
                     onChange={e => setName(e.target.value)}

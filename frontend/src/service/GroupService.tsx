@@ -45,15 +45,34 @@ async function fetchFromBackend(group: GroupDto): Promise<GroupDto> {
   return result;
 }
 
-export async function fetchGroupByCode(code: string): Promise<GroupDto> {
-
-  const targetGroup = findByCodeInLocalStorage(code);
-
-  if (targetGroup === undefined) {
-    throw new Error(`Gruppe mit dem code ${code} nicht gefunden`);
+async function fetchFromBackendByCode(code: string): Promise<GroupDto | ApiErrorResponse> {
+  const response = await fetch(`${API_URL}`, {
+    headers: {
+      "Content-Type": "application/json",
+      "X-Group-Code": code || ""
+    },
+    credentials: "include",
+  });
+  if (!response.ok) {
+    console.error(`Fehler beim Laden der Gruppe ${code}`);
+    return await response.json();
   }
 
-  return await fetchFromBackend(targetGroup);
+  const result: GroupDto = await response.json();
+  return result;
+}
+export async function fetchGroupByCode(code: string): Promise<GroupDto | ApiErrorResponse> {
+
+  const result = await fetchFromBackendByCode(code);
+  if ('error' in result) {
+    return result as ApiErrorResponse;
+  }
+  let localGroup = findByCodeInLocalStorage(code);
+
+  if (localGroup === undefined) {
+    addToLocalStorage(result);
+  }
+  return result;
 }
 
 export async function renameGroup(group: GroupDto): Promise<GroupDto | ApiErrorResponse> {
@@ -93,6 +112,8 @@ export async function assignToGroup(code: string): Promise<GroupDto | ApiErrorRe
   }
 
   const result: GroupDto = await response.json();
+
+  addToLocalStorage(result);
   return result;
 }
 

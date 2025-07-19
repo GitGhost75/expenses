@@ -24,5 +24,6 @@
   "info": "Infos",
   "start": "Los geht´s!",
   "start_info": "Möchtest du eine neue Gruppe erstellen oder einer bestehenden Gruppe beitreten?",
-  "no_users_in_group": "Es wurden noch keine Mitglieder zu dieser Gruppe hinzugefügt."
+  "no_users_in_group": "Eswurden noch keine Mitglieder zu dieser Gruppe hinzugefügt.",
+  "no_groups_found" : "Es wurden noch keine Gruppen angelegt"
 }
