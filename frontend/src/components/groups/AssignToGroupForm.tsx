@@ -7,6 +7,15 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 
+
+function maskAndFormat(code: string) {
+  // Ersetze alle Zeichen durch • und gruppiere nach 3 Zeichen
+  return code
+    // .replace(/./g, "•")
+    .replace(/(.{3})/g, "$1 ")
+    .trim();
+}
+
 export default function AssignToGroupForm() {
   const [error, setError] = useState("");
   const [code, setCode] = useState("");
@@ -14,7 +23,6 @@ export default function AssignToGroupForm() {
   const navigate = useNavigate();
 
   async function handleEnterGroup() {
-
     const group = await assignToGroup(code);
 
     if ('error' in group) {
@@ -33,20 +41,28 @@ export default function AssignToGroupForm() {
         <InputGroup>
           <Form.Control
             type="text"
-            value={code}
-            onChange={e => setCode(e.target.value)}
+            value={maskAndFormat(code)}
+            onChange={e => {
+              // Nur echte Zeichen speichern, keine Bullets oder Leerzeichen
+              const raw = e.target.value.replace(/[^A-Za-z0-9]/g, "");
+              setCode(raw);
+            }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleEnterGroup();
             }}
             placeholder={t('placeholder_group_code')}
             className="flex-grow-1"
+            autoComplete="off"
+            inputMode="text"
+            maxLength={9}
           />
           <InputGroup.Text
             role="button"
             tabIndex={0}
             onClick={handleEnterGroup}
             title="Gruppe beitreten"
-            style={{ cursor: 'pointer' }}>
+            style={{ cursor: 'pointer' }}
+            >
             <i className="bi bi-door-open"></i>
           </InputGroup.Text>
         </InputGroup>

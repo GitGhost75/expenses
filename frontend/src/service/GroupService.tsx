@@ -113,7 +113,10 @@ export async function assignToGroup(code: string): Promise<GroupDto | ApiErrorRe
 
   const result: GroupDto = await response.json();
 
-  addToLocalStorage(result);
+  const localGroup = findByCodeInLocalStorage(code);
+  if (!localGroup) {
+    addToLocalStorage(result);
+  }
   return result;
 }
 

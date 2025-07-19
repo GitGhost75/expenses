@@ -21,10 +21,12 @@ function App() {
     <Router>
       <RefreshContext.Provider value={contextValue}>
         <MyNavbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
-        </Routes>
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
+          </Routes>
+        </div>
       </RefreshContext.Provider>
     </Router>
   );

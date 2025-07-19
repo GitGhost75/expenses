@@ -43,7 +43,7 @@ function HomePage() {
                         {groups.map((group, index) => (
                             <div className="card" key={index}>
                                 <Button title="enter group" variant="outline-secondary" onClick={() => handleNavigate(group.code)}>
-                                    <i className="bi bi-building"> {group.name}</i>
+                                    <i> {group.name}</i>
                                 </Button>
                             </div>
                         ))}

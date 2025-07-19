@@ -6,7 +6,6 @@ import Button from 'react-bootstrap/Button';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from '../types/GroupDto'
 import { UserDto } from '../types/UserDto';
-import { ApiErrorResponse } from '../types/ApiErrorResponse';
 import { fetchGroupByCode, leaveGroup } from '../service/GroupService';
 import { deleteUser } from '../service/UserService';
 import { RefreshContext } from '../RefreshContext';
@@ -14,10 +13,12 @@ import RenameGroupModal from '../components/groups/RenameGroupModal'
 import GroupInfoForm from '../components/groups/GroupInfoForm'
 import EditUserModal from '../components/users/EditUserModal'
 import AddUserModal from '../components/users/AddUserModal'
+import Placeholder from 'react-bootstrap/Placeholder';
 
 export default function GroupDetailsPage() {
 
     const [group, setGroup] = useState<GroupDto>();
+    const [loading, setLoading] = useState<boolean>(true);
     const { groupCode } = useParams();
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -27,22 +28,24 @@ export default function GroupDetailsPage() {
 
     useEffect(() => {
         async function loadGroup() {
-
             if (blockRefresh.current) {
-                blockRefresh.current = false; // Reset für zukünftige Änderungen
+                blockRefresh.current = false;
+                setLoading(false);
                 return;
             }
+
+            setLoading(true);
 
             if (groupCode) {
                 console.log(`Load group: ${groupCode}`);
                 const result = await fetchGroupByCode(groupCode);
                 if ('error' in result) {
-                    // setError((result as ApiErrorResponse).message);
+                    setLoading(false);
                     return;
                 }
                 setGroup(result);
-
             }
+            setLoading(false);
         }
         loadGroup();
     }, [groupCode, refreshTrigger]);
@@ -71,14 +74,37 @@ export default function GroupDetailsPage() {
 
     return (
         <>
-            {group && group.members.length === 0 && (
-                <div></div>
-            )}
-            {group && (
-                <div>
-                    <div className="card">{group.name}</div>
+            {/* Gruppenname: Skeleton oder echter Name */}
+            <div className="card" style={{ marginBottom: 24 }}>
+                {loading ? (
+                    <Placeholder as="div" animation="wave">
+                        <Placeholder xs={6} style={{ height: 28, borderRadius: 8 }} />
+                    </Placeholder>
+                ) : (
+                    group?.name
+                )}
+            </div>
 
-                    {group.members.length > 0 ? (
+            {/* User-Liste: Skeleton oder echte User */}
+            <div>
+                {loading ? (
+                    <>
+                        {[1, 2, 3].map(i => (
+                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                                <Placeholder as="div" animation="wave">
+                                    <Placeholder xs={3} style={{ height: 32, width: 32, borderRadius: "50%", marginRight: 12 }} />
+                                </Placeholder>
+                                <Placeholder as="div" animation="wave" style={{ flex: 1 }}>
+                                    <Placeholder xs={8} style={{ height: 24, borderRadius: 6 }} />
+                                </Placeholder>
+                                <Placeholder as="div" animation="wave">
+                                    <Placeholder xs={1} style={{ height: 24, width: 24, borderRadius: "50%" }} />
+                                </Placeholder>
+                            </div>
+                        ))}
+                    </>
+                ) : (
+                    group && group.members.length > 0 ? (
                         group.members
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((user: UserDto) => (
@@ -92,18 +118,30 @@ export default function GroupDetailsPage() {
                             ))
                     ) : (
                         <div className="card">{t('no_users_in_group')}</div>
-                    )}
+                    )
+                )}
+            </div>
 
-                    <div className="button-container">
+            <div className="button-container" style={{ marginTop: 24 }}>
+                {loading ? (
+                    <>
+                        {[1, 2, 3, 4].map(i => (
+                            <Placeholder key={i} as="span" animation="wave">
+                                <Placeholder xs={1} style={{ height: 36, width: 36, borderRadius: "50%", marginRight: 12 }} />
+                            </Placeholder>
+                        ))}
+                    </>
+                ) : group ? (
+                    <>
                         <AddUserModal group={group} />
                         <GroupInfoForm group={group} />
                         <RenameGroupModal group={group} />
                         <Button title={t('leave_group')} onClick={handleLeaveGroup}>
                             <i className="bi bi-box-arrow-right"></i>
                         </Button>
-                    </div>
-                </div>
-            )}
+                    </>
+                ) : null}
+            </div>
         </>
     );
 }
