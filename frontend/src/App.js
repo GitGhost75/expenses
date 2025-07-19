@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 import './App.css';
 import HomePage from './pages/HomePage';
-import ManageGroupsPage from './pages/ManageGroupsPage';
 import GroupDetailsPage from './pages/GroupDetailsPage';
 import MyNavbar from './MyNavbar';
 import { RefreshContext } from './RefreshContext';
@@ -24,7 +23,6 @@ function App() {
         <MyNavbar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/manage-groups" element={<ManageGroupsPage />} />
           <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
         </Routes>
       </RefreshContext.Provider>

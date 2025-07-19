@@ -67,18 +67,29 @@ export default function GroupDetailsPage() {
 
     return (
         <>
+            {group && group.members.length === 0 && (
+                <div></div>
+            )}
             {group && (
                 <div>
                     <div className="card">{group.name}</div>
-                    {group.members.sort((a, b) => a.name.localeCompare(b.name)).map((user: UserDto) => (
-                        <div className="user-card" key={user.id} >
-                            <div style={{ width: '100%' }}>{user.name}</div>
-                            <EditUserModal user={user} />
-                            <Button title="delete user" variant="outline-secondary" onClick={() => handleDeleteUser(user.id)}>
-                                <i className="bi bi-person-x"></i>
-                            </Button>
-                        </div>
-                    ))}
+                    
+                    {group.members.length > 0 ? (
+                        group.members
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((user: UserDto) => (
+                                <div className="user-card" key={user.id}>
+                                    <div style={{ width: '100%' }}>{user.name}</div>
+                                    <EditUserModal user={user} />
+                                    <Button title="delete user" variant="outline-secondary" onClick={() => handleDeleteUser(user.id)}>
+                                        <i className="bi bi-person-x"></i>
+                                    </Button>
+                                </div>
+                            ))
+                    ) : (
+                        <div className="card">{t('no_users_in_group')}</div>
+                    )}
+
                     <div className="button-container">
                         <AddUserModal group={group} />
                         <GroupInfoForm group={group} />

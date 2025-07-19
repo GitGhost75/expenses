@@ -11,8 +11,7 @@ export async function createGroup(name: string): Promise<GroupDto | ApiErrorResp
   });
 
   if (!response.ok) {
-    const error = await response.json();
-    return error;
+    return await response.json();
   }
 
   const result: GroupDto = await response.json();
@@ -77,7 +76,7 @@ export async function renameGroup(group: GroupDto): Promise<GroupDto | ApiErrorR
   return result;
 }
 
-export async function assignToGroup(code: string): Promise<GroupDto> {
+export async function assignToGroup(code: string): Promise<GroupDto | ApiErrorResponse> {
   // check backend for group
   const response = await fetch(`${API_URL}`, {
     headers: {
@@ -86,12 +85,14 @@ export async function assignToGroup(code: string): Promise<GroupDto> {
     },
     credentials: "include"
   });
+
+
   if (!response.ok) {
-    throw new Error(`Fehler beim Laden der Gruppe ${code}`);
+    console.error(`Fehler beim Laden der Gruppe ${code}`);
+    return await response.json();
   }
 
   const result: GroupDto = await response.json();
-  addToLocalStorage(result);
   return result;
 }
 

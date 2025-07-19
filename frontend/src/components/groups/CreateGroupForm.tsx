@@ -1,40 +1,37 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import React, { useState, useContext } from "react";
+import { useState, useContext } from "react";
 import { createGroup } from "../../service/GroupService";
 import { Form, InputGroup } from 'react-bootstrap';
-import { RefreshContext } from '../../RefreshContext';
 import { GroupDto } from '../../types/GroupDto';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreateGroupForm() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const context = useContext(RefreshContext);
+  const { t } = useTranslation();
+  const navigate = useNavigate();
 
   async function handleCreateGroup() {
 
     setName("");
     setError("");
 
-    if (!context) {
-      throw new Error("RefreshContext must be used within a RefreshContext.Provider");
-    }
-    const { setRefreshTrigger } = context;
-
     const response: GroupDto | ApiErrorResponse = await createGroup(name);
 
     if ('error' in response) {
-      setError((response as ApiErrorResponse).message);
+      setError('Gruppe konnte nicht erstellt werden.');
       return;
     }
 
-    setRefreshTrigger(prev => prev + 1);
+    navigate(`/groups/${response.code}`);
   }
 
   return (
     <>
-      <div className="d-flex gap-2 w-100">
+      <div className="d-flex flex-column gap-2 w-100">
         <InputGroup>
           <Form.Control
             type="text"
@@ -43,7 +40,7 @@ export default function CreateGroupForm() {
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleCreateGroup();
             }}
-            placeholder="Gruppenname"
+            placeholder={t('placeholder_group_name')}
             className="flex-grow-1"
           />
           <InputGroup.Text
@@ -55,8 +52,8 @@ export default function CreateGroupForm() {
             <i className="bi bi-building-add"></i>
           </InputGroup.Text>
         </InputGroup>
+        {error && <span style={{ color: "red" }}>{error}</span>}
       </div>
-      {error && <span style={{ color: "red" }}>{error}</span>}
     </>
   );
 }
