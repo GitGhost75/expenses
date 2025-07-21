@@ -64,13 +64,14 @@ export default function EditUserModal({ user }: { user: UserDto }) {
 
   return (
     <>
-      <div>
+      <div className="w-100 d-flex align-items-center">{user.name}</div>
+      <div className="w-100 d-flex align-items-center justify-content-end">
         {summary.toLocaleString('de-DE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
       </div>
-      <Button variant="outline-secondary" onClick={() => setShow(true)}>
-        <i className="bi bi-pencil"></i>
-      </Button>
-      <Button title="delete user" variant="outline-secondary" onClick={() => handleDeleteUser(user.id)}>
+      <Button variant="outline-secondary" className="d-inline-flex align-items-center justify-content-center" onClick={() => setShow(true)}>
+        < i className="bi bi-pencil" ></i >
+      </Button >
+      <Button title="delete user" variant="outline-secondary" className="d-inline-flex align-items-center justify-content-center" onClick={() => handleDeleteUser(user.id)}>
         <i className="bi bi-person-x"></i>
       </Button>
       {
@@ -80,7 +81,7 @@ export default function EditUserModal({ user }: { user: UserDto }) {
               <Modal.Title>edit user</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="d-flex gap-2 w-100">
+              <div className="d-flex gap-2">
                 <InputGroup>
                   <Form.Control
                     type="text"
@@ -92,7 +93,7 @@ export default function EditUserModal({ user }: { user: UserDto }) {
                     }}
                     placeholder={user.name}
                     required
-                    className="flex-grow-1"
+                  // className="flex-grow-1"
                   />
                   <InputGroup.Text
                     role="button"
@@ -107,7 +108,8 @@ export default function EditUserModal({ user }: { user: UserDto }) {
               {error && <span style={{ color: "red" }}>{error}</span>}
             </Modal.Body>
           </Modal>
-        )}
+        )
+      }
     </>
   );
 }

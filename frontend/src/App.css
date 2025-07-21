@@ -26,11 +26,6 @@ body {
   flex-direction: column;
 }
 
-.card .btn {
-  width: 100%;                /* Button nimmt die volle Breite der Card */
-  text-align: left !important; /* Text im Button linksbündig */
-  justify-content: flex-start; /* Für Bootstrap-Buttons mit Flex */
-}
 
 .user-card {
   max-width: 600px;

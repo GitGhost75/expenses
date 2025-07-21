@@ -15,15 +15,18 @@ public class ExpenseDto {
 
 	private UUID id;
 
+	@NotNull
 	private BigDecimal amount;
 
 	private String description;
 
+	@NotNull
 	private LocalDateTime date;
 
 	@NotNull
 	private String groupCode;
 
+	@NotNull
 	private UUID userId;
 
 }

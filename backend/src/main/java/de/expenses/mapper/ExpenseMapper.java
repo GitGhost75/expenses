@@ -17,6 +17,7 @@ public interface ExpenseMapper {
 	public List<ExpenseDto> toDtoList(List<Expense> entities);
 
 	@Mapping(source = "group.code", target = "groupCode")
+	@Mapping(source = "user.id", target = "userId")
 	public ExpenseDto toDto(Expense entity);
 
 	public Expense toEntity(ExpenseDto dto);

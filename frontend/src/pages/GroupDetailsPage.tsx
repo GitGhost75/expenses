@@ -46,20 +46,14 @@ export default function GroupDetailsPage() {
     }, [groupCode, refreshTrigger]);
 
     return (
-        <>
+        <div className="card p-4 shadow-sm max-w-2xl mx-auto" style={{ marginBottom: 24 }}>
             {/* Gruppenname: Skeleton oder echter Name */}
             <div className="card" style={{ marginBottom: 24 }}>
-                {loading ? (
-                    <Placeholder as="div" animation="wave">
-                        <Placeholder xs={6} style={{ height: 28, borderRadius: 8 }} />
-                    </Placeholder>
-                ) : (
-                    group?.name
-                )}
+                    {group?.name}
             </div>
 
             {/* User-Liste: Skeleton oder echte User */}
-            <div>
+            {/* <div> */}
                 {loading ? (
                     <>
                         {[1, 2, 3].map(i => (
@@ -81,32 +75,23 @@ export default function GroupDetailsPage() {
                         group.members
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map((user: UserDto) => (
-                                <div className="user-card" key={user.id}>
-                                    <div style={{ width: '100%' }}>{user.name}</div>
+                                <div className="d-flex flex-row gap-1 w-100 mb-2" key={user.id}>
                                     <EditUserModal user={user} />
                                 </div>
                             ))
                     ) : (
-                        <div className="card">{t('no_users_in_group')}</div>
+                        <div className="d-flex flex-column gap-2">{t('no_users_in_group')}</div>
                     )
                 )}
-            </div>
+            {/* </div> */}
 
             <div className="button-container" style={{ marginTop: 24 }}>
-                {loading ? (
-                    <>
-                        {[1, 2, 3, 4].map(i => (
-                            <Placeholder key={i} as="span" animation="wave">
-                                <Placeholder xs={1} style={{ height: 36, width: 36, borderRadius: "50%", marginRight: 12 }} />
-                            </Placeholder>
-                        ))}
-                    </>
-                ) : group ? (
+                {group ? (
                     <>
                         <ButtonGroup group={group} />
                     </>
                 ) : null}
             </div>
-        </>
+        </div>
     );
 }

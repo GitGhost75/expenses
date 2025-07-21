@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import GroupDetailsPage from './pages/GroupDetailsPage';
 import MyNavbar from './MyNavbar';
 import { RefreshContext } from './RefreshContext';
+import CreateExpense from "./components/expenses/CreateExpense";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
+            <Route path="/expenses/create" element={<CreateExpense />} />
           </Routes>
         </div>
       </RefreshContext.Provider>

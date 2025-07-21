@@ -21,9 +21,16 @@ export default function ButtonGroup({ group }: { group: GroupDto }) {
         }
     }
 
+    const navigateToExpense = () => {
+        navigate('/expenses/create', {state: { group } });
+    }
+
     return (
         <>
-            <CreateExpense group={group} />
+            {/* <CreateExpense group={group} /> */}
+            <Button title={t('add_expense')} onClick={navigateToExpense}>
+                <i className="bi bi-cash-coin"></i>
+            </Button>
             <AddUserModal group={group} />
             <GroupInfoForm group={group} />
             <RenameGroupModal group={group} />

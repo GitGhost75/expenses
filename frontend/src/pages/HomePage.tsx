@@ -31,17 +31,15 @@ function HomePage() {
     };
 
     return (
-        <div>
-            <div className="card">
-                <div>
-                    <h2>{t('start')}</h2>
-                </div>
+        <div className="card p-4 shadow-sm max-w-2xl mx-auto">
+            <div className="col-12 center mb-4 text-center">
+                <h2>{t('start')}</h2>
             </div>
             {groups.length > 0 ? (
                 <>
-                    <div>
+                    <div className="d-flex flex-column gap-2">
                         {groups.map((group, index) => (
-                            <div className="card" key={index}>
+                            <div key={index}>
                                 <Button title="enter group" variant="outline-secondary" onClick={() => handleNavigate(group.code)}>
                                     <i> {group.name}</i>
                                 </Button>
@@ -50,21 +48,13 @@ function HomePage() {
                     </div>
                 </>
             ) : (
-                <div className="card">
-                    {t('no_groups_found')}
-                </div>
+                <div>{t('no_groups_found')}</div>
             )}
-            <div>
-                <div className="card">
-                    {t('start_info')}
-                </div>
-                <div>
-                    <div className="user-card">
-                        <CreateGroupForm />
-                    </div>
-                    <div className="user-card">
-                        <AssignToGroupForm />
-                    </div>
+            <div className="d-flex flex-column gap-2 mt-4 text-center">
+                <div>{t('start_info')}</div>
+                <div className="d-flex flex-column gap-2">
+                    <CreateGroupForm />
+                    <AssignToGroupForm />
                 </div>
             </div>
         </div>
