@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface ExpenseRepository extends JpaRepository<Expense, UUID> {
 
 	List<Expense> findByGroup_Code(String code);
+
+	List<Expense> findByUser_Id(UUID userId);
 }

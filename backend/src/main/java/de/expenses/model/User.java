@@ -28,4 +28,11 @@ public class User {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "group_code", nullable = false)
 	private Group group;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Expense> expenses = new ArrayList<>();
+
+	public void addExpense(Expense expense) {
+		expenses.add(expense);
+	}
 }

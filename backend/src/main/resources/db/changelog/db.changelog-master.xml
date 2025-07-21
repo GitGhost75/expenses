@@ -8,4 +8,5 @@
     <include file="db.changelog-001-create-groups.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-002-create-users.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-003-create-expenses.sql" relativeToChangelogFile="true"/>
+    <include file="db.changelog-004-alter-expenses.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

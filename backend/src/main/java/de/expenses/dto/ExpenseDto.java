@@ -24,4 +24,6 @@ public class ExpenseDto {
 	@NotNull
 	private String groupCode;
 
+	private UUID userId;
+
 }

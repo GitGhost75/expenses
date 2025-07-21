@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @OpenAPIDefinition(info = @Info(summary = "Summary", title = "Title", description = "Description"))
 @RestController
@@ -42,10 +43,23 @@ public class ExpenseController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Expenses found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExpenseDto.class))}),
 	})
-	@GetMapping("/{groupCode}")
-	public ResponseEntity<List<ExpenseDto>> getExpenses(@PathVariable String groupCode) {
+	@GetMapping("/group/{groupCode}")
+	public ResponseEntity<List<ExpenseDto>> getExpensesForGroup(@PathVariable String groupCode) {
 		logger.info("get expenses for group code {}", groupCode);
 		return ResponseEntity.ok(expenseService.getExpenses(groupCode));
+	}
+
+	@Operation(
+			description = "Retrieve all expenses of the user.",
+			summary = "The summary"
+	)
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Expenses found", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ExpenseDto.class))}),
+	})
+	@GetMapping("/user/{userId}")
+	public ResponseEntity<List<ExpenseDto>> getExpensesForUser(@PathVariable UUID userId) {
+		logger.info("get expenses for user id {}", userId);
+		return ResponseEntity.ok(expenseService.getExpenses(userId));
 	}
 
 	@Operation(

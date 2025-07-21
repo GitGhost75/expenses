@@ -4,8 +4,10 @@ import de.expenses.dto.ExpenseDto;
 import de.expenses.mapper.ExpenseMapper;
 import de.expenses.model.Expense;
 import de.expenses.model.Group;
+import de.expenses.model.User;
 import de.expenses.repository.ExpenseRepository;
 import de.expenses.repository.GroupRepository;
+import de.expenses.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Data
@@ -27,6 +30,9 @@ public class ExpenseService {
 	private GroupRepository groupRepo;
 
 	@Autowired
+	private UserRepository userRepo;
+
+	@Autowired
 	private ExpenseMapper expenseMapper;
 
 	public List<ExpenseDto> getExpenses(String groupCode) {
@@ -34,12 +40,23 @@ public class ExpenseService {
 		return expenseMapper.toDtoList(expenses);
 	}
 
+	public List<ExpenseDto> getExpenses(UUID userId) {
+		List<Expense> expenses = expenseRepo.findByUser_Id(userId);
+		return expenseMapper.toDtoList(expenses);
+	}
+
 	public ExpenseDto createExpense(ExpenseDto dto) {
 
 		Group g = groupRepo.findById(dto.getGroupCode()).orElseThrow(
 				() -> new EntityNotFoundException("Group not found"));
+
+		User u = userRepo.findById(dto.getUserId()).orElseThrow(
+				() -> new EntityNotFoundException("User not found"));
+
 		Expense ex = expenseMapper.toEntity(dto);
 		ex.setGroup(g);
+		ex.setUser(u);
+
 		Expense savedExpense = expenseRepo.save(ex);
 
 		return expenseMapper.toDto(savedExpense);
