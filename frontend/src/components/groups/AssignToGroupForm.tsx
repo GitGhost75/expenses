@@ -5,7 +5,6 @@ import { assignToGroup } from "../../service/GroupService";
 import { Form, InputGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 
 
 function maskAndFormat(code: string) {
@@ -54,7 +53,7 @@ export default function AssignToGroupForm() {
             className="flex-grow-1"
             autoComplete="off"
             inputMode="text"
-            maxLength={9}
+            maxLength={11}
           />
           <InputGroup.Text
             role="button"

@@ -27,3 +27,5 @@ target
 .idea
 
 node_modules
+android/app/prod/debug/*
+android/app/prod/release/*

@@ -4,4 +4,5 @@ export type ExpenseDto = {
   description: string;
   date: Date;
   groupCode: string;
+  userId: string;
 };
