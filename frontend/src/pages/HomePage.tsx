@@ -7,23 +7,22 @@ import CreateGroupForm from "../components/groups/CreateGroupForm";
 import AssignToGroupForm from "../components/groups/AssignToGroupForm";
 import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
+import { useGroup } from "../context/GroupContext";
 
 function HomePage() {
 
     const { t } = useTranslation();
     const [groups, setGroups] = useState<any[]>([]);
     const navigate = useNavigate();
+    const { setGroupName } = useGroup();
 
     useEffect(() => {
         async function loadGroups() {
             const groups = await fetchGroups();
             setGroups(groups);
-
-            // if (groups.length === 1) {
-            //     navigate(`/groups/${groups[0].code}`);
-            // }
         }
         loadGroups();
+        setGroupName("");
     }, []);
 
     const handleNavigate = (code: string) => {

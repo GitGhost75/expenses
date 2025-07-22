@@ -10,6 +10,7 @@ import { RefreshContext } from '../RefreshContext';
 import EditUserModal from '../components/users/EditUserModal'
 import Placeholder from 'react-bootstrap/Placeholder';
 import ButtonGroup from "../components/groups/ButtonGroup";
+import { useGroup } from "../context/GroupContext";
 
 export default function GroupDetailsPage() {
 
@@ -20,6 +21,7 @@ export default function GroupDetailsPage() {
     const context = useContext(RefreshContext);
     const refreshTrigger = context?.refreshTrigger;
     const blockRefresh = useRef(false);
+    const {setGroupName} = useGroup();
 
     useEffect(() => {
         async function loadGroup() {
@@ -39,6 +41,7 @@ export default function GroupDetailsPage() {
                     return;
                 }
                 setGroup(result);
+                setGroupName(result.name);            
             }
             setLoading(false);
         }
@@ -46,11 +49,11 @@ export default function GroupDetailsPage() {
     }, [groupCode, refreshTrigger]);
 
     return (
-        <div className="card p-4 shadow-sm max-w-2xl mx-auto" style={{ marginBottom: 24 }}>
+        <div className="card p-4 shadow-sm max-w-2xl mx-auto">
             {/* Gruppenname: Skeleton oder echter Name */}
-            <div className="card" style={{ marginBottom: 24 }}>
+            {/* <div className="card" style={{ marginBottom: 24 }}>
                     {group?.name}
-            </div>
+            </div> */}
 
             {/* User-Liste: Skeleton oder echte User */}
             {/* <div> */}

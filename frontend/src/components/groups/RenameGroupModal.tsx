@@ -7,11 +7,10 @@ import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 import { GroupDto } from '../../types/GroupDto';
 import { useTranslation } from 'react-i18next';
 
-export default function RenameGroupForm({ group }: { group: GroupDto }) {
+export default function RenameGroupForm({ group, show, onClose }: { group: GroupDto, show: boolean, onClose: () => void  }) {
 
   const [name, setName] = useState(group.name);
   const [error, setError] = useState("");
-  const [show, setShow] = useState(false);
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -36,18 +35,15 @@ export default function RenameGroupForm({ group }: { group: GroupDto }) {
 
       const { setRefreshTrigger } = context;
       setRefreshTrigger(prev => prev + 1);
-      setShow(false);
+      onClose();
     }
   }
 
   return (
     <>
-      <Button title="Gruppe umbenennen" onClick={() => setShow(true)}>
-        <i className="bi bi-pencil"></i>
-      </Button>
       {
         group && (
-          <Modal show={show} onHide={() => setShow(false)}>
+          <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
               <Modal.Title>edit group</Modal.Title>
             </Modal.Header>

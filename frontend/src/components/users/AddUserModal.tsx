@@ -1,7 +1,7 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
+import { Modal, Form, InputGroup } from 'react-bootstrap';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 import { UserDto } from '../../types/UserDto';
 import { GroupDto } from '../../types/GroupDto';
@@ -9,11 +9,10 @@ import { createUser } from "../../service/UserService";
 import { useTranslation } from 'react-i18next';
 import { RefreshContext } from '../../RefreshContext';
 
-export default function AddUserModal({ group }: { group: GroupDto }) {
+export default function AddUserModal({ group, show, onClose }: { group: GroupDto, show: boolean, onClose: () => void }) {
 
   const [name, setName] = useState("");
   const [error, setError] = useState("");
-  const [show, setShow] = useState(false);
   const context = useContext(RefreshContext);
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -50,18 +49,15 @@ export default function AddUserModal({ group }: { group: GroupDto }) {
         setRefreshTrigger(prev => prev + 1);
       }
 
-      setShow(false);
+      onClose();
     }
   }
 
   return (
     <>
-      <Button title="add user" onClick={() => setShow(true)}>
-        <i className="bi bi-person-add"></i>
-      </Button>
       {
         group && (
-          <Modal show={show} onHide={() => setShow(false)}>
+          <Modal show={show} onHide={onClose}>
             <Modal.Header closeButton>
               <Modal.Title>add user</Modal.Title>
             </Modal.Header>

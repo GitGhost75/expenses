@@ -8,9 +8,9 @@ function formatGroupCode(code: string) {
   return code.replace(/(.{3})/g, "$1 ").trim();
 }
 
-export default function GroupMembersForm({ group }: { group: GroupDto }) {
+export default function GroupMembersForm({ group, show, onClose }: { group: GroupDto, show: boolean, onClose: () => void  }) {
   const { t } = useTranslation();
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -21,11 +21,9 @@ export default function GroupMembersForm({ group }: { group: GroupDto }) {
 
   return (
     <>
-      <Button title={t('show_group_info')} onClick={() => setShow(true)}>
-        <i className="bi bi-info-circle"></i>
-      </Button>
 
-      <Modal show={show} onHide={() => setShow(false)}>
+
+      <Modal show={show} onHide={onClose}>
         <Modal.Header closeButton>
           <Modal.Title>{group.name}</Modal.Title>
         </Modal.Header>
