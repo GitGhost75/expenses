@@ -1,3 +1,5 @@
+import { UserDto } from "./UserDto";
+
 export type ExpenseDto = {
   id: string;
   amount: number;
@@ -5,4 +7,5 @@ export type ExpenseDto = {
   date: Date;
   groupCode: string;
   userId: string;
+  user: UserDto;
 };

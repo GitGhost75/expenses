@@ -1,6 +1,6 @@
 import "../../App.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import React, { useState, useContext, useEffect, useRef } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { Modal, Form, InputGroup } from 'react-bootstrap';
 import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 import { UserDto } from '../../types/UserDto';

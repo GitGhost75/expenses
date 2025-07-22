@@ -8,6 +8,8 @@ import Navbar from './Navbar';
 import { RefreshContext } from './RefreshContext';
 import CreateExpense from "./components/expenses/CreateExpense";
 import { GroupProvider } from "./context/GroupContext";
+import ExpensesOverview from "./components/expenses/ExpensesOverview";
+import BillingsOverview from "./components/billings/BillingsOverview";
 
 function App() {
 
@@ -28,6 +30,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
               <Route path="/expenses/create" element={<CreateExpense />} />
+              <Route path="/expenses/overview" element={<ExpensesOverview />} />
+              <Route path="/billings/overview" element={<BillingsOverview />} />
             </Routes>
           </div>
         </RefreshContext.Provider>

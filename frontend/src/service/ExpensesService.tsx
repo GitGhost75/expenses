@@ -34,3 +34,16 @@ export async function getExpensesForUser(user: UserDto): Promise<ExpenseDto[] | 
 export function getSummary(expenses : ExpenseDto[]) : number {
   return expenses.reduce((sum, expense) => sum + expense.amount, 0);
 }
+
+export async function getExpensesForGroup(groupCode: string): Promise<ExpenseDto[] | ApiErrorResponse> {
+  const response = await fetch(`${API_URL}/group/${encodeURIComponent(groupCode)}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  });
+
+  if (!response.ok) {
+    console.error(`Failed to get expenses for group ${groupCode}`);
+  }
+
+  return await response.json();
+}

@@ -36,8 +36,10 @@ export default function CreateExpense() {
             description,
             date: parsedDate,
             userId,
-            groupCode: group.code
+            groupCode: group.code,
+            user: group.members.find((user: UserDto) => user.id === userId) || { id: "", name: "", groupCode: group.code }
         }
+
         createExpense(expenseData)
             .then(() => {
                 console.log("Ausgabe erfolgreich hinzugefügt!");
@@ -109,12 +111,12 @@ export default function CreateExpense() {
                 </div>
 
                 {/* 🖫 Speichern-Button */}
-                <div className="col-12 d-flex justify-content-end">
-                    <Button type="submit" variant="outline-secondary">
-                        <i className="bi bi-save me-2" /> Speichern
+                <div className="button-container" >
+                    <Button type="submit">
+                        <i className="bi bi-save"></i>
                     </Button>
-                    <Button variant="outline-secondary" onClick={() => navigateBack()} className="ms-2">
-                        <i className="bi bi-back me-2" /> Zurück
+                    <Button onClick={() => navigateBack()}>
+                        <i className="bi bi-back" />
                     </Button>
                 </div>
             </form>
