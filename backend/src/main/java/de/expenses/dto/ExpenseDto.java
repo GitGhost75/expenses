@@ -29,4 +29,6 @@ public class ExpenseDto {
 	@NotNull
 	private UUID userId;
 
+	private UserDto user;
+
 }
