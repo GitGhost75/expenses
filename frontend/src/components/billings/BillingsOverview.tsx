@@ -16,9 +16,9 @@ export default function BillingsOverview() {
     const [billings, setBillings] = useState<BillingDto[]>([]);
 
     const sortedByPayerAndReceiver = [...billings].sort((a, b) => {
-        const nameCompare = a.payer.name.localeCompare(b.payer.name);
+        const nameCompare = a.payer.localeCompare(b.payer);
         if (nameCompare !== 0) return nameCompare;
-        return a.receiver.name.localeCompare(b.receiver.name);
+        return a.receiver.localeCompare(b.receiver);
     });
 
     useEffect(() => {
@@ -38,34 +38,32 @@ export default function BillingsOverview() {
     return (
         <div className="card p-4 shadow-sm max-w-2xl mx-auto">
             {sortedByPayerAndReceiver.map((billing, index) => {
-
                 return (
-                    <div key={index} className="w-100 mb-1">
-                        <div className="d-flex justify-content-between">
-                            {/* Linke Spalte: Username + Beschreibung */}
-                            <div className="flex-grow-1">
-                                <div className="d-flex justify-content-between">
-                                    {billing.payer.name} an {billing.receiver.name}
-                                    <div className="text-end" style={{ minWidth: '100px' }}>
-                                        <strong><NumericFormat
-                                            value={billing.amount}
-                                            displayType={'text'}
-                                            thousandSeparator="."
-                                            decimalSeparator=","
-                                            decimalScale={2}
-                                            fixedDecimalScale
-                                        /></strong>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div
+                        key={group.code}
+                        className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <span className="flex-fill text-truncate">{billing.payer} an {billing.receiver}</span>
+                        <span className="text-end" style={{ minWidth: '100px' }}>
+                            <strong>
+                                <NumericFormat
+                                    value={billing.amount}
+                                    displayType={'text'}
+                                    thousandSeparator="."
+                                    decimalSeparator=","
+                                    decimalScale={2}
+                                    fixedDecimalScale
+                                /> €
+                            </strong>
+                        </span>
                     </div>
-                );
+                )
             })}
             <Button onClick={() => navigateBack()}>
                 <i className="bi bi-back" />
             </Button>
-        </div>
+        </div >
 
     );
 }

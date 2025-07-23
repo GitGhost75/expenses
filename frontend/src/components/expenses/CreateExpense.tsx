@@ -37,7 +37,7 @@ export default function CreateExpense() {
             date: parsedDate,
             userId,
             groupCode: group.code,
-            user: group.members.find((user: UserDto) => user.id === userId) || { id: "", name: "", groupCode: group.code }
+            user: group.members.find((user: UserDto) => user.id === userId) || { id: "", name: "", groupCode: group.code, balance: 0 },
         }
 
         createExpense(expenseData)

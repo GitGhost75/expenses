@@ -3,11 +3,12 @@ import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { fetchGroups } from '../service/GroupService';
 import Button from 'react-bootstrap/Button';
-import CreateGroupForm from "../components/groups/CreateGroupForm";
-import AssignToGroupForm from "../components/groups/AssignToGroupForm";
+import CreateGroup from "../components/groups/CreateGroup";
+import AssignToGroup from "../components/groups/AssignToGroup";
 import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useGroup } from "../context/GroupContext";
+import { GroupDto } from '../types/GroupDto';
 
 function HomePage() {
 
@@ -25,8 +26,8 @@ function HomePage() {
         setGroupName("");
     }, []);
 
-    const handleNavigate = (code: string) => {
-        navigate(`/groups/${code}`);
+    const handleNavigate = (group: GroupDto) => {
+        navigate('/groups/' + group.code, { state: { group } });
     };
 
     return (
@@ -35,28 +36,32 @@ function HomePage() {
                 <h2>{t('start')}</h2>
             </div>
             {groups.length > 0 ? (
-                <>
-                    <div className="d-flex flex-column gap-2">
-                        {groups.map((group, index) => (
-                            <div key={index}>
-                                <Button title="enter group" variant="outline-secondary" onClick={() => handleNavigate(group.code)}>
-                                    <i> {group.name}</i>
-                                </Button>
+                groups
+                    .sort((a, b) => a.name.localeCompare(b.name))
+                    .map((group: GroupDto) => (
+                        <div
+                            key={group.code}
+                            className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleNavigate(group)}
+                        >
+                            <div className="d-flex justify-content-between w-100">
+                                <span className="flex-grow-1 text-start">{group.name}</span>
                             </div>
-                        ))}
-                    </div>
-                </>
+                        </div>
+                    ))
             ) : (
                 <div>{t('no_groups_found')}</div>
-            )}
-            <div className="d-flex flex-column gap-2 mt-4 text-center">
+            )
+            }
+            <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
                 <div>{t('start_info')}</div>
                 <div className="d-flex flex-column gap-2">
-                    <CreateGroupForm />
-                    <AssignToGroupForm />
+                    <CreateGroup />
+                    <AssignToGroup />
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 

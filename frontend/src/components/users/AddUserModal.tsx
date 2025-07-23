@@ -35,7 +35,8 @@ export default function AddUserModal({ group, show, onClose }: { group: GroupDto
       const newUser: UserDto = {
         id: "",
         name: name,
-        groupCode: group.code
+        groupCode: group.code,
+        balance: 0,
       };
 
       const result: UserDto | ApiErrorResponse = await createUser(newUser);

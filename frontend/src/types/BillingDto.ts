@@ -1,7 +1,7 @@
 import { UserDto } from "./UserDto";
 
 export type BillingDto = {
-  payer: UserDto;
-  receiver: UserDto;
+  payer: string;
+  receiver: string;
   amount: number;
 };

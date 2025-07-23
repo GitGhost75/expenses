@@ -10,6 +10,7 @@ import CreateExpense from "./components/expenses/CreateExpense";
 import { GroupProvider } from "./context/GroupContext";
 import ExpensesOverview from "./components/expenses/ExpensesOverview";
 import BillingsOverview from "./components/billings/BillingsOverview";
+import EditUser from "./components/users/EditUser";
 
 function App() {
 
@@ -32,6 +33,7 @@ function App() {
               <Route path="/expenses/create" element={<CreateExpense />} />
               <Route path="/expenses/overview" element={<ExpensesOverview />} />
               <Route path="/billings/overview" element={<BillingsOverview />} />
+              <Route path="/users/edit" element={<EditUser />} />
             </Routes>
           </div>
         </RefreshContext.Provider>

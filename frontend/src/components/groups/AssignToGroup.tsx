@@ -15,7 +15,7 @@ function maskAndFormat(code: string) {
     .trim();
 }
 
-export default function AssignToGroupForm() {
+export default function AssignToGroup() {
   const [error, setError] = useState("");
   const [code, setCode] = useState("");
   const { t } = useTranslation();
