@@ -6,12 +6,12 @@ import HomePage from './pages/HomePage';
 import GroupDetailsPage from './pages/GroupDetailsPage';
 import Navbar from './Navbar';
 import { RefreshContext } from './RefreshContext';
-import CreateExpense from "./components/expenses/CreateExpense";
 import { GroupProvider } from "./context/GroupContext";
 import ExpensesOverview from "./components/expenses/ExpensesOverview";
 import BillingsOverview from "./components/billings/BillingsOverview";
 import EditUser from "./components/users/EditUser";
 import CreateUserExpense from "./components/expenses/CreateUserExpense";
+import EditUserExpense from "./components/expenses/EditUserExpense";
 
 function App() {
 
@@ -31,8 +31,8 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
-              <Route path="/expenses/create" element={<CreateExpense />} />
-              <Route path="/expenses/create/user" element={<CreateUserExpense />} />
+              <Route path="/expenses/create" element={<CreateUserExpense />} />
+              <Route path="/expenses/edit" element={<EditUserExpense />} />
               <Route path="/expenses/overview" element={<ExpensesOverview />} />
               <Route path="/billings/overview" element={<BillingsOverview />} />
               <Route path="/users/edit" element={<EditUser />} />

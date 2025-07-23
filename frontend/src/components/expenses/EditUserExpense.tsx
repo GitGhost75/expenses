@@ -1,54 +1,52 @@
 import { Button } from "react-bootstrap";
-import { GroupDto } from "../../types/GroupDto";
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
 import { UserDto } from "../../types/UserDto";
 import { ExpenseDto } from "../../types/ExpenseDto";
-import { useState } from "react";
-import { createExpense } from "../../service/ExpensesService";
+import { useEffect, useState } from "react";
+import { updateExpense } from "../../service/ExpensesService";
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 
-export default function CreateExpense() {
+export default function EditUserExpense() {
 
     const { t } = useTranslation();
-    const group = useLocation().state?.group as GroupDto || {};
-    const [amount, setAmount] = useState("");
+    const expense = useLocation().state?.expense as ExpenseDto || {};
+    const [amount, setAmount] = useState<number>(0);
     const [description, setDescription] = useState("");
-    const [date, setDate] = useState("");
-    const [userId, setUserId] = useState("");
+    const [date, setDate] = useState<Date>(() => new Date());
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setAmount(expense.amount);
+        setDescription(expense.description);
+        setDate(new Date(expense.date));
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const normalizedAmount = parseFloat(amount);
+        // const normalizedAmount = parseFloat(amount);
         const parsedDate = new Date(date);
 
-        if (isNaN(normalizedAmount) || !description || !userId || isNaN(parsedDate.getTime())) {
+        if (isNaN(amount) || !description || isNaN(parsedDate.getTime())) {
             alert("Bitte alle Felder korrekt ausfüllen.");
             return;
         }
 
-        const expenseData: ExpenseDto = {
-            id: "",
-            amount: normalizedAmount,
-            description,
-            date: parsedDate,
-            userId,
-            groupCode: group.code,
-            user: group.members.find((user: UserDto) => user.id === userId) || { id: "", name: "", groupCode: group.code, balance: 0 },
-        }
+        expense.amount = amount;
+        expense.date = parsedDate;
+        expense.description = description;
 
-        createExpense(expenseData)
+        updateExpense(expense)
             .then(() => {
-                console.log("Ausgabe erfolgreich hinzugefügt!");
-                navigate('/groups/' + group.code, { state: { group } });
+                console.log("Ausgabe erfolgreich aktualisiert!");
+                navigate('/users/edit', { state: { user: expense.user } });
             })
     };
 
     function navigateBack() {
-        navigate('/groups/' + group.code, { state: { group } });
+        navigate('/groups/' + expense.groupCode, { state: { undefined } });
     }
 
     return (
@@ -60,7 +58,10 @@ export default function CreateExpense() {
                     <label className="form-label">Betrag</label>
                     <NumericFormat
                         value={amount}
-                        onValueChange={(values) => setAmount(values.value)}
+                        onValueChange={(values) => {
+                            const raw = parseFloat(values.value); // string → number
+                            setAmount(isNaN(raw) ? 0 : raw);      // falls leer, fallback auf 0
+                        }}
                         thousandSeparator="."
                         decimalSeparator=","
                         decimalScale={2}
@@ -87,36 +88,19 @@ export default function CreateExpense() {
                     <label className="form-label">Datum</label>
                     <input
                         type="date"
-                        value={date}
-                        onChange={(e) => setDate(e.target.value)}
+                        value={date.toISOString().split('T')[0]}
+                        onChange={(e) => setDate(new Date(e.target.value))}
                         className="form-control"
                     />
                 </div>
 
-                {/* 👤 Benutzer */}
-                <div className="col-12">
-                    <label className="form-label">Benutzer</label>
-                    <select
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                        className="form-select"
-                    >
-                        <option value="">-- bitte wählen --</option>
-                        {group.members.map((user) => (
-                            <option key={user.id} value={user.id}>
-                                {user.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
                 {/* 🖫 Speichern-Button */}
                 <div className="button-container" >
-                    <Button type="submit">
-                        <i className="bi bi-save"></i>
+                    <Button type="submit" variant="outline-secondary">
+                        <i className="bi bi-pencil"></i>
                     </Button>
-                    <Button onClick={() => navigateBack()}>
-                        <i className="bi bi-back" />
+                    <Button onClick={() => navigateBack()} variant="outline-secondary">
+                        <i className="bi bi-backspace" />
                     </Button>
                 </div>
             </form>

@@ -6,13 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { GroupDto } from '../types/GroupDto'
 import { UserDto } from '../types/UserDto';
 import { fetchGroupByCode } from '../service/GroupService';
-import { getExpensesForUser } from "../service/ExpensesService";
 import { RefreshContext } from '../RefreshContext';
-import EditUserModal from '../components/users/EditUserModal'
 import Placeholder from 'react-bootstrap/Placeholder';
 import ButtonGroup from "../components/groups/ButtonGroup";
 import { useGroup } from "../context/GroupContext";
-import { Button } from "react-bootstrap";
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
 

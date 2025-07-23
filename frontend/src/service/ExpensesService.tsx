@@ -18,6 +18,20 @@ export async function createExpense(expense : ExpenseDto): Promise<ExpenseDto | 
   return await response.json();
 }
 
+export async function updateExpense(expense : ExpenseDto): Promise<ExpenseDto | ApiErrorResponse> {
+  const response = await fetch(`${API_URL}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(expense)
+  });
+
+  if (!response.ok) {
+    console.error("Failed to patch expense");
+  }
+
+  return await response.json();
+}
+
 export async function getExpensesForUser(user: UserDto): Promise<ExpenseDto[] | ApiErrorResponse> {
   const response = await fetch(`${API_URL}/user/${encodeURIComponent(user.id)}`, {
     method: "GET",

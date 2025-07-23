@@ -107,7 +107,7 @@ export default function EditUser() {
                 key={user.id}
                 className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
                 style={{ cursor: 'pointer' }}
-                onClick={() => navigate('/users/edit', { state: { user } })}
+                onClick={() => navigate('/expenses/edit', { state: { expense } })}
               >
                 <div className="d-flex justify-content-between w-100">
                   <span className="me-3">{new Date(expense.date).toLocaleDateString()}</span>
@@ -142,7 +142,7 @@ export default function EditUser() {
             </Button>
           )
         }
-        <Button onClick={() => navigate('/expenses/create/user', { state: { user } })} variant="outline-secondary">
+        <Button onClick={() => navigate('/expenses/create', { state: { user } })} variant="outline-secondary">
           <i className="bi bi-cash-coin" />
         </Button>
         <Button onClick={() => navigateBack()} variant="outline-secondary">
