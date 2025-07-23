@@ -72,4 +72,10 @@ public class ExpenseController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(expenseService.createExpense(dto));
 	}
 
+	@PatchMapping
+	public ResponseEntity<ExpenseDto> updateExpense(@RequestBody ExpenseDto dto) {
+		logger.info("patch expense");
+		return ResponseEntity.status(HttpStatus.OK).body(expenseService.updateExpense(dto));
+	}
+
 }

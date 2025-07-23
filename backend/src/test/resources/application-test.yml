@@ -19,3 +19,10 @@ logging:
     de.expenses: DEBUG
 server:
   address: 0.0.0.0
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    display-request-duration: true
+    doc-expansion: none

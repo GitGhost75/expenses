@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {GroupMapper.class, UserMapper.class})
 public interface ExpenseMapper {
 
 	public List<Expense> toEntityList(List<ExpenseDto> list);
@@ -20,6 +20,8 @@ public interface ExpenseMapper {
 	@Mapping(source = "user.id", target = "userId")
 	public ExpenseDto toDto(Expense entity);
 
+	@Mapping(source = "groupCode", target="group.code")
+	@Mapping(source = "userId", target = "user.id")
 	public Expense toEntity(ExpenseDto dto);
 
 

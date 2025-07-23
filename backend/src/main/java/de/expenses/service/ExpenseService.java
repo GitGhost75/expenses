@@ -45,6 +45,21 @@ public class ExpenseService {
 		return expenseMapper.toDtoList(expenses);
 	}
 
+	public ExpenseDto updateExpense(ExpenseDto dto) {
+
+		Expense e = expenseRepo.findById(dto.getId()).orElseThrow(
+				() -> new EntityNotFoundException("Expense not found"));
+
+		Group g = groupRepo.findById(dto.getGroupCode()).orElseThrow(
+				() -> new EntityNotFoundException("Group not found"));
+
+		User u = userRepo.findById(dto.getUserId()).orElseThrow(
+				() -> new EntityNotFoundException("User not found"));
+
+		Expense saved = expenseRepo.save(expenseMapper.toEntity(dto));
+		return expenseMapper.toDto(saved);
+	}
+
 	public ExpenseDto createExpense(ExpenseDto dto) {
 
 		Group g = groupRepo.findById(dto.getGroupCode()).orElseThrow(
