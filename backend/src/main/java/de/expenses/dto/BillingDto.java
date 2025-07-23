@@ -7,10 +7,9 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
-@AllArgsConstructor
+@Builder
 public class BillingDto {
-
-	private UserDto payer;
-	private UserDto receiver;
+	private String payer;
+	private String receiver;
 	private BigDecimal amount;
 }

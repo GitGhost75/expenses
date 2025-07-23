@@ -1,9 +1,7 @@
 package de.expenses.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -16,6 +14,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "group")
+@ToString(exclude = "group")
 public class User {
 	@Id
 	@GeneratedValue
@@ -34,5 +34,10 @@ public class User {
 
 	public void addExpense(Expense expense) {
 		expenses.add(expense);
+	}
+
+	@Override
+	public String toString() {
+		return "User{name=" + name + ", id=" + id + "}";
 	}
 }

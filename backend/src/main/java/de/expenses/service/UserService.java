@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,6 +30,9 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private BillingService billingService;
+
 	public UserDto createUser(UserDto userDto) {
 
 		Group g = groupRepo.findById(userDto.getGroupCode()).orElseThrow(()->new EntityNotFoundException("group not found"));
@@ -41,7 +45,8 @@ public class UserService {
 
 	public UserDto getUser(UUID userId) {
 		User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
-		return userMapper.toDto(user);
+		BigDecimal balance = billingService.getBalance(user);
+		return userMapper.toDto(user, balance);
 	}
 
 	public List<UserDto> getGroupMembers(String groupCode) {

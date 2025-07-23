@@ -1,9 +1,7 @@
 package de.expenses.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -16,6 +14,8 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "members")
+@ToString(exclude = "members")
 public class Group {
 
 	@Column(unique = true)
@@ -37,5 +37,10 @@ public class Group {
 
 	public void addExpense(Expense expense) {
 		expenses.add(expense);
+	}
+
+	@Override
+	public String toString() {
+		return "Group{name=" + name + ", memberCount=" + (members != null ? members.size() : 0) + "}";
 	}
 }

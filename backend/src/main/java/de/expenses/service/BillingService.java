@@ -1,9 +1,17 @@
 package de.expenses.service;
 
 import de.expenses.dto.BillingDto;
-import de.expenses.dto.ExpenseDto;
-import de.expenses.dto.GroupDto;
-import de.expenses.dto.UserDto;
+import de.expenses.mapper.BillingMapper;
+import de.expenses.model.Billing;
+import de.expenses.mapper.UserMapper;
+import de.expenses.model.Balance;
+import de.expenses.model.Expense;
+import de.expenses.model.Group;
+import de.expenses.model.User;
+import de.expenses.repository.ExpenseRepository;
+import de.expenses.repository.GroupRepository;
+import jakarta.persistence.EntityNotFoundException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,75 +26,111 @@ import java.util.stream.Collectors;
 public class BillingService {
 
 	@Autowired
-	private ExpenseService expenseService;
+	private GroupRepository groupRepo;
+	@Autowired
+	private BillingMapper billingMapper;
 
 	public List<BillingDto> getBillings(String groupCode) {
+		Group group = getGroup(groupCode);
 
-		List<BillingDto> billings = new ArrayList<>();
+		// User-Differenzen berechnen
+		Pair<List<Balance>, List<Balance>> balances = createBalances(group);
 
-		Map<UserDto, List<ExpenseDto>> expensesPerUser = expenseService.getExpenses(groupCode).stream()
-		                                                               .collect(Collectors.groupingBy(ExpenseDto::getUser));
+		// Transfers matchen
+		List<Billing> billings = createBillings(balances);
+		return billingMapper.toDtoList(billings);
+	}
 
-		Map<UserDto, BigDecimal> totalAmountPerUser = expensesPerUser.entrySet().stream()
-		                                                             .collect(Collectors.toMap(
-				                                                             Map.Entry::getKey,
-				                                                             e -> e.getValue().stream()
-				                                                                   .map(ExpenseDto::getAmount)
-				                                                                   .reduce(BigDecimal.ZERO, BigDecimal::add)
-		                                                                                      ));
+	public BigDecimal getBalance(User user) {
+		BigDecimal fairShare = getFairShare(user.getGroup());
+		BigDecimal userExpenses = user.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+		return userExpenses.subtract(fairShare);
+	}
 
-		// 1. Gesamtsumme & Durchschnitt
-		BigDecimal total = totalAmountPerUser.values().stream()
-		                                     .reduce(BigDecimal.ZERO, BigDecimal::add);
+	private Group getGroup(String groupCode) {
+		return groupRepo.findById(groupCode).orElseThrow(
+				() -> new EntityNotFoundException("Group with code " + groupCode + " not found"));
+	}
 
-		int userCount = totalAmountPerUser.size();
-		BigDecimal fairShare = total.divide(BigDecimal.valueOf(userCount), 2, RoundingMode.HALF_UP);
+	public BigDecimal getTotalExpenses(Group group) {
+		return group.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+
+	public Map<User, BigDecimal> getExpensesPerUser(Group group) {
+		List<Expense> expenses = group.getExpenses();
+
+		Map<User, List<Expense>> expensesPerUser = expenses.stream()
+		                                                   .collect(Collectors.groupingBy(Expense::getUser));
+
+		Map<User, BigDecimal> result = expensesPerUser.entrySet().stream()
+		                                              .collect(Collectors.toMap(
+				                                              Map.Entry::getKey,
+				                                              e -> e.getValue().stream()
+				                                                    .map(Expense::getAmount)
+				                                                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
+
+		List<User> usersWithExpenses = expenses.stream().map(Expense::getUser).toList();
+		List<User> usersWithoutExpenses = group.getMembers().stream().filter(m -> !usersWithExpenses.contains(m)).toList();
+
+		// add empty expense for users without expenses
+		usersWithoutExpenses.forEach(u -> result.put(u, BigDecimal.ZERO));
+
+		return result;
+	}
+
+	private int getUserCount(Group group) {
+		return group.getMembers().size();
+	}
+
+	private BigDecimal getFairShare(Group group) {
+		BigDecimal total = getTotalExpenses(group);
+		return total.divide(BigDecimal.valueOf(getUserCount(group)), 2, RoundingMode.HALF_UP);
+	}
+
+
+
+	private Pair<List<Balance>, List<Balance>> createBalances(Group group) {
+		Map<User, BigDecimal> totalAmountPerUser = getExpensesPerUser(group);
+		BigDecimal fairShare = getFairShare(group);
 
 		// 2. User-Differenzen berechnen
-		List<Balance> payers = new ArrayList<>();
-		List<Balance> receivers = new ArrayList<>();
+		Pair<List<Balance>, List<Balance>> balances = Pair.of(new ArrayList<Balance>(), new ArrayList<Balance>());
 
-		for (Map.Entry<UserDto, BigDecimal> entry : totalAmountPerUser.entrySet()) {
-			UserDto user = entry.getKey();
+		for (Map.Entry<User, BigDecimal> entry : totalAmountPerUser.entrySet()) {
+			User user = entry.getKey();
 			BigDecimal diff = entry.getValue().subtract(fairShare);
 
 			if (diff.compareTo(BigDecimal.ZERO) < 0) {
-				payers.add(new Balance(user, diff.abs())); // muss zahlen
+				balances.getLeft().add(new Balance(user, diff.abs())); // muss zahlen
 			} else if (diff.compareTo(BigDecimal.ZERO) > 0) {
-				receivers.add(new Balance(user, diff)); // bekommt zurück
+				balances.getRight().add(new Balance(user, diff)); // bekommt zurück
 			}
 		}
+		return balances;
+	}
 
-		// 3. Transfers matchen
-		int i = 0, j = 0;
-		while (i < payers.size() && j < receivers.size()) {
-			Balance payer = payers.get(i);
-			Balance receiver = receivers.get(j);
+	private List<Billing> createBillings(Pair<List<Balance>, List<Balance>> balances) {
 
-			BigDecimal transferAmount = payer.diff.min(receiver.diff);
+		List<Billing> billings = new ArrayList<>();
+		int i = 0;
+		int j = 0;
+		while (i < balances.getLeft().size() && j < balances.getRight().size()) {
+			Balance payer = balances.getLeft().get(i);
+			Balance receiver = balances.getRight().get(j);
 
-			billings.add(new BillingDto(payer.user, receiver.user, transferAmount));
+			BigDecimal transferAmount = payer.getDiff().min(receiver.getDiff());
 
-			payer.diff = payer.diff.subtract(transferAmount);
-			receiver.diff = receiver.diff.subtract(transferAmount);
+			billings.add(new Billing(payer.getUser(), receiver.getUser(), transferAmount));
 
-			if (payer.diff.compareTo(BigDecimal.ZERO) == 0)
+			payer.setDiff(payer.getDiff().subtract(transferAmount));
+			receiver.setDiff(receiver.getDiff().subtract(transferAmount));
+
+			if (payer.getDiff().compareTo(BigDecimal.ZERO) == 0)
 				i++;
-			if (receiver.diff.compareTo(BigDecimal.ZERO) == 0)
+			if (receiver.getDiff().compareTo(BigDecimal.ZERO) == 0)
 				j++;
 		}
-
 		return billings;
 	}
 }
 
-// 2. User-Differenzen berechnen
-class Balance {
-	UserDto user;
-	BigDecimal diff;
-
-	Balance(UserDto user, BigDecimal diff) {
-		this.user = user;
-		this.diff = diff;
-	}
-}

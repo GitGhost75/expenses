@@ -4,6 +4,7 @@ import de.expenses.dto.GroupDto;
 import de.expenses.mapper.GroupMapper;
 import de.expenses.mapper.UserMapper;
 import de.expenses.model.Group;
+import de.expenses.model.User;
 import de.expenses.repository.GroupRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
@@ -12,7 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -31,12 +35,26 @@ public class GroupService {
 	@Autowired
 	private UserMapper userMapper;
 
-
+	@Autowired
+	private BillingService billingService;
 
 	public GroupDto getGroup(String code) {
 		Group group = groupRepo.findById(code)
 		                       .orElseThrow(() -> new EntityNotFoundException("GroupCode not found with id: " + code));
-		return groupMapper.toDto(group);
+
+		GroupDto result = groupMapper.toDto(group);
+
+		Map<UUID, BigDecimal> balanceMap = group.getMembers().stream()
+		                                        .collect(Collectors.toMap(
+				                                        User::getId,
+				                                        user -> billingService.getBalance(user)));
+
+		result.getMembers().forEach(m -> {
+			m.setBalance(balanceMap.get(m.getId()));
+		});
+
+		return result;
+
 	}
 
 
