@@ -60,8 +60,8 @@ export default function BillingsOverview() {
                     </div>
                 )
             })}
-            <Button onClick={() => navigateBack()}>
-                <i className="bi bi-back" />
+            <Button onClick={() => navigateBack()} variant="outline-secondary">
+                <i className="bi bi-backspace" />
             </Button>
         </div >
 

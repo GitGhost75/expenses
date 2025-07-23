@@ -11,6 +11,7 @@ import { GroupProvider } from "./context/GroupContext";
 import ExpensesOverview from "./components/expenses/ExpensesOverview";
 import BillingsOverview from "./components/billings/BillingsOverview";
 import EditUser from "./components/users/EditUser";
+import CreateUserExpense from "./components/expenses/CreateUserExpense";
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
               <Route path="/expenses/create" element={<CreateExpense />} />
+              <Route path="/expenses/create/user" element={<CreateUserExpense />} />
               <Route path="/expenses/overview" element={<ExpensesOverview />} />
               <Route path="/billings/overview" element={<BillingsOverview />} />
               <Route path="/users/edit" element={<EditUser />} />

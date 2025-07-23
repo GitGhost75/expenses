@@ -9,6 +9,8 @@ import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useGroup } from "../context/GroupContext";
 import { GroupDto } from '../types/GroupDto';
+import { InputGroup } from "react-bootstrap";
+import { leaveGroup } from "../service/GroupService";
 
 function HomePage() {
 
@@ -16,6 +18,7 @@ function HomePage() {
     const [groups, setGroups] = useState<any[]>([]);
     const navigate = useNavigate();
     const { setGroupName } = useGroup();
+    const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
         async function loadGroups() {
@@ -24,7 +27,12 @@ function HomePage() {
         }
         loadGroups();
         setGroupName("");
-    }, []);
+    }, [refresh]);
+
+    async function handleLeaveGroup(group: GroupDto) {
+        leaveGroup(group.code);
+        setRefresh(prev => prev + 1);
+    }
 
     const handleNavigate = (group: GroupDto) => {
         navigate('/groups/' + group.code, { state: { group } });
@@ -39,15 +47,38 @@ function HomePage() {
                 groups
                     .sort((a, b) => a.name.localeCompare(b.name))
                     .map((group: GroupDto) => (
-                        <div
-                            key={group.code}
-                            className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
-                            style={{ cursor: 'pointer' }}
-                            onClick={() => handleNavigate(group)}
-                        >
-                            <div className="d-flex justify-content-between w-100">
-                                <span className="flex-grow-1 text-start">{group.name}</span>
-                            </div>
+                        // <div className="w-100">
+                        <div className="w-100 mb-2">
+                            <InputGroup>
+                                <InputGroup.Text
+                                    className="flex-grow-1"
+                                    style={{ background: '#fff', cursor: 'pointer' }}
+                                    onClick={()=>handleNavigate(group)}
+                                    
+                                >
+                                    {group.name}
+                                </InputGroup.Text>
+                                <InputGroup.Text
+                                    role="button"
+                                    tabIndex={0}
+                                    onClick={()=>handleLeaveGroup(group)}
+                                    title="Gruppe verlassen"
+                                    style={{ cursor: 'pointer' }}
+                                >
+                                    <i className="bi bi-building-dash"></i>
+                                </InputGroup.Text>
+                            </InputGroup>
+                            {/* </div> */}
+                            {/* <div
+                                key={group.code}
+                                className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleNavigate(group)}
+                            >
+                                <div className="d-flex justify-content-between w-100">
+                                    <span className="flex-grow-1 text-start">{group.name}</span>
+                                </div>
+                            </div> */}
                         </div>
                     ))
             ) : (

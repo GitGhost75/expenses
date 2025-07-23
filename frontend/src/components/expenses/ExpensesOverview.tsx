@@ -74,9 +74,8 @@ export default function ExpensesOverview() {
                     );
                 })}
 
-                {/* {group && (<BillingsOverview />)} */}
-                <Button onClick={() => navigateBack()}>
-                    <i className="bi bi-back" />
+                <Button onClick={() => navigateBack()} variant="outline-secondary">
+                    <i className="bi bi-backspace" />
                 </Button>
 
             </div>
