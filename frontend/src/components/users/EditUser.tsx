@@ -145,9 +145,6 @@ export default function EditUser() {
         <Button onClick={() => navigate('/expenses/create', { state: { user } })} variant="outline-secondary">
           <i className="bi bi-cash-coin" />
         </Button>
-        <Button onClick={() => navigateBack()} variant="outline-secondary">
-          <i className="bi bi-backspace" />
-        </Button>
       </div>
     </div>
 

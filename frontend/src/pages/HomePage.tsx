@@ -17,7 +17,7 @@ function HomePage() {
     const { t } = useTranslation();
     const [groups, setGroups] = useState<any[]>([]);
     const navigate = useNavigate();
-    const { setGroupName } = useGroup();
+    const { setGroup } = useGroup();
     const [refresh, setRefresh] = useState(0);
 
     useEffect(() => {
@@ -26,7 +26,7 @@ function HomePage() {
             setGroups(groups);
         }
         loadGroups();
-        setGroupName("");
+        setGroup(null);
     }, [refresh]);
 
     async function handleLeaveGroup(group: GroupDto) {
@@ -35,6 +35,7 @@ function HomePage() {
     }
 
     const handleNavigate = (group: GroupDto) => {
+        setGroup(group);
         navigate('/groups/' + group.code, { state: { group } });
     };
 
@@ -68,17 +69,6 @@ function HomePage() {
                                     <i className="bi bi-building-dash"></i>
                                 </InputGroup.Text>
                             </InputGroup>
-                            {/* </div> */}
-                            {/* <div
-                                key={group.code}
-                                className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => handleNavigate(group)}
-                            >
-                                <div className="d-flex justify-content-between w-100">
-                                    <span className="flex-grow-1 text-start">{group.name}</span>
-                                </div>
-                            </div> */}
                         </div>
                     ))
             ) : (

@@ -1,17 +1,29 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { GroupDto } from '../types/GroupDto';
 
 type GroupContextType = {
-  groupName: string;
+  group: GroupDto | null;
+  setGroup: (group: GroupDto | null) => void;
   setGroupName: (name: string) => void;
 };
 
 const GroupContext = createContext<GroupContextType | undefined>(undefined);
 
-export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
-  const [groupName, setGroupName] = useState("");
+export const GroupProvider = ({ children }: { children: ReactNode }) => {
+  const [group, setGroupState] = useState<GroupDto | null>(null);
+
+  const setGroup = (group: GroupDto | null) => {
+    setGroupState(group);
+  };
+
+  const setGroupName = (name: string) => {
+    if (group) {
+      setGroupState({ ...group, name });
+    }
+  };
 
   return (
-    <GroupContext.Provider value={{ groupName, setGroupName }}>
+    <GroupContext.Provider value={{ group, setGroup, setGroupName }}>
       {children}
     </GroupContext.Provider>
   );
@@ -19,6 +31,8 @@ export const GroupProvider = ({ children }: { children: React.ReactNode }) => {
 
 export const useGroup = () => {
   const context = useContext(GroupContext);
-  if (!context) throw new Error("useGroup must be used inside GroupProvider");
+  if (!context) {
+    throw new Error('useGroup must be used within a GroupProvider');
+  }
   return context;
 };

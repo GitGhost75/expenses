@@ -43,40 +43,42 @@ export default function ExpensesOverview() {
     return (
         <>
             <div className="card p-4 shadow-sm max-w-2xl mx-auto">
-                {sortedByNameThenDate.map((expense, index) => {
-                    const user = group.members.find((u) => u.id === expense.userId);
-
-                    return (
-                        <div key={index} className="w-100 mb-1">
-                            <div className="d-flex justify-content-between">
-                                {/* Linke Spalte: Username + Beschreibung */}
-                                <div className="flex-grow-1">
-                                    <div className="d-flex justify-content-between">
-                                        <strong>{user?.name}</strong>
-                                        <div className="text-end" style={{ minWidth: '100px' }}>
-                                            <strong><NumericFormat
-                                                value={expense.amount}
-                                                displayType={'text'}
-                                                thousandSeparator="."
-                                                decimalSeparator=","
-                                                decimalScale={2}
-                                                fixedDecimalScale
-                                            /></strong>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <div>{new Date(expense.date).toLocaleDateString()}&nbsp;{expense.description}</div>
+                {
+                    expenses.length > 0 ? (
+                        expenses
+                            .sort((a, b) => a.user.name.localeCompare(b.user.name))
+                            .map((expense) => (
+                                <div
+                                    key={expense.id}
+                                    className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => navigate('/expenses/edit', { state: { expense } })}
+                                >
+                                    <div className="d-flex justify-content-between w-100">
+                                        {/* <span className="me-3">{new Date(expense.date).toLocaleDateString()}</span> */}
+                                        <span className="me-3 text-truncate" style={{ width: '80px' }}>{expense.user.name}</span>
+                                        <span className="flex-fill text-truncate">{expense.description}</span>
+                                        <span className="text-end" style={{ width: '100px' }}>
+                                            <strong>
+                                                <NumericFormat
+                                                    value={expense.amount}
+                                                    displayType={'text'}
+                                                    thousandSeparator="."
+                                                    decimalSeparator=","
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                /> €
+                                            </strong>
+                                        </span>
                                     </div>
                                 </div>
-                            </div>
+                            ))
+                    ) : (
+                        <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
+                            <div>No expenses found for this user.</div>
                         </div>
-                    );
-                })}
-
-                <Button onClick={() => navigateBack()} variant="outline-secondary">
-                    <i className="bi bi-backspace" />
-                </Button>
+                    )
+                }
 
             </div>
         </>

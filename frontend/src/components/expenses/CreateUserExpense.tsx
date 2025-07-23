@@ -99,9 +99,6 @@ export default function CreateUserExpense() {
                     <Button type="submit" variant="outline-secondary">
                         <i className="bi bi-pencil"></i>
                     </Button>
-                    <Button onClick={() => navigateBack()} variant="outline-secondary">
-                        <i className="bi bi-backspace" />
-                    </Button>
                 </div>
             </form>
         </div>
