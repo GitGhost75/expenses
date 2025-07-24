@@ -23,24 +23,28 @@ function App() {
   }), [refreshTrigger]);
 
   return (
-    <GroupProvider>
-      <Router>
-        <RefreshContext.Provider value={contextValue}>
-          <Navbar />
-          <div className="content">
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
-              <Route path="/expenses/create" element={<CreateUserExpense />} />
-              <Route path="/expenses/edit" element={<EditUserExpense />} />
-              <Route path="/expenses/overview" element={<ExpensesOverview />} />
-              <Route path="/billings/overview" element={<BillingsOverview />} />
-              <Route path="/users/edit" element={<EditUser />} />
-            </Routes>
-          </div>
-        </RefreshContext.Provider>
-      </Router>
-    </GroupProvider>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="container mx-auto px-4 py-8">
+        <GroupProvider>
+          <Router>
+            <RefreshContext.Provider value={contextValue}>
+              <Navbar />
+              <div className="content">
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/groups/:groupCode" element={<GroupDetailsPage />} />
+                  <Route path="/expenses/create" element={<CreateUserExpense />} />
+                  <Route path="/expenses/edit" element={<EditUserExpense />} />
+                  <Route path="/expenses/overview" element={<ExpensesOverview />} />
+                  <Route path="/billings/overview" element={<BillingsOverview />} />
+                  <Route path="/users/edit" element={<EditUser />} />
+                </Routes>
+              </div>
+            </RefreshContext.Provider>
+          </Router>
+        </GroupProvider>
+      </div>
+    </div>
   );
 }
 

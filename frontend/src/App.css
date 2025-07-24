@@ -1,19 +1,15 @@
-body {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* body {
   padding-top: constant(safe-area-inset-top);
-  /* iOS Safari < 11.2 */
   padding-top: env(safe-area-inset-top);
-  /* iOS Safari >= 11.2 */
 }
 
 .custom-navbar {
   height: 80px;
 }
-/* 
-.add-border {
-  max-width: 600px;
-  margin: 0 auto;
-  padding-top: 20px;
-} */
 
 .card {
   max-width: 600px;
@@ -60,7 +56,6 @@ body {
 
 @media(max-width: 600px) {
   .user-card {
-    /*flex-direction: column;*/
   }
 }
 
@@ -78,5 +73,4 @@ Button {
 
 .content {
   padding: 0 20px;
-  /* Add your desired padding values here */
-}
+} */

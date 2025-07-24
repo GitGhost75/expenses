@@ -27,6 +27,7 @@ export type GroupDto = {
   code: string;
   name: string;
   members: UserDto[];
+  expenses: ExpenseDto[];
 };
 
 export type UserDto = {

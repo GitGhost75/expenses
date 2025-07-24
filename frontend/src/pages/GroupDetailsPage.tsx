@@ -53,62 +53,65 @@ export default function GroupDetailsPage() {
     }
 
     return (
-        <div className="card p-4 shadow-sm max-w-2xl mx-auto">
-            {loading ? (
-                <>
-                    {[1, 2, 3].map(i => (
-                        <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-                            <Placeholder as="div" animation="wave">
-                                <Placeholder xs={3} style={{ height: 32, width: 32, borderRadius: "50%", marginRight: 12 }} />
-                            </Placeholder>
-                            <Placeholder as="div" animation="wave" style={{ flex: 1 }}>
-                                <Placeholder xs={8} style={{ height: 24, borderRadius: 6 }} />
-                            </Placeholder>
-                            <Placeholder as="div" animation="wave">
-                                <Placeholder xs={1} style={{ height: 24, width: 24, borderRadius: "50%" }} />
-                            </Placeholder>
-                        </div>
-                    ))}
-                </>
-            ) : (
-                group && group.members.length > 0 ? (
-                    group.members
-                        .sort((a, b) => a.name.localeCompare(b.name))
-                        .map((user: UserDto) => (
-                            <div
-                                key={user.id}
-                                className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
-                                style={{ cursor: 'pointer' }}
-                                onClick={() => navigate('/users/edit', { state: { user } })}
-                            >
-                                <div className="d-flex justify-content-between w-100">
-                                    <span className="flex-grow-1 text-start">{user.name}</span>
-                                    <span className="text-end">
-                                        <strong>
-                                            <NumericFormat
-                                                value={user.balance}
-                                                displayType={'text'}
-                                                thousandSeparator="."
-                                                decimalSeparator=","
-                                                decimalScale={2}
-                                                fixedDecimalScale
-                                            /> €
-                                        </strong>
-                                    </span>
-                                </div>
-                            </div>
-                        ))
-                ) : (
-                    <div className="d-flex flex-column gap-2">{t('no_users_in_group')}</div>
-                )
-            )}
-
-            <div className="button-container" style={{ marginTop: 24 }}>
-                {group ? (
+        <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6">{group?.name}</h2>
+                {loading ? (
                     <>
-                        <ButtonGroup group={group} />
+                        {[1, 2, 3].map(i => (
+                            <div key={i} style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+                                <Placeholder as="div" animation="wave">
+                                    <Placeholder xs={3} style={{ height: 32, width: 32, borderRadius: "50%", marginRight: 12 }} />
+                                </Placeholder>
+                                <Placeholder as="div" animation="wave" style={{ flex: 1 }}>
+                                    <Placeholder xs={8} style={{ height: 24, borderRadius: 6 }} />
+                                </Placeholder>
+                                <Placeholder as="div" animation="wave">
+                                    <Placeholder xs={1} style={{ height: 24, width: 24, borderRadius: "50%" }} />
+                                </Placeholder>
+                            </div>
+                        ))}
                     </>
-                ) : null}
+                ) : (
+                    group && group.members.length > 0 ? (
+                        group.members
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map((user: UserDto) => (
+                                <div
+                                    key={user.id}
+                                    className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => navigate('/users/edit', { state: { user } })}
+                                >
+                                    <div className="d-flex justify-content-between w-100">
+                                        <span className="flex-grow-1 text-start">{user.name}</span>
+                                        <span className="text-end">
+                                            <strong>
+                                                <NumericFormat
+                                                    value={user.balance}
+                                                    displayType={'text'}
+                                                    thousandSeparator="."
+                                                    decimalSeparator=","
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                /> €
+                                            </strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                    ) : (
+                        <div className="d-flex flex-column gap-2">{t('no_users_in_group')}</div>
+                    )
+                )}
+
+                <div className="button-container" style={{ marginTop: 24 }}>
+                    {group ? (
+                        <>
+                            <ButtonGroup group={group} />
+                        </>
+                    ) : null}
+                </div>
             </div>
         </div>
     );
