@@ -2,12 +2,11 @@ package de.expenses.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "groups")
@@ -38,6 +37,10 @@ public class Group {
 	public void addExpense(Expense expense) {
 		expenses.add(expense);
 	}
+
+	@CreationTimestamp
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private LocalDate createdAt;
 
 	@Override
 	public String toString() {

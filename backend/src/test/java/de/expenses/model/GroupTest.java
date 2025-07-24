@@ -3,6 +3,7 @@ package de.expenses.model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ class GroupTest {
 
     @BeforeEach
     void setUp() {
-        group = new Group("TestGroup", "TEST001", new ArrayList<>(), new ArrayList<>());
+        group = new Group("TestGroup", "TEST001", new ArrayList<>(), new ArrayList<>(), LocalDate.now());
     }
 
     @Test
@@ -34,7 +35,7 @@ class GroupTest {
         List<Expense> expenses = new ArrayList<>();
         expenses.add(new Expense());
 
-        Group allArgsGroup = new Group("AnotherGroup", "ANOTHER002", members, expenses);
+        Group allArgsGroup = new Group("AnotherGroup", "ANOTHER002", members, expenses, LocalDate.now());
 
         assertEquals("AnotherGroup", allArgsGroup.getName());
         assertEquals("ANOTHER002", allArgsGroup.getCode());

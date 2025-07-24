@@ -22,6 +22,7 @@ server:
 
 springdoc:
   swagger-ui:
+    enabled: true
     path: /swagger-ui.html
     try-it-out-enabled: true
     display-request-duration: true

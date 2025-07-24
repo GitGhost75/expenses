@@ -53,6 +53,9 @@ public class GroupService {
 			m.setBalance(balanceMap.get(m.getId()));
 		});
 
+		result.setTotalExpenses(billingService.getTotalExpenses(group));
+		result.setCountExpenses(group.getExpenses().size());
+
 		return result;
 
 	}

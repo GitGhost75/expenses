@@ -1,12 +1,13 @@
 package de.expenses.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -18,4 +19,10 @@ public class GroupDto {
 	private String name;
 
 	private List<UserDto> members;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	private LocalDate createdAt;
+
+	private BigDecimal totalExpenses;
+	private int countExpenses;
 }
