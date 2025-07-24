@@ -3,7 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useParams } from 'react-router-dom';
 import { useRef, useEffect, useState, useContext } from "react";
 import { useTranslation } from 'react-i18next';
-import { GroupDto, UserDto } from "../types";
+import { GroupDto, UserDto, ExpenseDto, BillingDto } from "../types";
 import { fetchGroupByCode } from '../service/GroupService';
 import { RefreshContext } from '../RefreshContext';
 import Placeholder from 'react-bootstrap/Placeholder';
@@ -11,6 +11,8 @@ import ButtonGroup from "../components/groups/ButtonGroup";
 import { useGroup } from "../context/GroupContext";
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
+import { getExpensesForGroup } from "../service/ExpensesService";
+import { getBillingsForGroup } from "../service/BillingService";
 
 export default function GroupDetailsPage() {
 
@@ -23,6 +25,24 @@ export default function GroupDetailsPage() {
     const refreshTrigger = context?.refreshTrigger;
     const blockRefresh = useRef(false);
     const { setGroupName } = useGroup();
+    const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
+    const [billings, setBillings] = useState<BillingDto[]>([]);
+
+    const sortedByPayerAndReceiver = [...billings].sort((a, b) => {
+        const nameCompare = a.payer.localeCompare(b.payer);
+        if (nameCompare !== 0) return nameCompare;
+        return a.receiver.localeCompare(b.receiver);
+    });
+
+    useEffect(() => {
+        getBillingsForGroup(groupCode!!)
+            .then(billings => {
+                console.log("Billings for group:", billings);
+                if (Array.isArray(billings)) {
+                    setBillings(billings);
+                }
+            });
+    }, [group]);
 
     useEffect(() => {
         async function loadGroup() {
@@ -48,6 +68,16 @@ export default function GroupDetailsPage() {
         }
         loadGroup();
     }, [groupCode, refreshTrigger]);
+
+    useEffect(() => {
+        getExpensesForGroup(groupCode!!)
+            .then(expenses => {
+                console.log("Expenses for group:", expenses);
+                if (Array.isArray(expenses)) {
+                    setExpenses(expenses);
+                }
+            });
+    }, [group]);
 
     const editUser = (user: UserDto) => {
     }
@@ -101,18 +131,94 @@ export default function GroupDetailsPage() {
                                 </div>
                             ))
                     ) : (
-                        <div className="d-flex flex-column gap-2">{t('no_users_in_group')}</div>
+                        <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
+                            <div>{t('no_users_in_group')}</div>
+                        </div>
                     )
                 )}
+            </div>
 
-                <div className="button-container" style={{ marginTop: 24 }}>
+            <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6">Ausgaben</h2>
+                {
+                    expenses.length > 0 ? (
+                        expenses
+                            .sort((a, b) => a.user.name.localeCompare(b.user.name))
+                            .map((expense) => (
+                                <div
+                                    key={expense.id}
+                                    className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => navigate('/expenses/edit', { state: { expense } })}
+                                >
+                                    <div className="d-flex justify-content-between w-100">
+                                        <span className="me-3 text-truncate" style={{ width: '120px' }}>{expense.user.name}</span>
+                                        <span className="flex-fill text-truncate">{expense.description}</span>
+                                        <span className="text-end" style={{ width: '100px' }}>
+                                            <strong>
+                                                <NumericFormat
+                                                    value={expense.amount}
+                                                    displayType={'text'}
+                                                    thousandSeparator="."
+                                                    decimalSeparator=","
+                                                    decimalScale={2}
+                                                    fixedDecimalScale
+                                                /> €
+                                            </strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                    ) : (
+                        <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
+                            <div>Keine Ausgaben vorhanden</div>
+                        </div>
+                    )
+                }
+
+            </div>
+            <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6">Zahlungen</h2>
+                {billings.length > 0 ? (
+
+                    sortedByPayerAndReceiver.map((billing, index) => {
+                        return (
+                            <div
+                                key={groupCode}
+                                className="d-flex justify-content-between align-items-center w-100 p-2 border rounded mb-2"
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <span className="flex-fill text-truncate">{billing.payer} an {billing.receiver}</span>
+                                <span className="text-end" style={{ minWidth: '100px' }}>
+                                    <strong>
+                                        <NumericFormat
+                                            value={billing.amount}
+                                            displayType={'text'}
+                                            thousandSeparator="."
+                                            decimalSeparator=","
+                                            decimalScale={2}
+                                            fixedDecimalScale
+                                        /> €
+                                    </strong>
+                                </span>
+                            </div>
+                        )
+                    })
+                ) : (
+                    <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
+                        <div>Keine Zahlungen vorhanden</div>
+                    </div>
+                )}
+            </div >
+
+            <div className="bg-white rounded-lg shadow-md p-6 mt-6">
+                <div className="d-flex flex-column gap-2 mt-4 text-center w-100">
                     {group ? (
-                        <>
-                            <ButtonGroup group={group} />
-                        </>
+                        <ButtonGroup group={group} />
                     ) : null}
                 </div>
             </div>
+
         </div>
     );
 }

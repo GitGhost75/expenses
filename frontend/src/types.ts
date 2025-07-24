@@ -27,7 +27,9 @@ export type GroupDto = {
   code: string;
   name: string;
   members: UserDto[];
-  expenses: ExpenseDto[];
+  totalExpenses: number;
+  createdAt: Date;
+  countExpenses: number;
 };
 
 export type UserDto = {
@@ -36,3 +38,7 @@ export type UserDto = {
   groupCode: string;
   balance: number;
 };
+
+export type GroupInfo = {
+  code: string;
+}

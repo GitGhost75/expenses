@@ -31,7 +31,7 @@ export default function AssignToGroup() {
 
     setCode("");
     console.log(`Gruppe ${code} beitreten`);
-    navigate(`/groups/${code}`);
+    navigate('/');
   }
 
   return (

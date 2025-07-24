@@ -1,37 +1,39 @@
-import { GroupDto } from "../types";
+import { GroupInfo } from "../types";
 
-export function loadLocalStorage(): GroupDto[] {
+export function loadLocalStorage(): GroupInfo[] {
     const storedGroups = localStorage.getItem("groups");
-    const groups: GroupDto[] = storedGroups ? JSON.parse(storedGroups) : [];
-    groups.sort((a, b) => a.name.localeCompare(b.name));
+    const groups: GroupInfo[] = storedGroups ? JSON.parse(storedGroups) : [];
     return groups;
 }
 
-export function saveLocalStorage(groups: GroupDto[]) {
+export function saveLocalStorage(groups: GroupInfo[]) {
     localStorage.setItem('groups', JSON.stringify(groups));
 }
 
-export function addToLocalStorage(group: GroupDto) {
+export function addToLocalStorage(code: string) {
+    const groupInfo : GroupInfo = {
+        code : code,
+    }
     const storedGroups = loadLocalStorage();
-    storedGroups.push(group);
+    storedGroups.push(groupInfo);
     saveLocalStorage(storedGroups);
 }
 
-export function findByCodeInLocalStorage(code: string): GroupDto | undefined {
+export function findByCodeInLocalStorage(code: string): GroupInfo | undefined {
     return loadLocalStorage().find(group => group.code === code);
 }
 
-export function findByNameInLocalStorage(name: string): GroupDto | undefined {
-    return loadLocalStorage().find(group => group.name === name);
-}
+// export function findByNameInLocalStorage(name: string): GroupInfo | undefined {
+//     return loadLocalStorage().find(group => group.c === name);
+// }
 
-export function updateInLocalStorage(group: GroupDto) {
-    const updatedGroups = loadLocalStorage().map(g => g.code === group.code ? group : g);
-    saveLocalStorage(updatedGroups);
-}
+// export function updateInLocalStorage(group: GroupInfo) {
+//     const updatedGroups = loadLocalStorage().map(g => g.code === group.code ? group : g);
+//     saveLocalStorage(updatedGroups);
+// }
 
-export function removeFromLocalStorage(code: string): GroupDto[] {
-    const updatedGroups: GroupDto[] = loadLocalStorage().filter(group => group.code !== code);
+export function removeFromLocalStorage(code: string): GroupInfo[] {
+    const updatedGroups: GroupInfo[] = loadLocalStorage().filter(group => group.code !== code);
     saveLocalStorage(updatedGroups);
     return updatedGroups;
 }

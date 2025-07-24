@@ -41,6 +41,13 @@ function HomePage() {
         navigate('/groups/' + group.code, { state: { group } });
     };
 
+    const formatDate = (date: Date) => {
+        return new Intl.DateTimeFormat('de-DE', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        }).format(new Date(date));
+    };
 
     return (
 
@@ -66,7 +73,7 @@ function HomePage() {
                                     <h3 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">
                                         {group.name}
                                     </h3>
-                                    <div className="flex items-center gap-1">
+                                    <div className="flex items-center gap-1 mt-1">
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -87,7 +94,7 @@ function HomePage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Calendar size={16} />
-                                        {/* <span>Erstellt am {formatDate(group.createdAt)}</span> */}
+                                        <span>Erstellt am {formatDate(group.createdAt)}</span>
                                     </div>
                                 </div>
 
@@ -95,14 +102,13 @@ function HomePage() {
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">Gesamtausgaben:</span>
                                         <span className="font-semibold text-green-600">
-                                            {/* {getTotalExpenses(group).toFixed(2)}€ */}0 €
+                                            {group.totalExpenses.toFixed(2)}€
                                         </span>
                                     </div>
                                     <div className="flex justify-between items-center mt-1">
                                         <span className="text-sm text-gray-600">Ausgaben:</span>
                                         <span className="text-sm text-gray-500">
-                                            {/* {group.expenses.length} Einträge */}
-                                            0 Einträge
+                                            {group.countExpenses} Einträge
                                         </span>
                                     </div>
                                 </div>

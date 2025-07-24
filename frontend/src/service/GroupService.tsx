@@ -1,5 +1,5 @@
 import { ApiErrorResponse, GroupDto } from "../types";
-import { loadLocalStorage, addToLocalStorage, findByNameInLocalStorage, findByCodeInLocalStorage, updateInLocalStorage, removeFromLocalStorage } from "./LocalStorageService";
+import { loadLocalStorage, addToLocalStorage, findByCodeInLocalStorage, removeFromLocalStorage } from "./LocalStorageService";
 
 const API_URL = process.env.REACT_APP_API_URL_GROUPS;
 
@@ -15,17 +15,26 @@ export async function createGroup(name: string): Promise<GroupDto | ApiErrorResp
 
   const result: GroupDto = await response.json();
 
-  addToLocalStorage(result);
+  addToLocalStorage(result.code);
 
   return result;
 }
 
-export function leaveGroup(code: string): GroupDto[] {
-  return removeFromLocalStorage(code);
+export async function leaveGroup(code: string) {
+  removeFromLocalStorage(code);
+  const groupInfos = loadLocalStorage();
+  const codes = groupInfos.map((g) => g.code);
+  const promises = codes.map((code) => fetchFromBackendByCode(code));
+  const results = await Promise.all(promises);
+  return results;
 }
 
-export async function fetchGroups(): Promise<GroupDto[]> {
-  return loadLocalStorage();
+export async function fetchGroups(){
+  const groupInfos = loadLocalStorage();
+  const codes = groupInfos.map((g) => g.code);
+  const promises = codes.map((code) => fetchFromBackendByCode(code));
+  const results = await Promise.all(promises);
+  return results;
 }
 
 async function fetchFromBackend(group: GroupDto): Promise<GroupDto> {
@@ -69,7 +78,7 @@ export async function fetchGroupByCode(code: string): Promise<GroupDto | ApiErro
   let localGroup = findByCodeInLocalStorage(code);
 
   if (localGroup === undefined) {
-    addToLocalStorage(result);
+    addToLocalStorage(result.code);
   }
   return result;
 }
@@ -88,8 +97,6 @@ export async function renameGroup(group: GroupDto): Promise<GroupDto | ApiErrorR
   }
 
   const result: GroupDto = await response.json();
-
-  updateInLocalStorage(group);
 
   return result;
 }
@@ -114,21 +121,21 @@ export async function assignToGroup(code: string): Promise<GroupDto | ApiErrorRe
 
   const localGroup = findByCodeInLocalStorage(code);
   if (!localGroup) {
-    addToLocalStorage(result);
+    addToLocalStorage(result.code);
   }
   return result;
 }
 
-export async function fetchGroup(name: string): Promise<GroupDto> {
+// export async function fetchGroup(name: string): Promise<GroupDto> {
 
-  const targetGroup = findByNameInLocalStorage(name);
+//   const targetGroup = findByNameInLocalStorage(name);
 
-  if (targetGroup === undefined) {
-    throw new Error(`Gruppe mit dem Namen ${name} nicht gefunden`);
-  }
+//   if (targetGroup === undefined) {
+//     throw new Error(`Gruppe mit dem Namen ${name} nicht gefunden`);
+//   }
 
-  return await fetchFromBackend(targetGroup);
-}
+//   return await fetchFromBackend(targetGroup);
+// }
 
 export async function addMember(groupName: string, group: GroupDto): Promise<GroupDto | ApiErrorResponse> {
   const response = await fetch(`${API_URL}/members/${encodeURIComponent(groupName)}`, {

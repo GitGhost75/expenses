@@ -34,9 +34,6 @@ export default function ButtonGroup({ group }: { group: GroupDto }) {
                 <Button title="{t('rename_group')}" onClick={handleRenameGroup}>
                     <i className="bi bi-pencil"></i>
                 </Button>
-                <Button title={t('billings_overview')} onClick={() => navigate('/billings/overview', { state: { group } })}>
-                    <i className="bi bi-cash-stack"></i>
-                </Button>
                 <Button title={t('home')} onClick={() => navigate('/')}>
                     <i className="bi bi-house"></i>
                 </Button>
