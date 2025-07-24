@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "../../App.css";
 import { Modal, Button, InputGroup, FormControl } from 'react-bootstrap';
-import { GroupDto } from '../../types/GroupDto';
+import { GroupDto } from "../../types";
 import { useTranslation } from 'react-i18next';
 
 function formatGroupCode(code: string) {

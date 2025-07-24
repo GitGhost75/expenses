@@ -1,9 +1,7 @@
 import { Button } from "react-bootstrap";
-import { GroupDto } from "../../types/GroupDto";
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
-import { UserDto } from "../../types/UserDto";
-import { ExpenseDto } from "../../types/ExpenseDto";
+import { UserDto, ExpenseDto } from "../../types";
 import { useState } from "react";
 import { createExpense } from "../../service/ExpensesService";
 import { useNavigate } from 'react-router-dom';

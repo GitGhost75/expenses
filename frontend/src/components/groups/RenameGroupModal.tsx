@@ -3,8 +3,7 @@ import { renameGroup } from "../../service/GroupService";
 import "../../App.css";
 import { Modal, Button, Form, InputGroup } from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
-import { ApiErrorResponse } from '../../types/ApiErrorResponse';
-import { GroupDto } from '../../types/GroupDto';
+import { ApiErrorResponse, GroupDto } from "../../types";
 import { useTranslation } from 'react-i18next';
 
 export default function RenameGroupForm({ group, show, onClose }: { group: GroupDto, show: boolean, onClose: () => void  }) {

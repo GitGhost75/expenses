@@ -3,8 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useParams } from 'react-router-dom';
 import { useRef, useEffect, useState, useContext } from "react";
 import { useTranslation } from 'react-i18next';
-import { GroupDto } from '../types/GroupDto'
-import { UserDto } from '../types/UserDto';
+import { GroupDto, UserDto } from "../types";
 import { fetchGroupByCode } from '../service/GroupService';
 import { RefreshContext } from '../RefreshContext';
 import Placeholder from 'react-bootstrap/Placeholder';

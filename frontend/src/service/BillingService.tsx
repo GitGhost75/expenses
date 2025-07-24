@@ -1,5 +1,4 @@
-import { ApiErrorResponse } from '../types/ApiErrorResponse';
-import { BillingDto } from '../types/BillingDto';
+import { ApiErrorResponse, BillingDto } from "../types";
 const API_URL = process.env.REACT_APP_API_URL_BILLINGS;
 
 export async function getBillingsForGroup(groupCode: string): Promise<BillingDto[] | ApiErrorResponse> {

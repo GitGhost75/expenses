@@ -3,8 +3,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useState, useContext } from "react";
 import { createGroup } from "../../service/GroupService";
 import { Form, InputGroup } from 'react-bootstrap';
-import { GroupDto } from '../../types/GroupDto';
-import { ApiErrorResponse } from '../../types/ApiErrorResponse';
+import { ApiErrorResponse, GroupDto } from "../../types";
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 

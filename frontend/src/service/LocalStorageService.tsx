@@ -1,4 +1,4 @@
-import { GroupDto } from "../types/GroupDto";
+import { GroupDto } from "../types";
 
 export function loadLocalStorage(): GroupDto[] {
     const storedGroups = localStorage.getItem("groups");

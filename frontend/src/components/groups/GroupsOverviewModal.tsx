@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../App.css";
 import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
-import { GroupDto } from '../../types/GroupDto';
+import { GroupDto } from "../../types";
 import { useTranslation } from 'react-i18next';
 import { fetchGroups } from '../../service/GroupService';
 import { RefreshContext } from '../../RefreshContext';

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Button } from "react-bootstrap";
-import { GroupDto } from "../../types/GroupDto";
+import { GroupDto } from "../../types";
 import AddUserModal from "../users/AddUserModal";
 import GroupInfoModal from "./GroupInfoModal";
 import RenameGroupModal from "./RenameGroupModal";

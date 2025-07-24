@@ -3,10 +3,8 @@ import React, { useState, useContext, useEffect } from "react";
 import { createUser } from "../../service/UserService";
 import { Form, InputGroup } from 'react-bootstrap';
 import { RefreshContext } from '../../RefreshContext';
-import { GroupDto } from '../../types/GroupDto';
-import { UserDto } from '../../types/UserDto';
+import { GroupDto, UserDto, ApiErrorResponse } from "../../types";
 import { useTranslation } from 'react-i18next';
-import { ApiErrorResponse } from '../../types/ApiErrorResponse';
 
 export default function AddGroupMembersForm({ group }: { group: GroupDto }) {
 

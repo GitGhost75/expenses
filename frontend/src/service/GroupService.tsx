@@ -1,5 +1,4 @@
-import { GroupDto } from "../types/GroupDto";
-import { ApiErrorResponse } from "../types/ApiErrorResponse";
+import { ApiErrorResponse, GroupDto } from "../types";
 import { loadLocalStorage, addToLocalStorage, findByNameInLocalStorage, findByCodeInLocalStorage, updateInLocalStorage, removeFromLocalStorage } from "./LocalStorageService";
 
 const API_URL = process.env.REACT_APP_API_URL_GROUPS;

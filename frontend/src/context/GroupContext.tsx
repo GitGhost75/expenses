@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { GroupDto } from '../types/GroupDto';
+import { GroupDto } from "../types";
 
 type GroupContextType = {
   group: GroupDto | null;

@@ -1,14 +1,10 @@
-import { Button } from "react-bootstrap";
-import { GroupDto } from "../../types/GroupDto";
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
-import { UserDto } from "../../types/UserDto";
-import { ExpenseDto } from "../../types/ExpenseDto";
+import { ExpenseDto, GroupDto } from "../../types";
 import { useEffect, useState } from "react";
 import { getExpensesForGroup } from "../../service/ExpensesService";
 import { useNavigate } from 'react-router-dom';
 import { NumericFormat } from 'react-number-format';
-import BillingsOverview from "../billings/BillingsOverview";
 
 export default function ExpensesOverview() {
 

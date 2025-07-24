@@ -1,6 +1,4 @@
-import { UserDto } from '../types/UserDto';
-import { ExpenseDto } from '../types/ExpenseDto';
-import { ApiErrorResponse } from '../types/ApiErrorResponse';
+import { ApiErrorResponse, ExpenseDto, UserDto } from "../types";
 const API_URL = process.env.REACT_APP_API_URL_EXPENSES;
 
 

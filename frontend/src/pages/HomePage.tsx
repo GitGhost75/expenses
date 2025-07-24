@@ -8,7 +8,7 @@ import AssignToGroup from "../components/groups/AssignToGroup";
 import { Modal, Nav } from 'react-bootstrap';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useGroup } from "../context/GroupContext";
-import { GroupDto } from '../types/GroupDto';
+import { GroupDto } from "../types";
 import { InputGroup } from "react-bootstrap";
 import { leaveGroup } from "../service/GroupService";
 

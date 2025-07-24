@@ -1,8 +1,7 @@
 import { Button } from "react-bootstrap";
-import { GroupDto } from "../../types/GroupDto";
+import { BillingDto, GroupDto } from "../../types";
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
-import { BillingDto } from "../../types/BillingDto";
 import { useEffect, useState } from "react";
 import { getBillingsForGroup } from "../../service/BillingService";
 import { useNavigate } from 'react-router-dom';
