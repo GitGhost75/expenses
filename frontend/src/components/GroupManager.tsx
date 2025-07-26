@@ -1,45 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { fetchGroups } from '../service/GroupService';
-import CreateGroup from "../components/groups/CreateGroup";
-import AssignToGroup from "../components/groups/AssignToGroup";
-import { useNavigate } from 'react-router-dom';
-import { useGroup } from "../context/GroupContext";
-import { GroupDto, ExpenseDto } from "../types";
-import { removeGroup } from "../service/GroupService";
-import { Users, Calendar, Trash2, ChevronRight } from 'lucide-react';
+import { GroupDto } from "../types";
+import { Users, Calendar, Trash2, ChevronRight, Plus, Calculator } from 'lucide-react';
 
-function HomePage() {
+interface GroupManagerProps {
+    groups: GroupDto[];
+    onAddGroup: (name: string) => void;
+    onLeaveGroup: (code: string) => void;
+    onSelectGroup: (code: string) => void;
+    onEnterGroup: (code: string) => void;
+}
+
+function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnterGroup }: GroupManagerProps) {
 
     const { t } = useTranslation();
-    const [groups, setGroups] = useState<any[]>([]);
-    const navigate = useNavigate();
-    const { setGroup } = useGroup();
-    const [refresh, setRefresh] = useState(0);
-
-    useEffect(() => {
-        async function loadGroups() {
-            const result = await fetchGroups();
-            if ('error' in result) {
-                console.error(result.error);
-            } else {
-                setGroups(result);
-            }
-        }
-        loadGroups();
-        setGroup(null);
-    }, [refresh]);
-
-    async function onLeaveGroup(group: GroupDto) {
-        removeGroup(group.code);
-        setRefresh(prev => prev + 1);
-    }
-
-    const onSelectGroup = (group: GroupDto) => {
-        setGroup(group);
-        navigate('/groups/' + group.code, { state: { group } });
-    };
+    const [newGroupName, setNewGroupName] = useState('');
+    const [newGroupCode, setNewGroupCode] = useState('');
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('de-DE', {
@@ -49,10 +26,66 @@ function HomePage() {
         }).format(new Date(date));
     };
 
+    const handleCreateGroup = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newGroupName.trim()) {
+            onAddGroup(newGroupName.trim());
+            setNewGroupName('');
+        }
+    };
+
+    const handleEnterGroup = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (newGroupCode.trim()) {
+            onEnterGroup(newGroupCode.trim());
+            setNewGroupCode('');
+        }
+    }
+
     return (
 
         <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+                <h2 className="text-xl font-semibold text-gray-800 mb-6">Aufgaben</h2>
+                <form onSubmit={handleCreateGroup} className="mb-4">
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newGroupName}
+                            onChange={(e) => setNewGroupName(e.target.value)}
+                            placeholder="Gruppenname eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                        >
+                            <Plus size={18} />
+                            <span className="hidden sm:inline">Erstellen</span>
+                        </button>
+                    </div>
+                </form>
+                <form onSubmit={handleEnterGroup} className="mb-4">
+                    <div className="flex gap-2">
+                        <input
+                            type="text"
+                            value={newGroupCode}
+                            onChange={(e) => setNewGroupCode(e.target.value)}
+                            placeholder="Gruppencode eingeben (z.B.ABC 123 DEF, etc.)"
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                        >
+                            <Plus size={18} />
+                            <span className="hidden sm:inline">Beitreten</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6">Meine Gruppen</h2>
 
                 {groups.length === 0 ? (
@@ -65,9 +98,9 @@ function HomePage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {groups.map((group) => (
                             <div
-                                key={group.id}
+                                key={group.code}
                                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
-                                onClick={() => onSelectGroup(group)}
+                                onClick={() => onSelectGroup(group.code)}
                             >
                                 <div className="flex items-start justify-between mb-3">
                                     <h3 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">
@@ -77,7 +110,7 @@ function HomePage() {
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                onLeaveGroup(group);
+                                                onLeaveGroup(group.code);
                                             }}
                                             className="text-red-400 hover:text-red-600 transition-colors duration-200"
                                         >
@@ -88,6 +121,10 @@ function HomePage() {
                                 </div>
 
                                 <div className="space-y-2 text-sm text-gray-600 mb-4">
+                                    <div className="flex items-center gap-2">
+                                        <Calculator size={16} />
+                                        <span>{group.code}</span>
+                                    </div>
                                     <div className="flex items-center gap-2">
                                         <Users size={16} />
                                         <span>{group.members.length} Personen</span>
@@ -117,18 +154,9 @@ function HomePage() {
                     </div>
                 )}
             </div>
-
-            <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6">Aufgaben</h2>
-                <div>{t('start_info')}</div>
-                <div className="d-flex flex-column gap-2 mt-3">
-                    <CreateGroup />
-                    <AssignToGroup />
-                </div>
-            </div>
         </div>
 
     );
 }
 
-export default HomePage;
+export default GroupManager;

@@ -20,7 +20,7 @@ export async function createGroup(name: string): Promise<GroupDto | ApiErrorResp
   return result;
 }
 
-export async function leaveGroup(code: string) {
+export async function removeGroup(code: string) {
   removeFromLocalStorage(code);
   const groupInfos = loadLocalStorage();
   const codes = groupInfos.map((g) => g.code);
@@ -29,12 +29,13 @@ export async function leaveGroup(code: string) {
   return results;
 }
 
-export async function fetchGroups(){
+export async function fetchGroups(): Promise<GroupDto[] | ApiErrorResponse> {
   const groupInfos = loadLocalStorage();
   const codes = groupInfos.map((g) => g.code);
   const promises = codes.map((code) => fetchFromBackendByCode(code));
   const results = await Promise.all(promises);
-  return results;
+
+  return results as GroupDto[];
 }
 
 async function fetchFromBackend(group: GroupDto): Promise<GroupDto> {

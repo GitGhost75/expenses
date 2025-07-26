@@ -4,7 +4,6 @@ import { GroupDto } from "../../types";
 import AddUserModal from "../users/AddUserModal";
 import GroupInfoModal from "./GroupInfoModal";
 import RenameGroupModal from "./RenameGroupModal";
-import { leaveGroup } from "../../service/GroupService";
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
@@ -34,9 +33,9 @@ export default function ButtonGroup({ group }: { group: GroupDto }) {
                 <Button title="{t('rename_group')}" onClick={handleRenameGroup}>
                     <i className="bi bi-pencil"></i>
                 </Button>
-                <Button title={t('home')} onClick={() => navigate('/')}>
+                {/* <Button title={t('home')} onClick={() => navigate('/')}>
                     <i className="bi bi-house"></i>
-                </Button>
+                </Button> */}
 
                 <AddUserModal group={group} show={showAddUser} onClose={() => setShowAddUser(false)} />
                 <GroupInfoModal group={group} show={showGroupInfo} onClose={() => setShowGroupInfo(false)} />

@@ -2,7 +2,7 @@ import { ApiErrorResponse, ExpenseDto, UserDto } from "../types";
 const API_URL = process.env.REACT_APP_API_URL_EXPENSES;
 
 
-export async function createExpense(expense : ExpenseDto): Promise<ExpenseDto | ApiErrorResponse> {
+export async function createExpense(expense: ExpenseDto): Promise<ExpenseDto | ApiErrorResponse> {
   const response = await fetch(`${API_URL}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -16,7 +16,7 @@ export async function createExpense(expense : ExpenseDto): Promise<ExpenseDto | 
   return await response.json();
 }
 
-export async function updateExpense(expense : ExpenseDto): Promise<ExpenseDto | ApiErrorResponse> {
+export async function updateExpense(expense: ExpenseDto): Promise<ExpenseDto | ApiErrorResponse> {
   const response = await fetch(`${API_URL}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -28,6 +28,13 @@ export async function updateExpense(expense : ExpenseDto): Promise<ExpenseDto | 
   }
 
   return await response.json();
+}
+
+export async function deleteExpense(id: string) {
+  const response = await fetch(`${API_URL}/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" }
+  });
 }
 
 export async function getExpensesForUser(user: UserDto): Promise<ExpenseDto[] | ApiErrorResponse> {
@@ -43,7 +50,7 @@ export async function getExpensesForUser(user: UserDto): Promise<ExpenseDto[] | 
   return await response.json();
 }
 
-export function getSummary(expenses : ExpenseDto[]) : number {
+export function getSummary(expenses: ExpenseDto[]): number {
   return expenses.reduce((sum, expense) => sum + expense.amount, 0);
 }
 
