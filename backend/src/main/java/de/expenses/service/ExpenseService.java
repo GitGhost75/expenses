@@ -76,4 +76,8 @@ public class ExpenseService {
 
 		return expenseMapper.toDto(savedExpense);
 	}
+
+	public void deleteExpense(UUID id) {
+		expenseRepo.deleteById(id);
+	}
 }
