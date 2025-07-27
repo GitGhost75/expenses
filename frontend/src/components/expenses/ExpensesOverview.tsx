@@ -17,9 +17,6 @@ export default function ExpensesOverview() {
         const dateCompare = new Date(a.date).getDate() - new Date(b.date).getDate()
         if (dateCompare !== 0) return dateCompare;
         return a.user.name.localeCompare(b.user.name);
-        // const nameCompare = a.user.name.localeCompare(b.user.name);
-        // if (nameCompare !== 0) return nameCompare;
-        // return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
 
     useEffect(() => {

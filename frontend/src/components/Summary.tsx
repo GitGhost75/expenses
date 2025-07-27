@@ -46,42 +46,6 @@ export function Summary({ billings, people, expenses }: SummaryProps) {
         </div>
       </div>
 
-      {/* <div className="mb-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-3">Salden</h3>
-        <div className="space-y-2">
-          {billings.map((billing) => {
-            const person = people.find(p => p.id === balance.personId);
-            const isPositive = balance.balance > 0;
-            const isNeutral = Math.abs(balance.balance) < 0.01;
-            
-            return (
-              <div
-                key={balance.personId}
-                className="flex justify-between items-center p-3 bg-gray-50 rounded-md"
-              >
-                <span className="font-medium text-gray-700">{person?.name}</span>
-                <span
-                  className={`font-semibold ${
-                    isNeutral
-                      ? 'text-gray-600'
-                      : isPositive
-                      ? 'text-green-600'
-                      : 'text-red-600'
-                  }`}
-                >
-                  {isNeutral
-                    ? 'Ausgeglichen'
-                    : isPositive
-                    ? `+${balance.balance.toFixed(2)}€`
-                    : `${balance.balance.toFixed(2)}€`
-                  }
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      </div> */}
-
       {billings.length > 0 && (
         <div>
           <h3 className="text-lg font-semibold text-gray-800 mb-3">Ausgleichszahlungen</h3>
@@ -91,9 +55,9 @@ export function Summary({ billings, people, expenses }: SummaryProps) {
                 key={index}
                 className="flex items-center gap-3 p-4 bg-yellow-50 rounded-md border border-yellow-200"
               >
-                <span className="font-medium text-gray-700">{billing.payer}</span>
+                <span className="font-medium text-gray-700 sm:scale-100 scale-[0.8]">{billing.payer}</span>
                 <ArrowRight size={18} className="text-yellow-600" />
-                <span className="font-medium text-gray-700">{billing.receiver}</span>
+                <span className="font-medium text-gray-700 sm:scale-100 scale-[0.8]">{billing.receiver}</span>
                 <span className="ml-auto font-semibold text-yellow-700">
                   {billing.amount.toFixed(2)}€
                 </span>

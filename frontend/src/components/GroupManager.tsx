@@ -47,42 +47,44 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
         <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-6 mt-8">
                 <h2 className="text-xl font-semibold text-gray-800 mb-6">Aufgaben</h2>
-                <form onSubmit={handleCreateGroup} className="mb-4">
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            value={newGroupName}
-                            onChange={(e) => setNewGroupName(e.target.value)}
-                            placeholder="Gruppenname eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <Plus size={18} />
-                            <span className="hidden sm:inline">Erstellen</span>
-                        </button>
-                    </div>
-                </form>
-                <form onSubmit={handleEnterGroup} className="mb-4">
-                    <div className="flex gap-2">
-                        <input
-                            type="text"
-                            value={newGroupCode}
-                            onChange={(e) => setNewGroupCode(e.target.value)}
-                            placeholder="Gruppencode eingeben (z.B.ABC 123 DEF, etc.)"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                            type="submit"
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
-                        >
-                            <Plus size={18} />
-                            <span className="hidden sm:inline">Beitreten</span>
-                        </button>
-                    </div>
-                </form>
+                <div className=' sm:scale-100 scale-[0.9] origin-top-left'>
+                    <form onSubmit={handleCreateGroup} className="mb-4">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={newGroupName}
+                                onChange={(e) => setNewGroupName(e.target.value)}
+                                placeholder="Gruppenname eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                            >
+                                <Plus size={18} />
+                                <span className="hidden sm:inline">Erstellen</span>
+                            </button>
+                        </div>
+                    </form>
+                    <form onSubmit={handleEnterGroup} className="mb-4">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={newGroupCode}
+                                onChange={(e) => setNewGroupCode(e.target.value)}
+                                placeholder="Gruppencode eingeben (z.B.ABC 123 DEF, etc.)"
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            />
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                            >
+                                <Plus size={18} />
+                                <span className="hidden sm:inline">Beitreten</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
