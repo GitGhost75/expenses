@@ -178,8 +178,8 @@ function App() {
     <div className="text-sm sm:text-base">
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="container mx-auto px-4 py-8">
-          <header className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
+          <header className="">
+            <div className="flex items-center gap-4">
               <button
                 onClick={() => setActiveGroupCode(null)}
                 className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"

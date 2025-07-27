@@ -61,8 +61,8 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
           )}
         </h2>
 
-        <form onSubmit={handleSubmit} className="mb-4 ">
-          <div className="flex gap-2">
+        <form onSubmit={handleSubmit} className="mb-4">
+          <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
             <input
               type="text"
               value={newPersonName}
@@ -72,10 +72,10 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+              className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
             >
               <UserPlus size={18} />
-              <span className="hidden sm:inline">Hinzufügen</span>
+              <span className="">Hinzufügen</span>
             </button>
           </div>
         </form>
