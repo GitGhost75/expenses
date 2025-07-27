@@ -155,14 +155,16 @@ function App() {
 
   if (!activeGroup) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="container mx-auto px-4 py-8">
-          <GroupManager
-            groups={groups}
-            onAddGroup={addGroup}
-            onLeaveGroup={leaveGroup}
-            onSelectGroup={setActiveGroupCode}
-            onEnterGroup={enterGroup} />
+      <div className="text-sm sm:text-base">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          <div className="container mx-auto px-4 py-8">
+            <GroupManager
+              groups={groups}
+              onAddGroup={addGroup}
+              onLeaveGroup={leaveGroup}
+              onSelectGroup={setActiveGroupCode}
+              onEnterGroup={enterGroup} />
+          </div>
         </div>
       </div>
     );
@@ -173,41 +175,43 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <button
-              onClick={() => setActiveGroupCode(null)}
-              className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
-            >
-              <ArrowLeft size={20} />
-              Zurück zu Gruppen
-            </button>
+    <div className="text-sm sm:text-base">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="container mx-auto px-4 py-8">
+          <header className="mb-8">
+            <div className="flex items-center gap-4 mb-4">
+              <button
+                onClick={() => setActiveGroupCode(null)}
+                className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
+              >
+                <ArrowLeft size={20} />
+                Zurück zu Gruppen
+              </button>
+            </div>
+          </header>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <PersonManager
+              people={activeGroup.members}
+              onAddPerson={addPerson}
+              onRemovePerson={removePerson}
+              onRenamePerson={renamePerson}
+            />
+
+            <ExpenseManager
+              people={activeGroup.members}
+              expenses={expenses}
+              onAddExpense={addExpense}
+              onRemoveExpense={removeExpense}
+              onEditExpense={editExpense}
+            />
           </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <PersonManager
-            people={activeGroup.members}
-            onAddPerson={addPerson}
-            onRemovePerson={removePerson}
-            onRenamePerson={renamePerson}
-          />
-
-          <ExpenseManager
+          <Summary
+            billings={billingsForGroup}
             people={activeGroup.members}
             expenses={expenses}
-            onAddExpense={addExpense}
-            onRemoveExpense={removeExpense}
-            onEditExpense={editExpense}
           />
         </div>
-        <Summary
-          billings={billingsForGroup}
-          people={activeGroup.members}
-          expenses={expenses}
-        />
       </div>
     </div>
   );
