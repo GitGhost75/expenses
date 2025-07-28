@@ -2,7 +2,7 @@ import { useState } from "react";
 import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from "../types";
-import { Users, Calendar, Trash2, ChevronRight, Plus, Calculator } from 'lucide-react';
+import { Users, Calendar, Trash2, ChevronRight, Plus, Calculator, Check, Copy, Share2 } from 'lucide-react';
 
 interface GroupManagerProps {
     groups: GroupDto[];
@@ -17,6 +17,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
     const { t } = useTranslation();
     const [newGroupName, setNewGroupName] = useState('');
     const [newGroupCode, setNewGroupCode] = useState('');
+    const [copiedGroupCode, setCopiedGroupCode] = useState<string | null>(null);
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('de-DE', {
@@ -41,6 +42,20 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
             setNewGroupCode('');
         }
     }
+
+    const shareCode = async (groupCode: string) => {
+        try {
+            await navigator.clipboard.writeText(groupCode);
+            setCopiedGroupCode(groupCode);
+            setTimeout(() => setCopiedGroupCode(null), 2000);
+
+            // const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(groupCode)}`;
+            // window.open(whatsappUrl, "_blank");
+
+        } catch (err) {
+            console.error('Failed to copy share ID:', err);
+        }
+    };
 
     return (
 
@@ -122,10 +137,6 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
 
                                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                                     <div className="flex items-center gap-2">
-                                        <Calculator size={16} />
-                                        <span>{group.code}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
                                         <Users size={16} />
                                         <span>{group.members.length} Personen</span>
                                     </div>
@@ -135,7 +146,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                     </div>
                                 </div>
 
-                                <div className="border-t pt-3">
+                                <div className="border-t pt-3 pb-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">Gesamtausgaben:</span>
                                         <span className="font-semibold text-green-600">
@@ -147,6 +158,35 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                         <span className="text-sm text-gray-500">
                                             {group.countExpenses} Einträge
                                         </span>
+                                    </div>
+                                </div>
+                                <div className="border-t pt-3">
+                                    <div className="-mb-2 p-2 bg-blue-50 rounded-md border border-blue-200">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-2">
+                                                <Share2 size={16} className="text-blue-600" />
+                                                <span className="text-sm font-medium text-blue-800">{group.code}</span>
+                                            </div>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    shareCode(group.code);
+                                                }}
+                                                className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
+                                            >
+                                                {copiedGroupCode === group.code ? (
+                                                    <>
+                                                        <Check size={14} />
+                                                        Kopiert!
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Copy size={14} />
+                                                        Kopieren
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -37,12 +37,12 @@ export function Summary({ billings, people, expenses }: SummaryProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-blue-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-blue-800 mb-2">Gesamt</h3>
-          <p className="text-2xl font-bold text-blue-600">{totalExpenses.toFixed(2)}€</p>
+          <h3 className="font-semibold text-blue-800 mb-2  sm:scale-100 scale-[0.8]">Gesamt</h3>
+          <p className="text-2xl font-bold text-blue-600  sm:scale-100 scale-[0.8]">{totalExpenses.toFixed(2)}€</p>
         </div>
         <div className="bg-green-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-green-800 mb-2">Pro Person</h3>
-          <p className="text-2xl font-bold text-green-600">{amountPerPerson.toFixed(2)}€</p>
+          <h3 className="font-semibold text-green-800 mb-2  sm:scale-100 scale-[0.8]">Pro Person</h3>
+          <p className="text-2xl font-bold text-green-600  sm:scale-100 scale-[0.8]">{amountPerPerson.toFixed(2)}€</p>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ export function Summary({ billings, people, expenses }: SummaryProps) {
                 <span className="font-medium text-gray-700 sm:scale-100 scale-[0.8]">{billing.payer}</span>
                 <ArrowRight size={18} className="text-yellow-600" />
                 <span className="font-medium text-gray-700 sm:scale-100 scale-[0.8]">{billing.receiver}</span>
-                <span className="ml-auto font-semibold text-yellow-700">
+                <span className="ml-auto font-semibold text-yellow-700  sm:scale-100 scale-[0.8]">
                   {billing.amount.toFixed(2)}€
                 </span>
               </div>

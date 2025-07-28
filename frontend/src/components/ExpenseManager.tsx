@@ -71,85 +71,83 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
 
     <div className="bg-white rounded-lg shadow-md p-6">
 
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">Ausgaben
-        {expenses.length > 0 && (
-          <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
-            {expenses.length}
-          </span>
-        )}
-      </h2>
-
-      <form onSubmit={handleSubmit} className="mb-6 space-y-4">
-        <div>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Beschreibung (z.B. Restaurant, Taxi, etc.)"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-1">
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              placeholder="Betrag (€)"
-              step="0.01"
-              min="0"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <div className="flex-1">
-            <select
-              value={paidBy?.id ?? ''}
-              onChange={(e) => {
-                const selected = people.find(p => p.id === e.target.value);
-                setPaidBy(selected);
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Bezahlt von...</option>
-              {people.map((person) => (
-                <option key={person.id} value={person.id}>
-                  {person.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          disabled={!description.trim() || !amount || !paidBy || people.length === 0}
-          className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
-        >
-          <Plus size={18} />
-          Ausgabe hinzufügen
-        </button>
-      </form>
-
       <div
         className="flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
         onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
       >
-        <div className="flex items-center gap-3">
-          {expenses.length > 0 && (
-            <span className="text-sm text-gray-600 font-medium">
-              Alle Ausgaben anzeigen:
-              {/* {expenses.reduce((sum, expense) => sum + expense.amount, 0).toFixed(2)}€ */}
-            </span>
-          )}
+
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Ausgaben
+          <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
+            {expenses.length}
+          </span>
+        </h2>
+
+        <div className="flex items-center gap-3 -mt-5">
+            <span className="text-sm text-gray-600 font-medium"/>
+
           <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
             {isExpenseBlockExpanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
           </button>
         </div>
       </div>
+
       {isExpenseBlockExpanded && (
         <>
+
+          <form onSubmit={handleSubmit} className="mb-6 space-y-4">
+            <div>
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Beschreibung (z.B. Restaurant, Taxi, etc.)"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder="Betrag (€)"
+                  step="0.01"
+                  min="0"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex-1">
+                <select
+                  value={paidBy?.id ?? ''}
+                  onChange={(e) => {
+                    const selected = people.find(p => p.id === e.target.value);
+                    setPaidBy(selected);
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">Bezahlt von...</option>
+                  {people.map((person) => (
+                    <option key={person.id} value={person.id}>
+                      {person.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={!description.trim() || !amount || !paidBy || people.length === 0}
+              className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+            >
+              <Plus size={18} />
+              Ausgabe hinzufügen
+            </button>
+          </form>
+
+
           <div className="space-y-3 mt-3">
             {expenses.sort((a, b) => { return new Date(a.date).getDate() - new Date(b.date).getDate() }).map((expense) => {
               const paidByPerson = people.find(p => p.id === expense.user.id);
