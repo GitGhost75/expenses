@@ -222,7 +222,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
               return (
                 <div
                   key={expense.id}
-                  className="flex items-center justify-between p-4 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
                 >
                   <div className="flex-1">
                     <div className="font-medium text-gray-800">{expense.description}</div>
@@ -233,7 +233,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                       {formatDate(expense.date)}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="font-semibold text-lg text-green-600">
                       {expense.amount.toFixed(2)}€
                     </span>

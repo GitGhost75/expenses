@@ -10,9 +10,10 @@ interface GroupManagerProps {
     onLeaveGroup: (code: string) => void;
     onSelectGroup: (code: string) => void;
     onEnterGroup: (code: string) => void;
+    onShareCode: (code: string) => void;
 }
 
-function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnterGroup }: GroupManagerProps) {
+function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnterGroup, onShareCode }: GroupManagerProps) {
 
     const { t } = useTranslation();
     const [newGroupName, setNewGroupName] = useState('');
@@ -43,19 +44,20 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
         }
     }
 
-    const shareCode = async (groupCode: string) => {
-        try {
-            await navigator.clipboard.writeText(groupCode);
-            setCopiedGroupCode(groupCode);
-            setTimeout(() => setCopiedGroupCode(null), 2000);
+    // const shareCode = async (groupCode: string) => {
+    //     try {
+    //         await navigator.clipboard.writeText(groupCode);
+    //         setCopiedGroupCode(groupCode);
+    //         setTimeout(() => setCopiedGroupCode(null), 2000);
 
-            // const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(groupCode)}`;
-            // window.open(whatsappUrl, "_blank");
+    //         const url = 'https://expenses.alexander-kiemle.de?code='
+    //         const whatsappUrl = `https://wa.me/?text=${url}${encodeURIComponent(groupCode)}`;
+    //         window.open(whatsappUrl, "_blank");
 
-        } catch (err) {
-            console.error('Failed to copy share ID:', err);
-        }
-    };
+    //     } catch (err) {
+    //         console.error('Failed to copy share ID:', err);
+    //     }
+    // };
 
     return (
 
@@ -111,7 +113,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {groups.map((group) => (
+                        {groups.sort((a,b) => a.name.localeCompare(b.name)).map((group) => (
                             <div
                                 key={group.code}
                                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
@@ -161,31 +163,27 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                     </div>
                                 </div>
                                 <div className="border-t pt-3">
-                                    <div className="-mb-2 p-2 bg-blue-50 rounded-md border border-blue-200">
+                                    <div
+                                        className="-mb-2 p-2 bg-blue-50 rounded-md border border-blue-200"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            // console.log("copy code", group.code);
+                                            setCopiedGroupCode(group.code);
+                                            onShareCode(group.code);
+                                            setTimeout(() => setCopiedGroupCode(null), 2000);
+                                        }}
+                                    >
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Share2 size={16} className="text-blue-600" />
                                                 <span className="text-sm font-medium text-blue-800">{group.code}</span>
                                             </div>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    shareCode(group.code);
-                                                }}
-                                                className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors duration-200"
-                                            >
-                                                {copiedGroupCode === group.code ? (
-                                                    <>
-                                                        <Check size={14} />
-                                                        Kopiert!
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Copy size={14} />
-                                                        Kopieren
-                                                    </>
-                                                )}
-                                            </button>
+                                            {copiedGroupCode === group.code && (
+                                                <>
+                                                    <span className="text-green-600">Kopiert!</span>
+                                                    <Check size={14} className="text-green-600 -ml-5" />
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

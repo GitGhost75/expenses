@@ -14,11 +14,21 @@ import { getBillingsForGroup } from "./service/BillingService";
 
 function App() {
 
+  const APP_URL = process.env.REACT_APP_URL;
   const [groups, setGroups] = useState<GroupDto[]>([]);
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
   const activeGroup = groups.find(g => g.code === activeGroupCode);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
+ 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    if (code) {
+      console.log("code found. try to enter group", code);
+      enterGroup(code);
+    }
+  }, []);
 
   useEffect(() => {
     loadGroups();
@@ -151,7 +161,16 @@ function App() {
     }
   }
 
+  const shareCode = async (groupCode: string) => {
+    try {
+      await navigator.clipboard.writeText(groupCode);
 
+      const whatsappUrl = `https://wa.me/?text=${APP_URL}/${encodeURIComponent(groupCode)}`;
+      window.open(whatsappUrl, "_blank");
+    } catch (err) {
+      console.error('Failed to copy group code:', err);
+    }
+  }
 
   if (!activeGroup) {
     return (
@@ -163,7 +182,8 @@ function App() {
               onAddGroup={addGroup}
               onLeaveGroup={leaveGroup}
               onSelectGroup={setActiveGroupCode}
-              onEnterGroup={enterGroup} />
+              onEnterGroup={enterGroup}
+              onShareCode={shareCode} />
           </div>
         </div>
       </div>
