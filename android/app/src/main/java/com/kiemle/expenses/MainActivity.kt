@@ -1,6 +1,9 @@
 package com.kiemle.expenses
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.webkit.WebView
@@ -9,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import android.view.WindowManager
 import android.view.Window
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
@@ -22,7 +26,23 @@ class MainActivity : AppCompatActivity() {
         webView = findViewById(R.id.webView)
         webView.settings.domStorageEnabled = true
         webView.settings.javaScriptEnabled = true
-        webView.webViewClient = WebViewClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                return if (url.startsWith("https://api.whatsapp")) {
+                    try {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(this@MainActivity, "WhatsApp ist nicht installiert", Toast.LENGTH_SHORT).show()
+                    }
+                    true // URL wurde selbst behandelt
+                } else {
+                    false // WebView soll die URL selbst laden
+                }
+            }
+        }
+
+
 
         // **1. Statusleisten-Hintergrundfarbe setzen**
         val window: Window = this.window
