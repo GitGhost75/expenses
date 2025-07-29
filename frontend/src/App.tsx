@@ -165,7 +165,7 @@ function App() {
     try {
       await navigator.clipboard.writeText(groupCode);
 
-      const whatsappUrl = `https://wa.me/?text=${APP_URL}/${encodeURIComponent(groupCode)}`;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${APP_URL}/${encodeURIComponent(groupCode)}`;
       window.open(whatsappUrl, "_blank");
     } catch (err) {
       console.error('Failed to copy group code:', err);
