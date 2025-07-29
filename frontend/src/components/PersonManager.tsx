@@ -56,7 +56,7 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
           className="flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
           onClick={() => setIsBlockExpanded(!isBlockExpanded)}
         >
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Mitglieder
+          <h2 className="text-xl font-semibold text-gray-800">Mitglieder
             <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
               {people.length}
             </span>

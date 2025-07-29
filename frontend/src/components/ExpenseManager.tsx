@@ -76,7 +76,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
         onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
       >
 
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">Ausgaben
+        <h2 className="text-xl font-semibold text-gray-800">Ausgaben
           <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
             {expenses.length}
           </span>
