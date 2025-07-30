@@ -4,7 +4,7 @@ import './App.css';
 import GroupManager from "./components/GroupManager";
 import { BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
 import { assignToGroup, createGroup, fetchGroups, removeGroup } from "./service/GroupService";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Building, LucidePersonStanding, PersonStanding, PersonStandingIcon } from "lucide-react";
 import { ExpenseManager } from "./components/ExpenseManager";
 import { createExpense, deleteExpense, getExpensesForGroup, updateExpense } from "./service/ExpensesService";
 import { PersonManager } from "./components/PersonManager";
@@ -17,10 +17,11 @@ function App() {
   const APP_URL = process.env.REACT_APP_URL;
   const [groups, setGroups] = useState<GroupDto[]>([]);
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
+  const [showPeople, setShowPeople] = useState<boolean>(false);
   const activeGroup = groups.find(g => g.code === activeGroupCode);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
- 
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -94,28 +95,30 @@ function App() {
     });
   };
 
-  const addExpense = async (description: string, amount: number, paidBy: UserDto) => {
+  const addExpense = async (description: string, amount: number, paidBy: UserDto[], groupCode: string) => {
     const expenseData: ExpenseDto = {
       id: "",
       amount,
       description,
       date: new Date(),
-      userId: paidBy.id,
-      groupCode: paidBy.groupCode,
-      user: paidBy,
+      // userId: paidBy.id,
+      groupCode,
+      // user: paidBy,
+      payers: paidBy,
     }
     await createExpense(expenseData);
     loadExpenses();
     loadBillings();
   };
 
-  const editExpense = async (id: string, description: string, amount: number, paidBy: UserDto) => {
+  const editExpense = async (id: string, description: string, amount: number, paidBy: UserDto[]) => {
     const found = expenses.find((ex) => ex.id === id);
     if (found) {
       found.description = description;
       found.amount = amount;
-      found.user = paidBy;
-      found.userId = paidBy.id;
+      // found.user = paidBy;
+      // found.userId = paidBy.id;
+      found.payers = paidBy;
       await updateExpense(found);
       loadExpenses();
       loadBillings();
@@ -165,7 +168,7 @@ function App() {
     try {
       await navigator.clipboard.writeText(groupCode);
 
-      const whatsappUrl = `https://api.whatsapp.com/send?text=${APP_URL}/${encodeURIComponent(groupCode)}`;
+      const whatsappUrl = `https://api.whatsapp.com/send?text=${APP_URL}?code=${encodeURIComponent(groupCode)}`;
       window.open(whatsappUrl, "_blank");
     } catch (err) {
       console.error('Failed to copy group code:', err);
@@ -190,8 +193,21 @@ function App() {
     );
   }
 
-  const exitGroup = () => {
-    setActiveGroupCode(null);
+  if (showPeople) {
+    return (
+      <div className="text-sm sm:text-base">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+          <div className="container mx-auto px-4 py-8">
+            <PersonManager
+              people={activeGroup.members}
+              onAddPerson={addPerson}
+              onRemovePerson={removePerson}
+              onRenamePerson={renamePerson}
+            />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -205,8 +221,15 @@ function App() {
                 className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
               >
                 <ArrowLeft size={20} />
-                Zurück zu Gruppen
+                Zurück zur Übersicht
               </button>
+              {/* <button
+                onClick={() => setShowPeople(true)}
+                className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
+              >
+                <PersonStandingIcon size={20} />
+                Mitglieder anzeigen
+              </button> */}
             </div>
           </header>
 
@@ -219,7 +242,7 @@ function App() {
             />
 
             <ExpenseManager
-              people={activeGroup.members}
+              group={activeGroup}
               expenses={expenses}
               onAddExpense={addExpense}
               onRemoveExpense={removeExpense}

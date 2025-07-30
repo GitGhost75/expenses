@@ -176,7 +176,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Share2 size={16} className="text-blue-600" />
-                                                <span className="text-sm font-medium text-blue-800">{group.code}</span>
+                                                <span className="text-center text-sm font-medium text-blue-800">{group.code}</span>
                                             </div>
                                             {copiedGroupCode === group.code && (
                                                 <>

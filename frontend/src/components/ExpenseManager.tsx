@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Edit2, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
-import { UserDto, ExpenseDto } from '../types';
+import { Plus, Trash2, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { UserDto, ExpenseDto, GroupDto } from '../types';
 
 interface ExpenseManagerProps {
-  people: UserDto[];
+  group: GroupDto;
   expenses: ExpenseDto[];
-  onAddExpense: (description: string, amount: number, paidBy: UserDto) => void;
+  onAddExpense: (description: string, amount: number, paidBy: UserDto[], groupCode: string) => void;
   onRemoveExpense: (id: string) => void;
-  onEditExpense: (id: string, description: string, amount: number, paidBy: UserDto) => void;
+  onEditExpense: (id: string, description: string, amount: number, paidBy: UserDto[]) => void;
 }
 
-export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense, onEditExpense }: ExpenseManagerProps) {
+export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense, onEditExpense }: ExpenseManagerProps) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [paidBy, setPaidBy] = useState<UserDto | undefined>(undefined);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingDescription, setEditingDescription] = useState('');
   const [editingAmount, setEditingAmount] = useState('');
-  const [editingPaidBy, setEditingPaidBy] = useState<UserDto | undefined>(undefined);
   const [isExpenseBlockExpanded, setIsExpenseBlockExpanded] = useState(true);
+  const [selectedPayers, setSelectedPayers] = useState<UserDto[]>([]);
+  const [editingPayers, setEditingPayers] = useState<UserDto[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (description.trim() && amount && paidBy) {
-      onAddExpense(description.trim(), parseFloat(amount), paidBy);
+    if (description.trim() && amount && selectedPayers.length > 0) {
+      onAddExpense(description.trim(), parseFloat(amount), selectedPayers, group.code);
       setDescription('');
       setAmount('');
-      setPaidBy(undefined);
+      setSelectedPayers([]);
     }
   };
 
@@ -34,19 +34,19 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
     setEditingId(expense.id);
     setEditingDescription(expense.description);
     setEditingAmount(expense.amount.toString());
-    setEditingPaidBy(expense.user);
+    setEditingPayers(expense.payers);
   };
 
   const cancelEditing = () => {
     setEditingId(null);
     setEditingDescription('');
     setEditingAmount('');
-    setEditingPaidBy(undefined);
+    setEditingPayers([]);
   };
 
   const saveEdit = () => {
-    if (editingDescription.trim() && editingAmount && editingPaidBy && editingId) {
-      onEditExpense(editingId, editingDescription.trim(), parseFloat(editingAmount), editingPaidBy);
+    if (editingDescription.trim() && editingAmount && editingPayers.length > 0 && editingId) {
+      onEditExpense(editingId, editingDescription.trim(), parseFloat(editingAmount), editingPayers);
       cancelEditing();
     }
   };
@@ -83,7 +83,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
         </h2>
 
         <div className="flex items-center gap-3 -mt-5">
-            <span className="text-sm text-gray-600 font-medium"/>
+          <span className="text-sm text-gray-600 font-medium" />
 
           <button className="text-gray-400 hover:text-gray-600 transition-colors duration-200">
             {isExpenseBlockExpanded ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
@@ -117,29 +117,38 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+            </div>
+            <div className="flex justify-center flex-wrap gap-2">
+              {group.members.map((member) => {
+                const isSelected = selectedPayers.some(user => user.id === member.id);
 
-              <div className="flex-1">
-                <select
-                  value={paidBy?.id ?? ''}
-                  onChange={(e) => {
-                    const selected = people.find(p => p.id === e.target.value);
-                    setPaidBy(selected);
-                  }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  <option value="">Bezahlt von...</option>
-                  {people.map((person) => (
-                    <option key={person.id} value={person.id}>
-                      {person.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                return (
+                  <button
+                    key={member.id}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedPayers(selectedPayers.filter(user => user.id !== member.id));
+                      } else {
+                        setSelectedPayers([...selectedPayers, member]);
+                      }
+                    }}
+                    className={`
+                                px-4 py-2 rounded-full border text-sm transition
+                                ${isSelected
+                        ? 'bg-blue-500 text-white border-green-600'
+                        : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
+                                `}
+                  >
+                    {member.name}
+                  </button>
+                );
+              })}
             </div>
 
             <button
               type="submit"
-              disabled={!description.trim() || !amount || !paidBy || people.length === 0}
+              disabled={!description.trim() || !amount || selectedPayers.length === 0 || group.members.length === 0}
               className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
             >
               <Plus size={18} />
@@ -150,7 +159,7 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
 
           <div className="space-y-3 mt-3">
             {expenses.sort((a, b) => { return new Date(a.date).getDate() - new Date(b.date).getDate() }).map((expense) => {
-              const paidByPerson = people.find(p => p.id === expense.user.id);
+              const payerNames = expense.payers.sort((a, b) => a.name.localeCompare(b.name)).map(user => user.name).join(', ');
 
               if (editingId === expense.id) {
                 return (
@@ -179,28 +188,39 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                           min="0"
                           className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
+                      </div>
+                      <div className="flex justify-center flex-wrap gap-2">
+                        {group.members.map((member) => {
+                          const isSelected = editingPayers.some(user => user.id === member.id);
 
-                        <select
-                          value={editingPaidBy?.id ?? ''}
-                          onChange={(e) => {
-                            const selected = people.find(p => p.id === e.target.value);
-                            setEditingPaidBy(selected);
-                          }}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="">Bezahlt von...</option>
-                          {people.map((person) => (
-                            <option key={person.id} value={person.id}>
-                              {person.name}
-                            </option>
-                          ))}
-                        </select>
+                          return (
+                            <button
+                              key={member.id}
+                              type="button"
+                              onClick={() => {
+                                if (isSelected) {
+                                  setEditingPayers(editingPayers.filter(user => user.id !== member.id));
+                                } else {
+                                  setEditingPayers([...editingPayers, member]);
+                                }
+                              }}
+                              className={`
+                                px-4 py-2 rounded-full border text-sm transition
+                                ${isSelected
+                                  ? 'bg-blue-500 text-white border-green-600'
+                                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
+                                `}
+                            >
+                              {member.name}
+                            </button>
+                          );
+                        })}
                       </div>
 
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-center gap-2">
                         <button
                           onClick={saveEdit}
-                          disabled={!editingDescription.trim() || !editingAmount || !editingPaidBy}
+                          disabled={!editingDescription.trim() || !editingAmount || editingPayers?.length === 0}
                           className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1"
                         >
                           <Check size={16} />
@@ -223,11 +243,13 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                 <div
                   key={expense.id}
                   className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                  onClick={() => startEditing(expense)}
+                  onMouseOver={(e) => (e.currentTarget.style.cursor = 'pointer')}
                 >
                   <div className="flex-1">
                     <div className="font-medium text-gray-800">{expense.description}</div>
                     <div className="text-sm text-gray-600">
-                      {paidByPerson?.name}
+                      {payerNames}
                     </div>
                     <div className="text-sm text-gray-600">
                       {formatDate(expense.date)}
@@ -237,13 +259,6 @@ export function ExpenseManager({ people, expenses, onAddExpense, onRemoveExpense
                     <span className="font-semibold text-lg text-green-600">
                       {expense.amount.toFixed(2)}€
                     </span>
-                    <button
-                      onClick={() => startEditing(expense)}
-                      className="text-blue-500 hover:text-blue-700 transition-colors duration-200"
-                      title="Bearbeiten"
-                    >
-                      <Edit2 size={18} />
-                    </button>
                     <button
                       onClick={() => onRemoveExpense(expense.id)}
                       className="text-red-500 hover:text-red-700 transition-colors duration-200"
