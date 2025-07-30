@@ -2,12 +2,7 @@ package de.expenses.service;
 
 import de.expenses.dto.BillingDto;
 import de.expenses.mapper.BillingMapper;
-import de.expenses.model.Billing;
-import de.expenses.mapper.UserMapper;
-import de.expenses.model.Balance;
-import de.expenses.model.Expense;
-import de.expenses.model.Group;
-import de.expenses.model.User;
+import de.expenses.model.*;
 import de.expenses.repository.ExpenseRepository;
 import de.expenses.repository.GroupRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,6 +24,8 @@ public class BillingService {
 	private GroupRepository groupRepo;
 	@Autowired
 	private BillingMapper billingMapper;
+	@Autowired
+	private ExpenseRepository expenseRepo;
 
 	public List<BillingDto> getBillings(String groupCode) {
 		Group group = getGroup(groupCode);
@@ -42,9 +39,10 @@ public class BillingService {
 	}
 
 	public BigDecimal getBalance(User user) {
-		BigDecimal fairShare = getFairShare(user.getGroup());
-		BigDecimal userExpenses = user.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
-		return userExpenses.subtract(fairShare);
+		return BigDecimal.ZERO;
+//		BigDecimal fairShare = getFairShare(user.getGroup());
+//		BigDecimal userExpenses = user.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+//		return userExpenses.subtract(fairShare);
 	}
 
 	private Group getGroup(String groupCode) {
@@ -60,16 +58,18 @@ public class BillingService {
 		List<Expense> expenses = group.getExpenses();
 
 		Map<User, List<Expense>> expensesPerUser = expenses.stream()
-		                                                   .collect(Collectors.groupingBy(Expense::getUser));
+		                                                   .flatMap(ex -> ex.getPayers().stream().
+		                                                                    map(payer -> Map.entry(payer, ex)))
+		                                                   .collect(Collectors.groupingBy(Map.Entry::getKey, Collectors.mapping(Map.Entry::getValue, Collectors.toList())));
 
 		Map<User, BigDecimal> result = expensesPerUser.entrySet().stream()
 		                                              .collect(Collectors.toMap(
 				                                              Map.Entry::getKey,
 				                                              e -> e.getValue().stream()
-				                                                    .map(Expense::getAmount)
+				                                                    .map(ex-> ex.getAmount().divide(new BigDecimal(ex.getPayers().size()), RoundingMode.HALF_DOWN))
 				                                                    .reduce(BigDecimal.ZERO, BigDecimal::add)));
 
-		List<User> usersWithExpenses = expenses.stream().map(Expense::getUser).toList();
+		List<User> usersWithExpenses = expensesPerUser.keySet().stream().toList();
 		List<User> usersWithoutExpenses = group.getMembers().stream().filter(m -> !usersWithExpenses.contains(m)).toList();
 
 		// add empty expense for users without expenses
@@ -86,7 +86,6 @@ public class BillingService {
 		BigDecimal total = getTotalExpenses(group);
 		return total.divide(BigDecimal.valueOf(getUserCount(group)), 2, RoundingMode.HALF_UP);
 	}
-
 
 
 	private Pair<List<Balance>, List<Balance>> createBalances(Group group) {

@@ -29,13 +29,6 @@ public class User {
 	@JoinColumn(name = "group_code", nullable = false)
 	private Group group;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Expense> expenses = new ArrayList<>();
-
-	public void addExpense(Expense expense) {
-		expenses.add(expense);
-	}
-
 	@Override
 	public String toString() {
 		return "User{name=" + name + ", id=" + id + "}";

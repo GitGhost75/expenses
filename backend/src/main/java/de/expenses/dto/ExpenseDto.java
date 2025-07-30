@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -26,9 +27,6 @@ public class ExpenseDto {
 	@NotNull
 	private String groupCode;
 
-	@NotNull
-	private UUID userId;
-
-	private UserDto user;
+	private List<UserDto> payers;
 
 }

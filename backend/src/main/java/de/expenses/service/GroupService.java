@@ -4,7 +4,6 @@ import de.expenses.dto.GroupDto;
 import de.expenses.mapper.GroupMapper;
 import de.expenses.mapper.UserMapper;
 import de.expenses.model.Group;
-import de.expenses.model.User;
 import de.expenses.repository.GroupRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
@@ -44,10 +43,10 @@ public class GroupService {
 
 		GroupDto result = groupMapper.toDto(group);
 
-		Map<UUID, BigDecimal> balanceMap = group.getMembers().stream()
-		                                        .collect(Collectors.toMap(
-				                                        User::getId,
-				                                        user -> billingService.getBalance(user)));
+		Map<UUID, BigDecimal> balanceMap = billingService.getExpensesPerUser(group).entrySet().stream()
+		                                                 .collect(Collectors.toMap(
+				                                                 entry -> entry.getKey().getId(),
+				                                                 Map.Entry::getValue));
 
 		result.getMembers().forEach(m -> {
 			m.setBalance(balanceMap.get(m.getId()));

@@ -9,6 +9,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -34,7 +36,35 @@ public class Expense {
 
 	private LocalDateTime date;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@ManyToMany
+	@JoinTable(
+			name = "expense_payers",
+			joinColumns = @JoinColumn(name = "expense_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	private List<User> payers = new ArrayList<>();
+
+	public void addPayer(User payer) {
+		payers.add(payer);
+	}
+
+	public void removePayer(User payer) {
+		payers.remove(payer);
+	}
+
+	@ManyToMany
+	@JoinTable(
+			name = "expense_receivers",
+			joinColumns = @JoinColumn(name = "expense_id"),
+			inverseJoinColumns = @JoinColumn(name = "user_id")
+	)
+	private List<User> receivers = new ArrayList<>();
+
+	public void addReceiver(User receiver) {
+		receivers.add(receiver);
+	}
+
+	public void removeReceiver(User receiver) {
+		receivers.remove(receiver);
+	}
 }
