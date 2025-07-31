@@ -44,26 +44,11 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
         }
     }
 
-    // const shareCode = async (groupCode: string) => {
-    //     try {
-    //         await navigator.clipboard.writeText(groupCode);
-    //         setCopiedGroupCode(groupCode);
-    //         setTimeout(() => setCopiedGroupCode(null), 2000);
-
-    //         const url = 'https://expenses.alexander-kiemle.de?code='
-    //         const whatsappUrl = `https://wa.me/?text=${url}${encodeURIComponent(groupCode)}`;
-    //         window.open(whatsappUrl, "_blank");
-
-    //     } catch (err) {
-    //         console.error('Failed to copy share ID:', err);
-    //     }
-    // };
-
     return (
 
         <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6">Aufgaben</h2>
+                <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Aufgaben</h2>
                 <form onSubmit={handleCreateGroup} className="mb-4">
                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
                         <input
@@ -103,7 +88,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
             </div>
 
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
-                <h2 className="text-xl font-semibold text-gray-800 mb-6">Meine Gruppen</h2>
+                <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Meine Gruppen</h2>
 
                 {groups.length === 0 ? (
                     <div className="text-center py-12">

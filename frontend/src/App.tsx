@@ -17,7 +17,6 @@ function App() {
   const APP_URL = process.env.REACT_APP_URL;
   const [groups, setGroups] = useState<GroupDto[]>([]);
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
-  const [showPeople, setShowPeople] = useState<boolean>(false);
   const activeGroup = groups.find(g => g.code === activeGroupCode);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
@@ -95,30 +94,28 @@ function App() {
     });
   };
 
-  const addExpense = async (description: string, amount: number, paidBy: UserDto[], groupCode: string) => {
+  const addExpense = async (description: string, amount: number, paidBy: UserDto[], receivedBy: UserDto[], groupCode: string) => {
     const expenseData: ExpenseDto = {
       id: "",
       amount,
       description,
       date: new Date(),
-      // userId: paidBy.id,
       groupCode,
-      // user: paidBy,
       payers: paidBy,
+      receivers: receivedBy,
     }
     await createExpense(expenseData);
     loadExpenses();
     loadBillings();
   };
 
-  const editExpense = async (id: string, description: string, amount: number, paidBy: UserDto[]) => {
+  const editExpense = async (id: string, description: string, amount: number, paidBy: UserDto[], receivedBy: UserDto[]) => {
     const found = expenses.find((ex) => ex.id === id);
     if (found) {
       found.description = description;
       found.amount = amount;
-      // found.user = paidBy;
-      // found.userId = paidBy.id;
       found.payers = paidBy;
+      found.receivers = receivedBy;
       await updateExpense(found);
       loadExpenses();
       loadBillings();
@@ -193,23 +190,6 @@ function App() {
     );
   }
 
-  if (showPeople) {
-    return (
-      <div className="text-sm sm:text-base">
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-          <div className="container mx-auto px-4 py-8">
-            <PersonManager
-              people={activeGroup.members}
-              onAddPerson={addPerson}
-              onRemovePerson={removePerson}
-              onRenamePerson={renamePerson}
-            />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="text-sm sm:text-base">
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -223,24 +203,24 @@ function App() {
                 <ArrowLeft size={20} />
                 Zurück zur Übersicht
               </button>
-              {/* <button
-                onClick={() => setShowPeople(true)}
-                className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
-              >
-                <PersonStandingIcon size={20} />
-                Mitglieder anzeigen
-              </button> */}
             </div>
           </header>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            <PersonManager
-              people={activeGroup.members}
-              onAddPerson={addPerson}
-              onRemovePerson={removePerson}
-              onRenamePerson={renamePerson}
-            />
 
+          <div className="grid grid-cols-1 lg:grid-flow-col lg:auto-cols-fr gap-8 items-start mt-8 sm:gap-4 sm:mt-4 lg:gap-8 lg:mt-8">
+            <div>
+              <Summary
+                billings={billingsForGroup}
+                people={activeGroup.members}
+                expenses={expenses}
+              />
+              <PersonManager 
+                people={activeGroup.members}
+                onAddPerson={addPerson}
+                onRemovePerson={removePerson}
+                onRenamePerson={renamePerson}
+              />
+            </div>
             <ExpenseManager
               group={activeGroup}
               expenses={expenses}
@@ -249,11 +229,6 @@ function App() {
               onEditExpense={editExpense}
             />
           </div>
-          <Summary
-            billings={billingsForGroup}
-            people={activeGroup.members}
-            expenses={expenses}
-          />
         </div>
       </div>
     </div>

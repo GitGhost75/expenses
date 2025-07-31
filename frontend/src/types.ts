@@ -20,7 +20,7 @@ export type ExpenseDto = {
   date: Date;
   groupCode: string;
   payers: UserDto[];
-  receiver?: UserDto[];
+  receivers?: UserDto[];
 };
 
 export type GroupDto = {

@@ -50,13 +50,13 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-6 mt-3 lg:mt-6">
 
       <div
         className="flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
         onClick={() => setIsBlockExpanded(!isBlockExpanded)}
       >
-        <h2 className="text-xl font-semibold text-gray-800">Mitglieder
+        <h2 className="font-semibold text-gray-800 text-sm lg:text-xl">Mitglieder
           <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
             {people.length}
           </span>
