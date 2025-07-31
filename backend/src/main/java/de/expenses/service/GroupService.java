@@ -3,6 +3,7 @@ package de.expenses.service;
 import de.expenses.dto.GroupDto;
 import de.expenses.mapper.GroupMapper;
 import de.expenses.mapper.UserMapper;
+import de.expenses.model.Expense;
 import de.expenses.model.Group;
 import de.expenses.repository.GroupRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Data
@@ -43,16 +42,8 @@ public class GroupService {
 
 		GroupDto result = groupMapper.toDto(group);
 
-		Map<UUID, BigDecimal> balanceMap = billingService.getExpensesPerUser(group).entrySet().stream()
-		                                                 .collect(Collectors.toMap(
-				                                                 entry -> entry.getKey().getId(),
-				                                                 Map.Entry::getValue));
-
-		result.getMembers().forEach(m -> {
-			m.setBalance(balanceMap.get(m.getId()));
-		});
-
-		result.setTotalExpenses(billingService.getTotalExpenses(group));
+		BigDecimal totalExpenses = group.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+		result.setTotalExpenses(totalExpenses);
 		result.setCountExpenses(group.getExpenses().size());
 
 		return result;

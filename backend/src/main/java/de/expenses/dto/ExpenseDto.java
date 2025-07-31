@@ -1,5 +1,6 @@
 package de.expenses.dto;
 
+import de.expenses.model.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -28,5 +29,7 @@ public class ExpenseDto {
 	private String groupCode;
 
 	private List<UserDto> payers;
+
+	private List<UserDto> receivers;
 
 }

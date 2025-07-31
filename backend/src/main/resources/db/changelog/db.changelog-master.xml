@@ -11,4 +11,5 @@
     <include file="db.changelog-004-alter-expenses.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-005-alter-groups.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-006-create-payers-and-receivers.sql" relativeToChangelogFile="true"/>
+    <include file="db.changelog-007-insert-receivers.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

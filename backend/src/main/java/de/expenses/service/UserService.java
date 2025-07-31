@@ -45,7 +45,7 @@ public class UserService {
 
 	public UserDto getUser(UUID userId) {
 		User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
-		BigDecimal balance = billingService.getBalance(user);
+		BigDecimal balance = BigDecimal.ZERO;
 		return userMapper.toDto(user, balance);
 	}
 

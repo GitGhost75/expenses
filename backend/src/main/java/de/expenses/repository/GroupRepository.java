@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface GroupRepository extends JpaRepository<Group, String> {
 
+	Optional<Group> findByCode(String code);
 	List<Group> findByMembers_Id(UUID userId);
 
 }

@@ -8,5 +8,5 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Balance {
 	User user;
-	BigDecimal diff;
+	BigDecimal amount;
 }
