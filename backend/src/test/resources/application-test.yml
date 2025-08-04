@@ -1,4 +1,8 @@
 spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3308/expensesdb
+    username: root
+    password: password
   devtools:
     restart:
       enabled: true

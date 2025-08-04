@@ -97,7 +97,7 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
             {people.map((person) => (
               <div
                 key={person.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                className="flex flex-cols items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
                 onClick={
                   (e) => {
                     e.stopPropagation();
@@ -107,7 +107,7 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
                 onMouseOver={(e) => (e.currentTarget.style.cursor = 'pointer')}
               >
                 {editingId !== null && editingId === person.id ? (
-                  <>
+                  <div className='flex flex-col gap-2'>
                     <input
                       type="text"
                       value={editingName}
@@ -116,28 +116,30 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
                       className="flex-1 px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       autoFocus
                     />
-                    <div className="flex gap-1 ml-2">
+                    <div className="flex justify-center gap-2">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           saveEdit();
                         }}
-                        className="text-green-500 hover:text-green-700 transition-colors duration-200"
                         disabled={!editingName.trim()}
+                        className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1"
                       >
-                        <Check size={18} />
+                        <Check size={16} />
+                        Speichern
                       </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           cancelEditing();
                         }}
-                        className="text-gray-500 hover:text-gray-700 transition-colors duration-200"
+                        className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200 flex items-center gap-1"
                       >
-                        <XIcon size={18} />
+                        <X size={16} />
+                        Abbrechen
                       </button>
                     </div>
-                  </>
+                  </div>
                 ) : (
                   <>
                     <span className="font-medium text-gray-700 flex-1">{person.name}</span>

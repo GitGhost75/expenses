@@ -23,15 +23,6 @@ export function findByCodeInLocalStorage(code: string): GroupInfo | undefined {
     return loadLocalStorage().find(group => group.code === code);
 }
 
-// export function findByNameInLocalStorage(name: string): GroupInfo | undefined {
-//     return loadLocalStorage().find(group => group.c === name);
-// }
-
-// export function updateInLocalStorage(group: GroupInfo) {
-//     const updatedGroups = loadLocalStorage().map(g => g.code === group.code ? group : g);
-//     saveLocalStorage(updatedGroups);
-// }
-
 export function removeFromLocalStorage(code: string): GroupInfo[] {
     const updatedGroups: GroupInfo[] = loadLocalStorage().filter(group => group.code !== code);
     saveLocalStorage(updatedGroups);

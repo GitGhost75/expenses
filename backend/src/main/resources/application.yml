@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3308/expensesdb
+    url: 
     username:
     password:
   jpa:

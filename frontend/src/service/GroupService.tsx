@@ -1,4 +1,5 @@
 import { ApiErrorResponse, GroupDto } from "../types";
+import { isApiErrorResponse } from "../utils/ErrorHandling";
 import { loadLocalStorage, addToLocalStorage, findByCodeInLocalStorage, removeFromLocalStorage } from "./LocalStorageService";
 
 const API_URL = process.env.REACT_APP_API_URL_GROUPS;
@@ -32,25 +33,38 @@ export async function removeGroup(code: string) {
 export async function fetchGroups(): Promise<GroupDto[] | ApiErrorResponse> {
   const groupInfos = loadLocalStorage();
   const codes = groupInfos.map((g) => g.code);
-  const promises = codes.map((code) => fetchFromBackendByCode(code));
-  const results = await Promise.all(promises);
+  const result: GroupDto[] = [];
 
-  return results as GroupDto[];
-}
+  for (const code of codes) {
+    try {
+      const x = await fetchFromBackendByCode(code);
 
-async function fetchFromBackend(group: GroupDto): Promise<GroupDto> {
-  const response = await fetch(`${API_URL}`, {
-    headers: {
-      "Content-Type": "application/json",
-      "X-Group-Code": group.code || ""
-    },
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error(`Fehler beim Laden der Gruppe ${group.name}`);
+      // Wenn ein Fehlerobjekt zurückkommt, brich ab
+      if (isApiErrorResponse(x)) {
+        const error = x as ApiErrorResponse;
+        if (error.message.endsWith("is invalid")) {
+          console.warn(`Gruppe mit Code ${code} nicht gefunden, entferne aus LocalStorage.`);
+          removeFromLocalStorage(code);
+        } else {
+          console.error(`Fehler beim Laden der Gruppe ${code}:`, error);
+          return error;
+        }
+      } else {
+        result.push(x);
+      }
+    } catch (error) {
+      console.error("Netzwerkfehler:", error);
+      return {
+        timestamp: new Date().toISOString(),
+        status: 0,
+        error: "Network Error",
+        message: "Backend ist nicht erreichbar.",
+        path: "/groups",
+        validationErrors: [],
+      };
+    }
   }
 
-  const result: GroupDto = await response.json();
   return result;
 }
 
@@ -62,18 +76,20 @@ async function fetchFromBackendByCode(code: string): Promise<GroupDto | ApiError
     },
     credentials: "include",
   });
+  const data = await response.json();
+
   if (!response.ok) {
     console.error(`Fehler beim Laden der Gruppe ${code}`);
-    return await response.json();
+    return data as ApiErrorResponse;
   }
 
-  const result: GroupDto = await response.json();
-  return result;
+  return data as GroupDto;
 }
+
 export async function fetchGroupByCode(code: string): Promise<GroupDto | ApiErrorResponse> {
 
   const result = await fetchFromBackendByCode(code);
-  if ('error' in result) {
+  if (isApiErrorResponse(result)) {
     return result as ApiErrorResponse;
   }
   let localGroup = findByCodeInLocalStorage(code);
@@ -126,17 +142,6 @@ export async function assignToGroup(code: string): Promise<GroupDto | ApiErrorRe
   }
   return result;
 }
-
-// export async function fetchGroup(name: string): Promise<GroupDto> {
-
-//   const targetGroup = findByNameInLocalStorage(name);
-
-//   if (targetGroup === undefined) {
-//     throw new Error(`Gruppe mit dem Namen ${name} nicht gefunden`);
-//   }
-
-//   return await fetchFromBackend(targetGroup);
-// }
 
 export async function addMember(groupName: string, group: GroupDto): Promise<GroupDto | ApiErrorResponse> {
   const response = await fetch(`${API_URL}/members/${encodeURIComponent(groupName)}`, {

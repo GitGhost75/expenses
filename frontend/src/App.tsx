@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import './App.css';
 import GroupManager from "./components/GroupManager";
-import { BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
+import { ApiErrorResponse, BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
 import { assignToGroup, createGroup, fetchGroups, removeGroup } from "./service/GroupService";
 import { ArrowLeft, Building, LucidePersonStanding, PersonStanding, PersonStandingIcon } from "lucide-react";
 import { ExpenseManager } from "./components/ExpenseManager";
@@ -11,15 +11,17 @@ import { PersonManager } from "./components/PersonManager";
 import { createUser, deleteUser, updateUser } from "./service/UserService";
 import { Summary } from "./components/Summary";
 import { getBillingsForGroup } from "./service/BillingService";
+import { isApiErrorResponse } from "./utils/ErrorHandling";
 
 function App() {
 
   const APP_URL = process.env.REACT_APP_URL;
   const [groups, setGroups] = useState<GroupDto[]>([]);
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
-  const activeGroup = groups.find(g => g.code === activeGroupCode);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
+
+  const activeGroup = groups.find(g => g.code === activeGroupCode);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -68,10 +70,17 @@ function App() {
   }
 
   async function loadGroups() {
-    const groups = await fetchGroups();
-    if (Array.isArray(groups)) {
-      setGroups(groups);
+    const groupsOrError = await fetchGroups();
+
+    if (isApiErrorResponse(groupsOrError)) {
+      console.error("Fehler beim Laden der Gruppen:", groupsOrError.message);
+      // Optionale Anzeige im UI
+      setError(groupsOrError.message);
+      return;
     }
+
+    // Erfolgspfad
+    setGroups(groupsOrError);
   }
 
   const addGroup = async (name: string) => {
@@ -214,7 +223,7 @@ function App() {
                 people={activeGroup.members}
                 expenses={expenses}
               />
-              <PersonManager 
+              <PersonManager
                 people={activeGroup.members}
                 onAddPerson={addPerson}
                 onRemovePerson={removePerson}
@@ -236,3 +245,7 @@ function App() {
 }
 
 export default App;
+function setError(message: string) {
+  alert(`Fehler: ${message}`);
+}
+
