@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Check, X, ChevronDown, ChevronRight } from 'lucide-react';
+import { Plus, Trash2, Check, X, ChevronDown, ChevronRight, HandCoins } from 'lucide-react';
 import { UserDto, ExpenseDto, GroupDto } from '../types';
 
 interface ExpenseManagerProps {
@@ -111,7 +111,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
               type="button"
               onClick={() => onToggle(member)}
               className={`
-                px-4 py-2 rounded-full border text-sm transition
+                px-3 py-1 rounded-full border text-sm transition
                 ${isSelected
                   ? 'bg-blue-500 text-white border-green-600'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'}
@@ -134,7 +134,9 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
         onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
       >
 
-        <h2 className="font-semibold text-gray-800 text-sm lg:text-xl">Ausgaben
+        <h2 className="font-semibold text-gray-800 mb-6 flex items-center gap-2 text-sm lg:text-xl">
+          <HandCoins size={18} />
+          Ausgaben
           <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
             {expenses.length}
           </span>
@@ -221,10 +223,10 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
             <button
               type="submit"
               disabled={!description.trim() || !amount || selectedPayers.length === 0 || selectedReceivers?.length === 0 || group.members.length === 0}
-              className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
             >
-              <Plus size={18} />
-              Ausgabe hinzufügen
+              <HandCoins size={18} />
+              hinzufügen
             </button>
           </form>
 

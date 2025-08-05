@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserPlus, X, Edit2, Check, X as XIcon, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { UserPlus, X, Edit2, Check, X as XIcon, ChevronDown, ChevronRight, Trash2, User } from 'lucide-react';
 import { UserDto } from '../types';
 
 interface PersonManagerProps {
@@ -56,7 +56,9 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
         className="flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
         onClick={() => setIsBlockExpanded(!isBlockExpanded)}
       >
-        <h2 className="font-semibold text-gray-800 text-sm lg:text-xl">Mitglieder
+        <h2 className="font-semibold text-gray-800 mb-6 flex items-center gap-2 text-sm lg:text-xl">
+          <User size={18} />
+          Mitglieder
           <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full ml-2">
             {people.length}
           </span>
@@ -79,13 +81,19 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
               <input
                 type="text"
                 value={newPersonName}
-                onChange={(e) => setNewPersonName(e.target.value)}
+                onChange={(e) => {
+                  console.log("newPersonName:", newPersonName);
+                  console.log("disabled:", !newPersonName.trim());
+                  setNewPersonName(e.target.value)
+                }
+                }
                 placeholder="Name eingeben"
                 className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button
                 type="submit"
-                className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                disabled={!newPersonName.trim()}
+                className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
               >
                 <UserPlus size={18} />
                 <span className="">Hinzufügen</span>
