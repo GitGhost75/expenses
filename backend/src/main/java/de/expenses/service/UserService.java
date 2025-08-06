@@ -1,9 +1,12 @@
 package de.expenses.service;
 
 import de.expenses.dto.UserDto;
+import de.expenses.mapper.GroupMapper;
 import de.expenses.mapper.UserMapper;
+import de.expenses.model.Expense;
 import de.expenses.model.Group;
 import de.expenses.model.User;
+import de.expenses.repository.ExpenseRepository;
 import de.expenses.repository.GroupRepository;
 import de.expenses.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,16 +29,20 @@ public class UserService {
 	private UserRepository userRepo;
 	@Autowired
 	private GroupRepository groupRepo;
+	@Autowired
+	private ExpenseRepository expenseRepo;
 
 	@Autowired
 	private UserMapper userMapper;
+	@Autowired
+	private GroupMapper groupMapper;
 
 	@Autowired
 	private BillingService billingService;
 
 	public UserDto createUser(UserDto userDto) {
 
-		Group g = groupRepo.findById(userDto.getGroupCode()).orElseThrow(()->new EntityNotFoundException("group not found"));
+		Group g = groupRepo.findById(userDto.getGroupCode()).orElseThrow(()->new EntityNotFoundException(String.format("group %s not found", userDto.getGroupCode())));
 
 		User toBeSaved = userMapper.toEntity(userDto);
 		toBeSaved.setGroup(g);
@@ -43,16 +50,35 @@ public class UserService {
 		return userMapper.toDto(savedUser);
 	}
 
-	public UserDto getUser(UUID userId) {
+	public UserDto createUser(final String name, final String groupCode) {
+		Group g = groupRepo.findById(groupCode).orElseThrow(()->new EntityNotFoundException("group not found"));
+		if (userRepo.existsByName(name)) {
+			throw new IllegalArgumentException(String.format("User with name %s already exists in group %s", name, groupCode));
+		}
+		User toBeSaved = userMapper.createEntity(name);
+		User x = userMapper.addGroup(toBeSaved, groupMapper.toDto(g));
+		User savedUser = userRepo.save(x);
+		return userMapper.toDto(savedUser);
+	}
+
+	public UserDto getUser(final UUID userId) {
 		User user = userRepo.findById(userId).orElseThrow(() -> new EntityNotFoundException("user not found"));
-		BigDecimal balance = BigDecimal.ZERO;
-		return userMapper.toDto(user, balance);
+		List<Expense> expenses = expenseRepo.findByPayer(userId);
+		return userMapper.toDto(user, expenses);
 	}
 
 	public List<UserDto> getGroupMembers(String groupCode) {
 		Group g = groupRepo.findById(groupCode).orElseThrow(()->new EntityNotFoundException("group not found"));
 		List<User> members = userRepo.findByGroup_Code(g.getCode());
-		return userMapper.toDtoList(members);
+		List<UserDto> dtoList = userMapper.toDtoList(members);
+
+		dtoList.forEach(user -> {
+			List<Expense> expenses = expenseRepo.findByPayer(user.getId());
+			userMapper.addBalance(user, expenses);
+		});
+
+		return dtoList;
+
 	}
 
 	public UserDto updateUser(UserDto userDto) {

@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
 	List<User> findByGroup_Code(String code);
+
+	Boolean existsByName(final String name);
 }

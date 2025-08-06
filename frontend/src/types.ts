@@ -30,6 +30,7 @@ export type GroupDto = {
   totalExpenses: number;
   createdAt: Date;
   countExpenses: number;
+  memberCount: number;
 };
 
 export type UserDto = {

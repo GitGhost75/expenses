@@ -4,13 +4,14 @@ import { UserDto, ExpenseDto, GroupDto } from '../types';
 
 interface ExpenseManagerProps {
   group: GroupDto;
+  members: UserDto[];
   expenses: ExpenseDto[];
   onAddExpense: (description: string, amount: number, paidBy: UserDto[], receivedBy: UserDto[], groupCode: string) => void;
   onRemoveExpense: (id: string) => void;
   onEditExpense: (id: string, description: string, amount: number, paidBy: UserDto[], receivedBy: UserDto[]) => void;
 }
 
-export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense, onEditExpense }: ExpenseManagerProps) {
+export function ExpenseManager({ group, members, expenses, onAddExpense, onRemoveExpense, onEditExpense }: ExpenseManagerProps) {
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -18,7 +19,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
   const [editingAmount, setEditingAmount] = useState('');
   const [isExpenseBlockExpanded, setIsExpenseBlockExpanded] = useState(true);
   const [selectedPayers, setSelectedPayers] = useState<UserDto[]>([]);
-  const [selectedReceivers, setSelectedReceivers] = useState<UserDto[]>(group.members);
+  const [selectedReceivers, setSelectedReceivers] = useState<UserDto[]>(members);
   const [editingPayers, setEditingPayers] = useState<UserDto[]>([]);
   const [editingReceivers, setEditingReceivers] = useState<UserDto[]>([]);
 
@@ -29,7 +30,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
       setDescription('');
       setAmount('');
       setSelectedPayers([]);
-      setSelectedReceivers(group.members);
+      setSelectedReceivers(members);
     }
   };
 
@@ -102,7 +103,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
       </div>
       <div className="flex flex-wrap gap-2 mt-2">
 
-        {group.members.map((member) => {
+        {members.map((member) => {
           const isSelected = selectedPeople.some(user => user.id === member.id);
 
           return (
@@ -130,7 +131,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
     <div className="bg-white rounded-lg shadow-md p-6">
 
       <div
-        className="flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200"
+        className={`flex items-center justify-between cursor-pointer hover:bg-white-50 -m-6 p-6 rounded-t-lg transition-colors duration-200  ${isExpenseBlockExpanded ? '-mb-8' : '-mb-12'}`}
         onClick={() => setIsExpenseBlockExpanded(!isExpenseBlockExpanded)}
       >
 
@@ -153,85 +154,7 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
 
       {isExpenseBlockExpanded && (
         <>
-
-          <form onSubmit={handleSubmit} className="mb-6 space-y-4">
-            <div>
-              <input
-                type="text"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Beschreibung (z.B. Restaurant, Taxi, etc.)"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  placeholder="Betrag (€)"
-                  step="0.01"
-                  min="0"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            <PersonSelector
-              title="Bezahlt von"
-              selectedPeople={selectedPayers}
-              allSelected={selectedPayers.length === group.members.length}
-              onSelectAll={() => {
-                if (selectedPayers.length === group.members.length) {
-                  setSelectedPayers([]);
-                } else {
-                  setSelectedPayers(group.members);
-                }
-              }}
-              onToggle={(person) => {
-                const isSelected = selectedPayers.some(user => user.id === person.id);
-                if (isSelected) {
-                  setSelectedPayers(selectedPayers.filter(user => user.id !== person.id));
-                } else {
-                  setSelectedPayers([...selectedPayers, person]);
-                }
-              }}
-            />
-            <PersonSelector
-              title="Betrifft"
-              selectedPeople={selectedReceivers}
-              allSelected={selectedReceivers.length === group.members.length}
-              onSelectAll={() => {
-                if (selectedReceivers.length === group.members.length) {
-                  setSelectedReceivers([]);
-                } else {
-                  setSelectedReceivers(group.members);
-                }
-              }}
-              onToggle={(person) => {
-                const isSelected = selectedReceivers.some(user => user.id === person.id);
-                if (isSelected) {
-                  setSelectedReceivers(selectedReceivers.filter(user => user.id !== person.id));
-                } else {
-                  setSelectedReceivers([...selectedReceivers, person]);
-                }
-              }}
-            />
-
-
-            <button
-              type="submit"
-              disabled={!description.trim() || !amount || selectedPayers.length === 0 || selectedReceivers?.length === 0 || group.members.length === 0}
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
-            >
-              <HandCoins size={18} />
-              hinzufügen
-            </button>
-          </form>
-
-
-          <div className="space-y-3 mt-3">
+          <div className="space-y-3">
             {expenses.sort((a, b) => { return new Date(a.date).getDate() - new Date(b.date).getDate() }).map((expense) => {
               const payerNames = expense.payers.sort((a, b) => a.name.localeCompare(b.name)).map(user => user.name).join(', ');
               const receiverNames = expense.receivers?.sort((a, b) => a.name.localeCompare(b.name)).map(user => user.name).join(', ');
@@ -266,12 +189,12 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
                       <PersonSelector
                         title="Bezahlt von"
                         selectedPeople={editingPayers}
-                        allSelected={editingPayers.length === group.members.length}
+                        allSelected={editingPayers.length === members.length}
                         onSelectAll={() => {
-                          if (editingPayers.length === group.members.length) {
+                          if (editingPayers.length === members.length) {
                             setEditingPayers([]);
                           } else {
-                            setEditingPayers(group.members);
+                            setEditingPayers(members);
                           }
                         }}
                         onToggle={(person) => {
@@ -287,12 +210,12 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
                       <PersonSelector
                         title="Betrifft"
                         selectedPeople={editingReceivers}
-                        allSelected={editingReceivers.length === group.members.length}
+                        allSelected={editingReceivers.length === members.length}
                         onSelectAll={() => {
-                          if (editingReceivers.length === group.members.length) {
+                          if (editingReceivers.length === members.length) {
                             setEditingReceivers([]);
                           } else {
-                            setEditingReceivers(group.members);
+                            setEditingReceivers(members);
                           }
                         }}
                         onToggle={(person) => {
@@ -365,7 +288,92 @@ export function ExpenseManager({ group, expenses, onAddExpense, onRemoveExpense,
               <p className="text-gray-500 text-center py-8">Noch keine Ausgaben erfasst</p>
             )}
           </div>
-        </>)}
+
+
+
+        </>)
+
+
+      }
+
+      <>
+        <h3 className="font-semibold text-gray-800 mb-3 text-sm lg:text-xl mt-4">Ausgabe erfassen</h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <input
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Beschreibung (z.B. Restaurant, Taxi, etc.)"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <input
+                type="number"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="Betrag (€)"
+                step="0.01"
+                min="0"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+          <PersonSelector
+            title="Bezahlt von"
+            selectedPeople={selectedPayers}
+            allSelected={selectedPayers.length === members.length}
+            onSelectAll={() => {
+              if (selectedPayers.length === members.length) {
+                setSelectedPayers([]);
+              } else {
+                setSelectedPayers(members);
+              }
+            }}
+            onToggle={(person) => {
+              const isSelected = selectedPayers.some(user => user.id === person.id);
+              if (isSelected) {
+                setSelectedPayers(selectedPayers.filter(user => user.id !== person.id));
+              } else {
+                setSelectedPayers([...selectedPayers, person]);
+              }
+            }}
+          />
+          <PersonSelector
+            title="Betrifft"
+            selectedPeople={selectedReceivers}
+            allSelected={selectedReceivers.length === members.length}
+            onSelectAll={() => {
+              if (selectedReceivers.length === members.length) {
+                setSelectedReceivers([]);
+              } else {
+                setSelectedReceivers(members);
+              }
+            }}
+            onToggle={(person) => {
+              const isSelected = selectedReceivers.some(user => user.id === person.id);
+              if (isSelected) {
+                setSelectedReceivers(selectedReceivers.filter(user => user.id !== person.id));
+              } else {
+                setSelectedReceivers([...selectedReceivers, person]);
+              }
+            }}
+          />
+
+
+          <button
+            type="submit"
+            disabled={!description.trim() || !amount || selectedPayers.length === 0 || selectedReceivers?.length === 0 || members.length === 0}
+            className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center justify-center gap-2"
+          >
+            <HandCoins size={18} />
+            hinzufügen
+          </button>
+        </form>
+      </>
     </div>
   );
 }

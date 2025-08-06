@@ -40,3 +40,17 @@ export async function updateUser(user: UserDto): Promise<UserDto | ApiErrorRespo
 
   return await response.json();
 }
+
+export async function getMembers(groupCode: string): Promise<UserDto[] | ApiErrorResponse> {
+  const response = await fetch(`${API_URL}/group/${groupCode}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    return error;
+  }
+
+  return await response.json();
+}

@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 
 import './App.css';
 import GroupManager from "./components/GroupManager";
-import { ApiErrorResponse, BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
+import { BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
 import { assignToGroup, createGroup, fetchGroups, removeGroup } from "./service/GroupService";
-import { ArrowLeft, Building, LucidePersonStanding, PersonStanding, PersonStandingIcon } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { ExpenseManager } from "./components/ExpenseManager";
 import { createExpense, deleteExpense, getExpensesForGroup, updateExpense } from "./service/ExpensesService";
 import { PersonManager } from "./components/PersonManager";
-import { createUser, deleteUser, updateUser } from "./service/UserService";
+import { createUser, deleteUser, updateUser, getMembers } from "./service/UserService";
 import { Summary } from "./components/Summary";
 import { getBillingsForGroup } from "./service/BillingService";
 import { isApiErrorResponse } from "./utils/ErrorHandling";
@@ -20,6 +20,7 @@ function App() {
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
+  const [members, setMembers] = useState<UserDto[]>([]);
 
   const activeGroup = groups.find(g => g.code === activeGroupCode);
 
@@ -31,6 +32,33 @@ function App() {
       enterGroup(code);
     }
   }, []);
+
+  async function setGroupCode(code: string | null) {
+    console.log("set active group code", code);
+    setActiveGroupCode(code);
+    loadMembers();
+  }
+
+  async function loadMembers() {
+    if (activeGroupCode) {
+      getMembers(activeGroupCode).then(members => {
+        if (isApiErrorResponse(members)) {
+          console.error("Fehler beim Laden der Mitglieder:", members.message);
+          setError(members.message);
+          return;
+        }
+        console.log("Members for group:", members);
+        if (!Array.isArray(members)) {
+          console.error("Expected an array of members, but got:", members);
+          setError("Fehler beim Laden der Mitglieder: Unerwartetes Format");
+          return;
+        }
+        setMembers(members);
+      })
+    } else {
+      setMembers([]);
+    }
+  }
 
   useEffect(() => {
     loadGroups();
@@ -85,7 +113,7 @@ function App() {
 
   const addGroup = async (name: string) => {
     console.log("add group");
-    await createGroup(name).then(result => {
+    await createGroup(name).then(() => {
       loadGroups();
     });
   };
@@ -96,9 +124,9 @@ function App() {
     loadGroups();
   };
 
-  const enterGroup = async (code: string) => {
+  async function enterGroup(code: string) {
     console.log("enter group");
-    await assignToGroup(code).then(result => {
+    await assignToGroup(code).then(() => {
       loadGroups();
     });
   };
@@ -114,6 +142,7 @@ function App() {
       receivers: receivedBy,
     }
     await createExpense(expenseData);
+    loadMembers();
     loadExpenses();
     loadBillings();
   };
@@ -126,6 +155,7 @@ function App() {
       found.payers = paidBy;
       found.receivers = receivedBy;
       await updateExpense(found);
+      loadMembers();
       loadExpenses();
       loadBillings();
     }
@@ -151,6 +181,7 @@ function App() {
       };
       await createUser(newUser);
       loadGroups();
+      loadMembers();
     }
   }
 
@@ -158,15 +189,17 @@ function App() {
     console.log("delete person", id);
     await deleteUser(id);
     loadGroups();
+    loadMembers();
   }
 
   const renamePerson = async (id: string, newName: string) => {
     console.log("rename person", newName);
-    const person = activeGroup?.members.find((u) => u.id === id);
+    const person = members.find((u) => u.id === id);
     if (person) {
       person.name = newName;
       await updateUser(person);
       loadGroups();
+      loadMembers();
     }
   }
 
@@ -190,7 +223,7 @@ function App() {
               groups={groups}
               onAddGroup={addGroup}
               onLeaveGroup={leaveGroup}
-              onSelectGroup={setActiveGroupCode}
+              onSelectGroup={setGroupCode}
               onEnterGroup={enterGroup}
               onShareCode={shareCode} />
           </div>
@@ -206,7 +239,7 @@ function App() {
           <header className="">
             <div className="flex items-center gap-4">
               <button
-                onClick={() => setActiveGroupCode(null)}
+                onClick={() => setGroupCode(null)}
                 className="flex items-center gap-2 px-0 py-0 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 mb-6"
               >
                 <ArrowLeft size={20} />
@@ -220,11 +253,11 @@ function App() {
             <div>
               <Summary
                 billings={billingsForGroup}
-                people={activeGroup.members}
+                people={members}
                 expenses={expenses}
               />
               <PersonManager
-                people={activeGroup.members}
+                people={members}
                 onAddPerson={addPerson}
                 onRemovePerson={removePerson}
                 onRenamePerson={renamePerson}
@@ -232,6 +265,7 @@ function App() {
             </div>
             <ExpenseManager
               group={activeGroup}
+              members={members}
               expenses={expenses}
               onAddExpense={addExpense}
               onRemoveExpense={removeExpense}
@@ -248,4 +282,3 @@ export default App;
 function setError(message: string) {
   alert(`Fehler: ${message}`);
 }
-

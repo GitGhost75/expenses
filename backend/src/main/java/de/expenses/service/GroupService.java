@@ -6,6 +6,7 @@ import de.expenses.mapper.UserMapper;
 import de.expenses.model.Expense;
 import de.expenses.model.Group;
 import de.expenses.repository.GroupRepository;
+import de.expenses.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -25,6 +26,9 @@ public class GroupService {
 	private GroupRepository groupRepo;
 
 	@Autowired
+	private UserRepository userRepo;
+
+	@Autowired
 	private UserService userService;
 
 	@Autowired
@@ -36,7 +40,7 @@ public class GroupService {
 	@Autowired
 	private BillingService billingService;
 
-	public GroupDto getGroup(String code) {
+	public GroupDto getGroup(final String code) {
 		Group group = groupRepo.findById(code)
 		                       .orElseThrow(() -> new EntityNotFoundException("GroupCode not found with id: " + code));
 
@@ -45,6 +49,9 @@ public class GroupService {
 		BigDecimal totalExpenses = group.getExpenses().stream().map(Expense::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
 		result.setTotalExpenses(totalExpenses);
 		result.setCountExpenses(group.getExpenses().size());
+
+		long count = userRepo.findByGroup_Code(code).stream().count();
+		result.setMemberCount(count);
 
 		return result;
 
@@ -56,10 +63,10 @@ public class GroupService {
 	}
 
 	public GroupDto createNewGroup(String name) {
-		Group group = new Group();
-		group.setName(name);
-		group.setCode(generateGroupCode());
-		Group saved = groupRepo.save(group);
+//		Group group = new Group();
+//		group.setName(name);
+//		group.setCode(generateGroupCode());
+		Group saved = groupRepo.save(groupMapper.createEntity(name, generateGroupCode()));
 		return groupMapper.toDto(saved);
 	}
 

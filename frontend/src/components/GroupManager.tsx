@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from "../types";
-import { Users, Calendar, Trash2, ChevronRight, Plus, Calculator, Check, Copy, Share2 } from 'lucide-react';
+import { Users, Calendar, Trash2, ChevronRight, Plus, Check, Share2 } from 'lucide-react';
 
 interface GroupManagerProps {
     groups: GroupDto[];
@@ -19,6 +19,11 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
     const [newGroupName, setNewGroupName] = useState('');
     const [newGroupCode, setNewGroupCode] = useState('');
     const [copiedGroupCode, setCopiedGroupCode] = useState<string | null>(null);
+
+    useEffect(() => {
+
+
+    }, groups);
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('de-DE', {
@@ -47,7 +52,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
     return (
 
         <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-md p-6 mt-8">
+            {/* <div className="bg-white rounded-lg shadow-md p-6 mt-8">
                 <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Aufgaben</h2>
                 <form onSubmit={handleCreateGroup} className="mb-4">
                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
@@ -85,7 +90,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                         </button>
                     </div>
                 </form>
-            </div>
+            </div> */}
 
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                 <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Meine Gruppen</h2>
@@ -98,10 +103,10 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {groups.sort((a,b) => a.name.localeCompare(b.name)).map((group) => (
+                        {groups.sort((a, b) => a.name.localeCompare(b.name)).map((group) => (
                             <div
                                 key={group.code}
-                                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group"
+                                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group bg-gray-50 hover:bg-gray-75 rounded-lg"
                                 onClick={() => onSelectGroup(group.code)}
                             >
                                 <div className="flex items-start justify-between mb-3">
@@ -125,7 +130,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                 <div className="space-y-2 text-sm text-gray-600 mb-4">
                                     <div className="flex items-center gap-2">
                                         <Users size={16} />
-                                        <span>{group.members.length} Personen</span>
+                                        <span>{group.memberCount} Personen</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Calendar size={16} />
@@ -176,6 +181,42 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                         ))}
                     </div>
                 )}
+                <form onSubmit={handleCreateGroup} className="mt-4">
+                    <div className="w-100 flex flex-col sm:flex-row gap-2 w-full max-w-full">
+                        <input
+                            type="text"
+                            value={newGroupName}
+                            onChange={(e) => setNewGroupName(e.target.value)}
+                            placeholder="Name eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
+                            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button
+                            type="submit"
+                            className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                        >
+                            <Plus size={18} />
+                            <span className="">Erstellen</span>
+                        </button>
+                    </div>
+                </form>
+                <form onSubmit={handleEnterGroup} className="mt-4">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
+                        <input
+                            type="text"
+                            value={newGroupCode}
+                            onChange={(e) => setNewGroupCode(e.target.value)}
+                            placeholder="Code eingeben (z.B.ABC 123 DEF, etc.)"
+                            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button
+                            type="submit"
+                            className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
+                        >
+                            <Plus size={18} />
+                            <span className="">Beitreten</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 

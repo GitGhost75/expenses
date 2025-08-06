@@ -18,11 +18,13 @@ public class GroupDto {
 	@NotBlank(message = "{group.name.notBlank}")
 	private String name;
 
-	private List<UserDto> members;
+//	private List<UserDto> members;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate createdAt;
 
 	private BigDecimal totalExpenses;
 	private int countExpenses;
+
+	private Long memberCount;
 }

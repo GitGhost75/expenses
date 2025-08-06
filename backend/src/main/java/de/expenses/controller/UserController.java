@@ -32,6 +32,11 @@ public class UserController {
 		return ResponseEntity.ok(userService.createUser(userDto));
 	}
 
+	@PostMapping("/{name}")
+	public ResponseEntity<UserDto> createUser(@PathVariable String name, @RequestParam String groupCode) {
+		return ResponseEntity.ok(userService.createUser(name, groupCode));
+	}
+
 	@GetMapping("/{userId}")
 	public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
 		return ResponseEntity.ok(userService.getUser(userId));
