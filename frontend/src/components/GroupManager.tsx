@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from "../types";

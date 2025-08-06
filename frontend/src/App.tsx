@@ -33,15 +33,22 @@ function App() {
     }
   }, []);
 
-  async function setGroupCode(code: string | null) {
+  function setGroupCode(code: string | null) {
     console.log("set active group code", code);
     setActiveGroupCode(code);
-    loadMembers();
   }
 
-  async function loadMembers() {
+  useEffect(() => {
     if (activeGroupCode) {
-      getMembers(activeGroupCode).then(members => {
+      loadMembers(activeGroupCode);
+    } else {
+      setMembers([]);
+    }
+  }, [activeGroupCode]);
+
+  async function loadMembers(code: string | null) {
+    if (code){
+      getMembers(code).then(members => {
         if (isApiErrorResponse(members)) {
           console.error("Fehler beim Laden der Mitglieder:", members.message);
           setError(members.message);
@@ -142,7 +149,7 @@ function App() {
       receivers: receivedBy,
     }
     await createExpense(expenseData);
-    loadMembers();
+    loadMembers(groupCode);
     loadExpenses();
     loadBillings();
   };
@@ -155,7 +162,7 @@ function App() {
       found.payers = paidBy;
       found.receivers = receivedBy;
       await updateExpense(found);
-      loadMembers();
+      loadMembers(found.groupCode);
       loadExpenses();
       loadBillings();
     }
@@ -181,7 +188,7 @@ function App() {
       };
       await createUser(newUser);
       loadGroups();
-      loadMembers();
+      loadMembers(newUser.groupCode);
     }
   }
 
@@ -189,7 +196,7 @@ function App() {
     console.log("delete person", id);
     await deleteUser(id);
     loadGroups();
-    loadMembers();
+    loadMembers(activeGroupCode);
   }
 
   const renamePerson = async (id: string, newName: string) => {
@@ -199,7 +206,7 @@ function App() {
       person.name = newName;
       await updateUser(person);
       loadGroups();
-      loadMembers();
+      loadMembers(person.groupCode);
     }
   }
 

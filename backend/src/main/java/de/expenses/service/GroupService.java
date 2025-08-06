@@ -63,9 +63,6 @@ public class GroupService {
 	}
 
 	public GroupDto createNewGroup(String name) {
-//		Group group = new Group();
-//		group.setName(name);
-//		group.setCode(generateGroupCode());
 		Group saved = groupRepo.save(groupMapper.createEntity(name, generateGroupCode()));
 		return groupMapper.toDto(saved);
 	}
