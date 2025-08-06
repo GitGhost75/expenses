@@ -20,11 +20,6 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
     const [newGroupCode, setNewGroupCode] = useState('');
     const [copiedGroupCode, setCopiedGroupCode] = useState<string | null>(null);
 
-    useEffect(() => {
-
-
-    }, groups);
-
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('de-DE', {
             day: '2-digit',
@@ -52,45 +47,6 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
     return (
 
         <div className="max-w-4xl mx-auto">
-            {/* <div className="bg-white rounded-lg shadow-md p-6 mt-8">
-                <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Aufgaben</h2>
-                <form onSubmit={handleCreateGroup} className="mb-4">
-                    <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
-                        <input
-                            type="text"
-                            value={newGroupName}
-                            onChange={(e) => setNewGroupName(e.target.value)}
-                            placeholder="Gruppenname eingeben (z.B. Urlaub 2024, WG Kosten, etc.)"
-                            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                            type="submit"
-                            className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
-                        >
-                            <Plus size={18} />
-                            <span className="">Erstellen</span>
-                        </button>
-                    </div>
-                </form>
-                <form onSubmit={handleEnterGroup} className="mb-4">
-                    <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
-                        <input
-                            type="text"
-                            value={newGroupCode}
-                            onChange={(e) => setNewGroupCode(e.target.value)}
-                            placeholder="Gruppencode eingeben (z.B.ABC 123 DEF, etc.)"
-                            className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        />
-                        <button
-                            type="submit"
-                            className="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 flex items-center justify-center gap-2"
-                        >
-                            <Plus size={18} />
-                            <span className="">Beitreten</span>
-                        </button>
-                    </div>
-                </form>
-            </div> */}
 
             <div className="bg-white rounded-lg shadow-md p-6 mt-6">
                 <h2 className="font-semibold text-gray-800 mb-6 text-sm lg:text-xl">Meine Gruppen</h2>
