@@ -22,6 +22,11 @@ export function ExpenseManager({ group, members, expenses, onAddExpense, onRemov
   const [selectedReceivers, setSelectedReceivers] = useState<UserDto[]>(members);
   const [editingPayers, setEditingPayers] = useState<UserDto[]>([]);
   const [editingReceivers, setEditingReceivers] = useState<UserDto[]>([]);
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  const toggle = (id: string) => {
+    setExpanded(prev => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -252,35 +257,53 @@ export function ExpenseManager({ group, members, expenses, onAddExpense, onRemov
 
               return (
                 <div
-                  key={expense.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
+                  className="bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-200"
                   onClick={() => startEditing(expense)}
                   onMouseOver={(e) => (e.currentTarget.style.cursor = 'pointer')}
                 >
-                  <div className="flex-1">
-                    <div className="font-medium text-gray-800">{expense.description}</div>
-                    <div className="text-sm text-gray-600">
-                      Bezahlt: {payerNames}
+                  <div
+                    key={expense.id}
+                    className="flex gap-2 items-center justify-between p-3"
+                  >
+                    <div className="flex-1 font-semibold text-gray-800 gap-2 text-sm text-s lg:text-xl">
+                      {expense.description}
                     </div>
-                    <div className="text-sm text-gray-600">
-                      Betrifft: {receiverNames}
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      {formatDate(expense.date)}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-lg text-green-600">
+
+                    <span className="flex font-semibold text-lg text-green-600">
                       {expense.amount.toFixed(2)}€
                     </span>
                     <button
-                      onClick={() => onRemoveExpense(expense.id)}
-                      className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onRemoveExpense(expense.id);
+                      }}
+                      className="flex text-red-500 hover:text-red-700 transition-colors duration-200"
                       title="Löschen"
                     >
                       <Trash2 size={18} />
                     </button>
+                    <button
+                      className="flex text-gray-400 hover:text-gray-600 transition-colors duration-200"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggle(expense.id);
+                      }}
+                    >
+                      {expanded[expense.id] ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
+                    </button>
                   </div>
+                  {expanded[expense.id] && (
+                    <div className="pl-4 pb-3">
+                      <div className="text-sm text-gray-600">
+                        Bezahlt von: {payerNames}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Betrifft: {receiverNames}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        Datum: {formatDate(expense.date)}
+                      </div>
+                    </div>)}
                 </div>
               );
             })}
@@ -288,12 +311,7 @@ export function ExpenseManager({ group, members, expenses, onAddExpense, onRemov
               <p className="text-gray-500 text-center py-8">Noch keine Ausgaben erfasst</p>
             )}
           </div>
-
-
-
         </>)
-
-
       }
 
       <>

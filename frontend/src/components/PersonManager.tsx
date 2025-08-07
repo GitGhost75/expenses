@@ -133,7 +133,10 @@ export function PersonManager({ people, onAddPerson, onRemovePerson, onRenamePer
                       </div>
 
                       <button
-                        onClick={() => onRemovePerson(person.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onRemovePerson(person.id);
+                        }}
                         className="text-red-500 hover:text-red-700 transition-colors duration-200"
                         disabled={people.length <= 0}
                         title="Löschen"
