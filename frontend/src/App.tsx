@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import './App.css';
 import GroupManager from "./components/GroupManager";
 import { BillingDto, ExpenseDto, GroupDto, UserDto } from "./types";
-import { assignToGroup, createGroup, fetchGroups, removeGroup } from "./service/GroupService";
+import { assignToGroup, createGroup, fetchGroups, removeGroup, updateGroup } from "./service/GroupService";
 import { ArrowLeft } from "lucide-react";
 import { ExpenseManager } from "./components/ExpenseManager";
 import { createExpense, deleteExpense, getExpensesForGroup, updateExpense } from "./service/ExpensesService";
@@ -210,6 +210,16 @@ function App() {
     }
   }
 
+    const renameGroup = async (code: string, newName: string) => {
+    console.log("rename group", newName);
+    const group = groups.find((g) => g.code === code);
+    if (group) {
+      group.name = newName;
+      await updateGroup(group);
+      loadGroups();
+    }
+  }
+
   const shareCode = async (groupCode: string) => {
     try {
       await navigator.clipboard.writeText(groupCode);
@@ -232,7 +242,8 @@ function App() {
               onLeaveGroup={leaveGroup}
               onSelectGroup={setGroupCode}
               onEnterGroup={enterGroup}
-              onShareCode={shareCode} />
+              onShareCode={shareCode}
+              onRenameGroup={renameGroup} />
           </div>
         </div>
       </div>

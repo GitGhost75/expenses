@@ -17,7 +17,7 @@ import java.util.List;
 @ToString(exclude = "members")
 public class Group {
 
-	@Column(unique = true)
+	@Column(nullable = false)
 	private String name;
 
 	@Id

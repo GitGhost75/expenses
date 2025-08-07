@@ -100,7 +100,7 @@ export async function fetchGroupByCode(code: string): Promise<GroupDto | ApiErro
   return result;
 }
 
-export async function renameGroup(group: GroupDto): Promise<GroupDto | ApiErrorResponse> {
+export async function updateGroup(group: GroupDto): Promise<GroupDto | ApiErrorResponse> {
 
   const response = await fetch(`${API_URL}`, {
     headers: {

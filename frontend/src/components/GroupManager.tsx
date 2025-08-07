@@ -2,7 +2,8 @@ import { useState } from "react";
 import { } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { GroupDto } from "../types";
-import { Users, Calendar, Trash2, ChevronRight, Plus, Check, Share2 } from 'lucide-react';
+import { Users, Calendar, Trash2, ChevronRight, Plus, Check, Share2, Edit2, X } from 'lucide-react';
+import { formatGroupCode } from "../utils/GroupCodeFormatter";
 
 interface GroupManagerProps {
     groups: GroupDto[];
@@ -11,14 +12,17 @@ interface GroupManagerProps {
     onSelectGroup: (code: string) => void;
     onEnterGroup: (code: string) => void;
     onShareCode: (code: string) => void;
+    onRenameGroup: (code: string, newName: string) => void;
 }
 
-function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnterGroup, onShareCode }: GroupManagerProps) {
+function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnterGroup, onShareCode, onRenameGroup }: GroupManagerProps) {
 
     const { t } = useTranslation();
     const [newGroupName, setNewGroupName] = useState('');
     const [newGroupCode, setNewGroupCode] = useState('');
     const [copiedGroupCode, setCopiedGroupCode] = useState<string | null>(null);
+    const [editingCode, setEditingCode] = useState<string | null>(null);
+    const [editingName, setEditingName] = useState('');
 
     const formatDate = (date: Date) => {
         return new Intl.DateTimeFormat('de-DE', {
@@ -44,6 +48,32 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
         }
     }
 
+    const startEditing = (group: GroupDto) => {
+        setEditingCode(group.code);
+        setEditingName(group.name);
+    };
+
+    const handleEditKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            saveEdit();
+        } else if (e.key === 'Escape') {
+            cancelEditing();
+        }
+    };
+
+    const cancelEditing = () => {
+        setEditingCode(null);
+        setEditingName('');
+    };
+
+    const saveEdit = () => {
+        if (editingName.trim() && editingCode) {
+            onRenameGroup(editingCode, editingName.trim());
+            setEditingCode(null);
+            setEditingName('');
+        }
+    };
+
     return (
 
         <div className="max-w-4xl mx-auto">
@@ -63,13 +93,65 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                             <div
                                 key={group.code}
                                 className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 cursor-pointer group bg-gray-50 hover:bg-gray-75 rounded-lg"
-                                onClick={() => onSelectGroup(group.code)}
+                                onClick={() => {
+                                    if (editingCode === null) {
+                                        onSelectGroup(group.code);
+                                    }
+                                }}
                             >
                                 <div className="flex items-start justify-between mb-3">
-                                    <h3 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200">
-                                        {group.name}
-                                    </h3>
+                                    {editingCode !== null && editingCode === group.code ? (
+                                        <div className='flex flex-col gap-2'>
+                                            <input
+                                                type="text"
+                                                value={editingName}
+                                                onChange={(e) => setEditingName(e.target.value)}
+                                                onKeyDown={handleEditKeyPress}
+                                                className="flex-1 px-2 py-1 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                                autoFocus
+                                            />
+                                            <div className="flex justify-center gap-2">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        saveEdit();
+                                                    }}
+                                                    disabled={!editingName.trim()}
+                                                    className="px-3 py-1 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors duration-200 flex items-center gap-1"
+                                                >
+                                                    <Check size={16} />
+                                                    Speichern
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        cancelEditing();
+                                                    }}
+                                                    className="px-3 py-1 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200 flex items-center gap-1"
+                                                >
+                                                    <X size={16} />
+                                                    Abbrechen
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <h3 className="font-semibold text-gray-800 text-lg group-hover:text-blue-600 transition-colors duration-200" >
+                                                {group.name}
+                                            </h3>
+                                        </>)
+                                    }
+
                                     <div className="flex items-center gap-1 mt-1">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                startEditing(group);
+                                            }}
+                                            className="text-gray-400 hover:text-blue-600 transition-colors duration-200 ml-2 mr-1"
+                                        >
+                                            <Edit2 size={16} />
+                                        </button>
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
@@ -122,7 +204,9 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-2">
                                                 <Share2 size={16} className="text-blue-600" />
-                                                <span className="text-center text-sm font-medium text-blue-800">{group.code}</span>
+                                                <span className="text-center text-sm font-medium text-blue-800">
+                                                    {formatGroupCode(group.code)}
+                                                </span>
                                             </div>
                                             {copiedGroupCode === group.code && (
                                                 <>
@@ -159,7 +243,7 @@ function GroupManager({ groups, onAddGroup, onLeaveGroup, onSelectGroup, onEnter
                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-full">
                         <input
                             type="text"
-                            value={newGroupCode}
+                            value={formatGroupCode(newGroupCode)}
                             onChange={(e) => setNewGroupCode(e.target.value)}
                             placeholder="Code eingeben (z.B.ABC 123 DEF, etc.)"
                             className="flex-1 min-w-0 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

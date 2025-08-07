@@ -12,4 +12,5 @@
     <include file="db.changelog-005-alter-groups.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-006-create-payers-and-receivers.sql" relativeToChangelogFile="true"/>
     <include file="db.changelog-007-insert-receivers.sql" relativeToChangelogFile="true"/>
+    <include file="db.changelog-008-alter-groups-constraint.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
