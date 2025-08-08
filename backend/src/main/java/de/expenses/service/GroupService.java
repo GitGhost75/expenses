@@ -73,15 +73,12 @@ public class GroupService {
 
 
 	public GroupDto updateGroup(GroupDto dto) {
-		groupRepo.findById(dto.getCode()).orElseThrow(
+		Group group = groupRepo.findById(dto.getCode()).orElseThrow(
 				() -> new EntityNotFoundException("GroupCode " + dto.getCode() + " not found."));
 
-		Group toSave = groupMapper.toEntity(dto);
-		toSave.getMembers().forEach(member -> member.setGroup(toSave));
+		Group toBeSaved = groupMapper.updateEntity(group, dto);
 
-		Group savedGroup = groupRepo.save(toSave);
-
-		return groupMapper.toDto(savedGroup);
+		return groupMapper.toDto(groupRepo.save(toBeSaved));
 	}
 
 	private String generateGroupCode() {
