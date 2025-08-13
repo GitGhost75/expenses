@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3308/expensesdb
+    username: root
+    password: password
+  devtools:
+    restart:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+cors:
+  allowed-origins:
+    - http://localhost:3000
+    - http://192.168.112.1:3000
+servers:
+  allowed-servers:
+    - http://localhost:8080
+logging:
+  level:
+    root: INFO
+    de.expenses: DEBUG
+server:
+  address: 0.0.0.0
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    display-request-duration: true
+    doc-expansion: none

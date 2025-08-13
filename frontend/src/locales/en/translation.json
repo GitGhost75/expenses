@@ -1,0 +1,18 @@
+{
+  "app_name": "Expenses",
+  "add_user": "Add User",
+  "list_user": "List of Users",
+  "delete": "Delete",
+  "add": "Add",
+  "placeholder_name": "Name",
+  "placeholder_group_name" : "Group name",
+  "no_users_available": "No users found",
+  "no_groups_available": "No groups found",
+  "error": "Error",
+  "nav_users": "Users",
+  "nav_groups": "Groups",
+  "nav_manage_groups" : "Manage Groups",
+  "leave_group" : "Leave group",
+  "rename_group" : "Rename group",
+  "show_group_info": "Show infos"
+}
