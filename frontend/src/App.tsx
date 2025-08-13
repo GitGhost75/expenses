@@ -12,15 +12,23 @@ import { createUser, deleteUser, updateUser, getMembers } from "./service/UserSe
 import { Summary } from "./components/Summary";
 import { getBillingsForGroup } from "./service/BillingService";
 import { isApiErrorResponse } from "./utils/ErrorHandling";
+import GroupManagerSkeleton from "./components/GroupManagerSkeleton";
+import PersonManagerSkeleton from "./components/PersonManagerSkeleton";
+import { ExpenseManagerSkeleton } from "./components/ExpenseManagerSkeleton";
+import { SummarySkeleton } from "./components/SummarySkeleton";
 
 function App() {
 
   const APP_URL = process.env.REACT_APP_URL;
   const [groups, setGroups] = useState<GroupDto[]>([]);
+  const [loadingGroups, setLoadingGroups] = useState(true);
   const [activeGroupCode, setActiveGroupCode] = useState<string | null>(null);
   const [expenses, setExpenses] = useState<ExpenseDto[]>([]);
+  const [expensesLoading, setExpensesLoading] = useState(false);
   const [billingsForGroup, setBillingsForGroup] = useState<BillingDto[]>([]);
+  const [billingsLoading, setBillingsLoading] = useState(false);
   const [members, setMembers] = useState<UserDto[]>([]);
+  const [membersLoading, setMembersLoading] = useState(false);
 
   const activeGroup = groups.find(g => g.code === activeGroupCode);
 
@@ -47,25 +55,30 @@ function App() {
   }, [activeGroupCode]);
 
   async function loadMembers(code: string | null) {
-    if (code){
-      getMembers(code).then(members => {
-        if (isApiErrorResponse(members)) {
-          console.error("Fehler beim Laden der Mitglieder:", members.message);
-          setError(members.message);
-          return;
-        }
-        console.log("Members for group:", members);
-        if (!Array.isArray(members)) {
-          console.error("Expected an array of members, but got:", members);
-          setError("Fehler beim Laden der Mitglieder: Unerwartetes Format");
-          return;
-        }
-        setMembers(members);
-      })
+    if (code) {
+      setMembersLoading(true); // Start Ladezustand
+      getMembers(code)
+        .then(members => {
+          if (isApiErrorResponse(members)) {
+            console.error("Fehler beim Laden der Mitglieder:", members.message);
+            setError(members.message);
+            return;
+          }
+          if (!Array.isArray(members)) {
+            console.error("Expected an array of members, but got:", members);
+            setError("Fehler beim Laden der Mitglieder: Unerwartetes Format");
+            return;
+          }
+          setMembers(members);
+        })
+        .finally(() => {
+          setMembersLoading(false); // Ladezustand beenden
+        });
     } else {
       setMembers([]);
     }
   }
+
 
   useEffect(() => {
     loadGroups();
@@ -77,6 +90,7 @@ function App() {
   }, [activeGroup]);
 
   async function loadExpenses() {
+    setExpensesLoading(true);
     if (activeGroup) {
       getExpensesForGroup(activeGroup.code)
         .then(expenses => {
@@ -88,10 +102,12 @@ function App() {
     } else {
       setExpenses([]);
     }
+    setExpensesLoading(false);
   }
 
 
   async function loadBillings() {
+    setBillingsLoading(true);
     if (activeGroup) {
       await getBillingsForGroup(activeGroup.code)
         .then(billings => {
@@ -102,26 +118,35 @@ function App() {
     } else {
       setBillingsForGroup([]);
     }
+    setBillingsLoading(false);
   }
 
   async function loadGroups() {
+    setLoadingGroups(true); // Start Ladezustand
     const groupsOrError = await fetchGroups();
 
     if (isApiErrorResponse(groupsOrError)) {
       console.error("Fehler beim Laden der Gruppen:", groupsOrError.message);
-      // Optionale Anzeige im UI
       setError(groupsOrError.message);
+      setLoadingGroups(false);
       return;
     }
 
-    // Erfolgspfad
     setGroups(groupsOrError);
+    setLoadingGroups(false); // Ladezustand beenden
   }
 
   const addGroup = async (name: string) => {
     console.log("add group");
-    await createGroup(name).then(() => {
-      loadGroups();
+    await createGroup(name).then(group => {
+      if (isApiErrorResponse(group)) {
+        console.error("Fehler beim anlegen der Gruppe:", group.message);
+        setError(group.message);
+        return;
+      } else {
+        loadGroups();
+        setGroupCode(group.code);
+      }
     });
   };
 
@@ -133,8 +158,14 @@ function App() {
 
   async function enterGroup(code: string) {
     console.log("enter group");
-    await assignToGroup(code).then(() => {
+    await assignToGroup(code).then(group => {
       loadGroups();
+      if (isApiErrorResponse(group)) {
+        console.error("Fehler beim Beitreten der Gruppe:", group.message);
+        setError(group.message);
+        return;
+      }
+      setGroupCode(group.code);
     });
   };
 
@@ -210,7 +241,7 @@ function App() {
     }
   }
 
-    const renameGroup = async (code: string, newName: string) => {
+  const renameGroup = async (code: string, newName: string) => {
     console.log("rename group", newName);
     const group = groups.find((g) => g.code === code);
     if (group) {
@@ -236,14 +267,19 @@ function App() {
       <div className="text-sm sm:text-base">
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
           <div className="container mx-auto px-4 py-8">
-            <GroupManager
-              groups={groups}
-              onAddGroup={addGroup}
-              onLeaveGroup={leaveGroup}
-              onSelectGroup={setGroupCode}
-              onEnterGroup={enterGroup}
-              onShareCode={shareCode}
-              onRenameGroup={renameGroup} />
+            {loadingGroups ? (
+              <GroupManagerSkeleton />
+            ) : (
+              <GroupManager
+                groups={groups}
+                onAddGroup={addGroup}
+                onLeaveGroup={leaveGroup}
+                onSelectGroup={setGroupCode}
+                onEnterGroup={enterGroup}
+                onShareCode={shareCode}
+                onRenameGroup={renameGroup}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -269,26 +305,38 @@ function App() {
 
           <div className="grid grid-cols-1 lg:grid-flow-col lg:auto-cols-fr gap-8 items-start mt-8 sm:gap-4 sm:mt-4 lg:gap-8 lg:mt-8">
             <div>
-              <Summary
-                billings={billingsForGroup}
-                people={members}
-                expenses={expenses}
-              />
-              <PersonManager
-                people={members}
-                onAddPerson={addPerson}
-                onRemovePerson={removePerson}
-                onRenamePerson={renamePerson}
-              />
+              {(billingsLoading || membersLoading || expensesLoading) ? (
+                <SummarySkeleton />
+              ) : (
+                <Summary
+                  billings={billingsForGroup}
+                  people={members}
+                  expenses={expenses}
+                />
+              )}
+              {membersLoading ? (
+                <PersonManagerSkeleton />
+              ) : (
+                <PersonManager
+                  people={members}
+                  onAddPerson={addPerson}
+                  onRemovePerson={removePerson}
+                  onRenamePerson={renamePerson}
+                />
+              )}
             </div>
-            <ExpenseManager
-              group={activeGroup}
-              members={members}
-              expenses={expenses}
-              onAddExpense={addExpense}
-              onRemoveExpense={removeExpense}
-              onEditExpense={editExpense}
-            />
+            {(expensesLoading || membersLoading || expensesLoading) ? (
+              <ExpenseManagerSkeleton />
+            ) : (
+              <ExpenseManager
+                group={activeGroup}
+                members={members}
+                expenses={expenses}
+                onAddExpense={addExpense}
+                onRemoveExpense={removeExpense}
+                onEditExpense={editExpense}
+              />
+            )}
           </div>
         </div>
       </div>
