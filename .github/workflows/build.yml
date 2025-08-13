@@ -1,10 +1,13 @@
-name: Build and Push Docker Images to GHCR
+name: CSC-Hub CI
 
 on:
   push:
     branches:
-      - develop   # Oder develop, je nach Branch
-  
+      - develop
+      - 'feature/*'
+    tags:
+      - 'v*.*.*' # z.B. v1.0.0
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -21,23 +24,64 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
+      # set image tags
+      - name: Set image tags
+        id: vars
+        run: |
+
+          REPO_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "REPO_LOWER=$REPO_LOWER" >> $GITHUB_ENV
+
+          # push to 'develop':
+          if [[ "${GITHUB_REF}" == refs/heads/develop ]]; then
+            # shorten Commit-SHA to 7 chars from left
+            SHORT_SHA=${GITHUB_SHA::7}
+            # create two tags:
+            # 1. 'develop' as a fix tag
+            # 2. Commit-SHA as individual tag for the current commit
+            echo "TAGS=develop,$SHORT_SHA" >> $GITHUB_OUTPUT
+
+          # push is a tag, e.g. v1.0.0:
+          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            # Extract tag name without prefix 'refs/tags/'
+            VERSION_TAG=${GITHUB_REF#refs/tags/}
+            # create two tags:
+            # 1. 'latest' als fix tag for current release
+            # 2. version tag, e.g. 1.0.0
+            echo "TAGS=latest,$VERSION_TAG" >> $GITHUB_OUTPUT
+
+          # push to feature branch, e.g. feature/xyz:
+          elif [[ "${GITHUB_REF}" == refs/heads/feature/* ]]; then
+            # extract branch name without 'refs/heads/'
+            BRANCH_NAME=${GITHUB_REF#refs/heads/}
+            # replace '/' with '-' (from feature/xyz to feature-xyz)
+            SAFE_BRANCH_NAME=$(echo "$BRANCH_NAME" | tr '/' '-')
+            # create tag using this name, e.g. feature-xyz
+            echo "TAGS=$SAFE_BRANCH_NAME" >> $GITHUB_OUTPUT
+          fi
+
       # Build and push frontend image
       - name: Build and push frontend image
         run: |
-        
-          REPO_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker build -t ghcr.io/$REPO_LOWER/expenses-frontend:1.0.0 ./frontend
-          docker push ghcr.io/$REPO_LOWER/expenses-frontend:1.0.0
-          
-          docker build -t ghcr.io/$REPO_LOWER/expenses-frontend:latest ./frontend
-          docker push ghcr.io/$REPO_LOWER/expenses-frontend:latest
+          IFS=',' read -ra TAGS <<< "${{ steps.vars.outputs.TAGS }}"
+
+          for TAG in "${TAGS[@]}"; do
+            docker build -t ghcr.io/$REPO_LOWER/expenses-frontend:$TAG ./frontend
+          done
+
+          for TAG in "${TAGS[@]}"; do
+            docker push ghcr.io/$REPO_LOWER/expenses-frontend:$TAG
+          done
 
       # Build and push backend image
       - name: Build and push backend image
         run: |
-          REPO_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          docker build -t ghcr.io/$REPO_LOWER/expenses-backend:1.0.0 ./backend
-          docker push ghcr.io/$REPO_LOWER/expenses-backend:1.0.0
-          
-          docker build -t ghcr.io/$REPO_LOWER/expenses-backend:latest ./backend
-          docker push ghcr.io/$REPO_LOWER/expenses-backend:latest
+          IFS=',' read -ra TAGS <<< "${{ steps.vars.outputs.TAGS }}"
+
+          for TAG in "${TAGS[@]}"; do
+            docker build -t ghcr.io/$REPO_LOWER/expenses-backend:$TAG ./backend
+          done
+
+          for TAG in "${TAGS[@]}"; do
+            docker push ghcr.io/$REPO_LOWER/expenses-backend:$TAG
+          done          
