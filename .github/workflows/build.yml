@@ -1,4 +1,4 @@
-name: CSC-Hub CI
+name: Build and Push Docker Images to GHCR
 
 on:
   push:
